@@ -1,4 +1,4 @@
-LINZ LDS BDE SCHEMAS
+LINZ LDS BDE Schemas
 =================================
 
 Provides the schemas and functions to generate the layers and tables that are available on the LDS:
@@ -36,7 +36,8 @@ Build the debian packages using the following command:
 Dependencies
 ------------
 
-Requires PostgreSQL 9.3+/PostGIS 2.2+ and the PL/PgSQL language extension installed. 
+Requires [linz-bde-schema](https://github.com/linz/linz-bde-schema) and
+[linz-postgresql-functions](https://github.com/linz/linz-postgresql-functions) packages 
 
 License
 ---------------------
