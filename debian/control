@@ -1,0 +1,16 @@
+Source: linz-lds-bde-schema
+Section: database
+Priority: extra
+Build-Depends: debhelper (>= 7), postgresql-server-dev-9.3
+Maintainer: Jeremy Palmer (LINZ) <jpalmer@linz.govt.nz>
+Homepage: http://www.linz.govt.nz
+Vcs-Svn: git@github.com:linz/linz-lds-bde-schema.git
+Vcs-Browser: https://github.com/linz/linz-lds-bde-schema.git
+
+Package: linz-lds-bde-schema
+Architecture: all
+Depends: ${misc:Depends}, postgresql-9.3, postgresql-9.3-postgis-2.2
+Recommends: postgresql-9.3-tableversion
+Description: Provides the schemas and functions to generate the layers
+ and tables that are available on the LDS.
+
