@@ -9,7 +9,7 @@ Vcs-Browser: https://github.com/linz/linz-lds-bde-schema.git
 
 Package: linz-lds-bde-schema
 Architecture: all
-Depends: ${misc:Depends}, postgresql-9.3, postgresql-9.3-postgis-2.2
+Depends: ${misc:Depends}, postgresql-9.3, postgresql-9.3-postgis-2.2, linz-postgresql-functions
 Recommends: postgresql-9.3-tableversion
 Description: Provides the schemas and functions to generate the layers
  and tables that are available on the LDS.
