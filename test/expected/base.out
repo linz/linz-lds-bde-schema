@@ -8,6 +8,6 @@
 -- LICENSE file for more information.
 --
 --------------------------------------------------------------------------------
--- Provide unit testing for LINZ BDE SCHEMA using pgTAP
+-- Provide unit testing for LINZ LDS BDE SCHEMA using pgTAP
 --------------------------------------------------------------------------------
 \set ECHO none
