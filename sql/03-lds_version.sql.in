@@ -1,0 +1,21 @@
+﻿--------------------------------------------------------------------------------
+--
+-- linz-lds-bde-schema
+--
+-- Copyright 2016 Crown copyright (c)
+-- Land Information New Zealand and the New Zealand Government.
+-- All rights reserved
+--
+-- This software is released under the terms of the new BSD license. See the 
+-- LICENSE file for more information.
+--
+--------------------------------------------------------------------------------
+
+-- API that provides version of LDS BDE schema installed in the database
+
+CREATE OR REPLACE FUNCTION lds.lds_version()
+RETURNS text AS $$
+  SELECT '@@VERSION@@'::text;
+$$ language 'sql' IMMUTABLE STRICT;
+
+ALTER FUNCTION lds.lds_version() OWNER TO bde_dba;
