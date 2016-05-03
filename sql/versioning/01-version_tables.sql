@@ -1,6 +1,6 @@
 ﻿--------------------------------------------------------------------------------
 --
--- linz-lds-bde-schema - LINZ LDS BDE simplified schema
+-- linz-lds-bde-schema
 --
 -- Copyright 2016 Crown copyright (c)
 -- Land Information New Zealand and the New Zealand Government.
@@ -13,6 +13,8 @@
 -- Creates system tables required for table versioning support
 --------------------------------------------------------------------------------
 
+SET client_min_messages TO WARNING;
+
 DO $$
 DECLARE
    v_schema    NAME;
@@ -21,15 +23,15 @@ DECLARE
    v_rev_table TEXT;
 BEGIN
 
-	IF NOT EXISTS (SELECT * FROM pg_available_extensions WHERE name = ''table_version'') THEN
-		RETURN;
-	END IF; 
+    IF NOT EXISTS (SELECT * FROM pg_extension WHERE extname = 'table_version') THEN
+        RETURN;
+    END IF;
 
     PERFORM table_version.ver_create_revision('Initial revisioning for BDE_EXT/LDS tables');
     
     FOR v_schema, v_table IN 
         SELECT
-            NSP.nspname,s
+            NSP.nspname,
             CLS.relname
         FROM
             pg_class CLS,
