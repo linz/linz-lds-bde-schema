@@ -504,6 +504,7 @@ CREATE INDEX fk_ttl_ett ON crs_title_estate USING btree (ttl_title_no);
 -------------------------------------------------------------------------------
 -- crs_title_mem_text
 -------------------------------------------------------------------------------
+CREATE INDEX fk_tmt_ttm ON crs_title_mem_text USING btree (ttm_id);
 CREATE UNIQUE INDEX idx_tmt_aud_id ON crs_title_mem_text USING btree (audit_id);
 
 -------------------------------------------------------------------------------
