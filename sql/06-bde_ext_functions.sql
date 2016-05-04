@@ -244,7 +244,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -300,39 +300,39 @@ BEGIN
     DROP TABLE IF EXISTS TMT_INL;
     CREATE TEMPORARY TABLE TMT_INL
     (
-		ttm_id integer,
-		sequence_no integer, 
-		curr_hist_flag character varying(4), 
-		std_text character varying(18000),
-		col_1_text character varying(2048), 
-		col_2_text character varying(2048),
-		col_3_text character varying(2048), 
-		col_4_text character varying(2048), 
-		col_5_text character varying(2048), 
-		col_6_text character varying(2048), 
-		col_7_text character varying(2048),
-		audit_id integer  
+        ttm_id integer,
+        sequence_no integer, 
+        curr_hist_flag character varying(4), 
+        std_text character varying(18000),
+        col_1_text character varying(2048), 
+        col_2_text character varying(2048),
+        col_3_text character varying(2048), 
+        col_4_text character varying(2048), 
+        col_5_text character varying(2048), 
+        col_6_text character varying(2048), 
+        col_7_text character varying(2048),
+        audit_id integer  
     )
     ON COMMIT DROP;
-	
+    
     INSERT INTO TMT_INL
     SELECT
-	    TMT.ttm_id, 
-	    TMT.sequence_no, 
-	    TMT.curr_hist_flag, 
-	    TMT.std_text, 
-	    TMT.col_1_text, 
-	    TMT.col_2_text, 
-	    TMT.col_3_text, 
-	    TMT.col_4_text, 
-	    TMT.col_5_text, 
-	    TMT.col_6_text, 
-	    TMT.col_7_text,
-	    TMT.audit_id   
-	FROM crs_title_mem_text TMT
-	--LEFT JOIN TTM_LDG ON TTM_LDG.id = TTM_LDG.id AND TTM_LDG.id IS NOT NULL  -- temp file write error
-	--WHERE EXISTS (SELECT id FROM TTM_LDG WHERE id = ttm_id) -- untested
-	WHERE TMT.ttm_id IN (SELECT id FROM TTM_LDG);
+        TMT.ttm_id, 
+        TMT.sequence_no, 
+        TMT.curr_hist_flag, 
+        TMT.std_text, 
+        TMT.col_1_text, 
+        TMT.col_2_text, 
+        TMT.col_3_text, 
+        TMT.col_4_text, 
+        TMT.col_5_text, 
+        TMT.col_6_text, 
+        TMT.col_7_text,
+        TMT.audit_id   
+    FROM crs_title_mem_text TMT
+    --LEFT JOIN TTM_LDG ON TTM_LDG.id = TTM_LDG.id AND TTM_LDG.id IS NOT NULL  -- temp file write error
+    --WHERE EXISTS (SELECT id FROM TTM_LDG WHERE id = ttm_id) -- untested
+    WHERE TMT.ttm_id IN (SELECT id FROM TTM_LDG);
 
     CREATE INDEX TMT_INL_IDX ON TMT_INL (ttm_id);
     ANALYSE TMT_INL;
@@ -356,33 +356,33 @@ BEGIN
             col_7_text,
             audit_id
         )
-	    SELECT 
-		    TMT.ttm_id, 
-		    TMT.sequence_no, 
-		    TMT.curr_hist_flag, 
-		    CASE WHEN DVL_MEM.title_no IS NOT NULL AND TRT.grp = 'TINT' AND TRT.type IN ('JFH','DD','CN','UAPP','X','T','TSM')
-			THEN TIN.inst_no || ' ' || TRT.description || ' - '|| to_char(TIN.lodged_datetime, 'DD.MM.YYYY') || ' at ' || to_char(TIN.lodged_datetime, 'HH:MI am')
-		    ELSE TMT.std_text
-		    END AS std_text, 
-		    TMT.col_1_text, 
-		    TMT.col_2_text, 
-		    TMT.col_3_text, 
-		    TMT.col_4_text, 
-		    TMT.col_5_text, 
-		    TMT.col_6_text, 
-		    TMT.col_7_text,
-		    TMT.audit_id   
-	        FROM TMT_INL TMT
-	        LEFT JOIN DVL_MEM ON DVL_MEM.mem_id = TMT.ttm_id
-	        LEFT JOIN crs_title_memorial TTM ON TMT.ttm_id = TTM.id
-	        LEFT JOIN crs_ttl_inst TIN ON TTM.act_tin_id_crt = TIN.id
-	        LEFT JOIN crs_transact_type TRT ON (TRT.grp = TIN.trt_grp AND TRT.type = TIN.trt_type)
-	    ORDER BY audit_id;
-	    $sql$;
+        SELECT 
+            TMT.ttm_id, 
+            TMT.sequence_no, 
+            TMT.curr_hist_flag, 
+            CASE WHEN DVL_MEM.title_no IS NOT NULL AND TRT.grp = 'TINT' AND TRT.type IN ('JFH','DD','CN','UAPP','X','T','TSM')
+            THEN TIN.inst_no || ' ' || TRT.description || ' - '|| to_char(TIN.lodged_datetime, 'DD.MM.YYYY') || ' at ' || to_char(TIN.lodged_datetime, 'HH:MI am')
+            ELSE TMT.std_text
+            END AS std_text, 
+            TMT.col_1_text, 
+            TMT.col_2_text, 
+            TMT.col_3_text, 
+            TMT.col_4_text, 
+            TMT.col_5_text, 
+            TMT.col_6_text, 
+            TMT.col_7_text,
+            TMT.audit_id   
+            FROM TMT_INL TMT
+            LEFT JOIN DVL_MEM ON DVL_MEM.mem_id = TMT.ttm_id
+            LEFT JOIN crs_title_memorial TTM ON TMT.ttm_id = TTM.id
+            LEFT JOIN crs_ttl_inst TIN ON TTM.act_tin_id_crt = TIN.id
+            LEFT JOIN crs_transact_type TRT ON (TRT.grp = TIN.trt_grp AND TRT.type = TIN.trt_type)
+        ORDER BY audit_id;
+        $sql$;
     
     RAISE NOTICE '***  TABLE UPDATE END TMT_SUB4(TMT)% - % ***',v_table,clock_timestamp();
     
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -543,7 +543,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -600,7 +600,7 @@ BEGIN
     $sql$;
         
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -646,7 +646,7 @@ BEGIN
     $sql$;
         
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -687,7 +687,7 @@ BEGIN
     $sql$;
         
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -737,7 +737,7 @@ BEGIN
     $sql$;
         
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -790,7 +790,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -832,7 +832,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -927,7 +927,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -970,7 +970,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1030,7 +1030,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1063,7 +1063,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1131,7 +1131,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1177,7 +1177,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1209,7 +1209,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1269,7 +1269,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1309,7 +1309,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1345,7 +1345,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1401,7 +1401,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1439,7 +1439,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1475,7 +1475,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1518,7 +1518,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1590,7 +1590,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1640,7 +1640,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1671,7 +1671,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1717,7 +1717,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1768,7 +1768,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1842,7 +1842,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1872,7 +1872,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1902,7 +1902,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1939,7 +1939,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -1981,7 +1981,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2031,7 +2031,7 @@ BEGIN
         $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2059,7 +2059,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2109,7 +2109,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2150,7 +2150,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2191,7 +2191,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2263,7 +2263,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2277,31 +2277,31 @@ BEGIN
     
     v_data_insert_sql := $sql$
     INSERT INTO %1% (
-		id,
-		type,
-		name,
-		status,
-		other_details,
-		se_row_id,
-		audit_id,
-		shape
-	)
-	SELECT 
-		FEN.id,
-		FEN.type,
-		FEN.name,
-		FEN.status,
-		FEN.other_details,
-		FEN.se_row_id,
-		FEN.audit_id,
-		FEN.shape
-	FROM crs_feature_name FEN
+        id,
+        type,
+        name,
+        status,
+        other_details,
+        se_row_id,
+        audit_id,
+        shape
+    )
+    SELECT 
+        FEN.id,
+        FEN.type,
+        FEN.name,
+        FEN.status,
+        FEN.other_details,
+        FEN.se_row_id,
+        FEN.audit_id,
+        FEN.shape
+    FROM crs_feature_name FEN
     WHERE (FEN.shape IS NULL OR ST_GeometryType(FEN.shape) = 'ST_Point')
     ORDER BY id;
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2316,31 +2316,31 @@ BEGIN
     v_data_insert_sql := $sql$
     
       INSERT INTO %1% (
-		id,
-		type,
-		name,
-		status,
-		other_details,
-		se_row_id,
-		audit_id,
-		shape
-	 )
-	 SELECT 
-		FEN.id,
-		FEN.type,
-		FEN.name,
-		FEN.status,
-		FEN.other_details,
-		FEN.se_row_id,
-		FEN.audit_id,
-		FEN.shape
-	 FROM crs_feature_name FEN
+        id,
+        type,
+        name,
+        status,
+        other_details,
+        se_row_id,
+        audit_id,
+        shape
+     )
+     SELECT 
+        FEN.id,
+        FEN.type,
+        FEN.name,
+        FEN.status,
+        FEN.other_details,
+        FEN.se_row_id,
+        FEN.audit_id,
+        FEN.shape
+     FROM crs_feature_name FEN
      WHERE ST_GeometryType(FEN.shape) = 'ST_Polygon'
      ORDER BY id;
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2356,48 +2356,48 @@ BEGIN
     v_data_insert_sql := $sql$
     
       INSERT INTO %1% (
-		id,
-		cos_id,
-		nod_id,
-		ort_type_1,
-		ort_type_2,
-		ort_type_3,
-		status,
-		sdc_status,
-		source,
-		value1,
-		value2,
-		value3,
-		wrk_id_created,
-		cor_id,
-		audit_id
-	)
-	SELECT
-		COO.id,
-		COO.cos_id,
-		COO.nod_id,
-		COO.ort_type_1,
-		COO.ort_type_2,
-		COO.ort_type_3,
-		COO.status,
-		COO.sdc_status,
-		COO.source,
-		COO.value1,
-		COO.value2,
-		COO.value3,
-		COO.wrk_id_created,
-		COO.cor_id,
-		COO.audit_id
-	FROM
-		crs_coordinate COO
-	WHERE
-		COO.cos_id = 109
-		AND COO.status = 'AUTH'
+        id,
+        cos_id,
+        nod_id,
+        ort_type_1,
+        ort_type_2,
+        ort_type_3,
+        status,
+        sdc_status,
+        source,
+        value1,
+        value2,
+        value3,
+        wrk_id_created,
+        cor_id,
+        audit_id
+    )
+    SELECT
+        COO.id,
+        COO.cos_id,
+        COO.nod_id,
+        COO.ort_type_1,
+        COO.ort_type_2,
+        COO.ort_type_3,
+        COO.status,
+        COO.sdc_status,
+        COO.source,
+        COO.value1,
+        COO.value2,
+        COO.value3,
+        COO.wrk_id_created,
+        COO.cor_id,
+        COO.audit_id
+    FROM
+        crs_coordinate COO
+    WHERE
+        COO.cos_id = 109
+        AND COO.status = 'AUTH'
     ORDER BY id;
  $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2412,28 +2412,28 @@ BEGIN
     
     v_data_insert_sql := $sql$
     INSERT INTO %1% (
-		code,
-		name,
-		rcs_name,
-		cis_name,
-		alloc_source_table,
-		audit_id
-	)
-	SELECT 
-		OFF.code,
-		OFF.name,
-		OFF.rcs_name,
-		OFF.cis_name,
-		OFF.alloc_source_table,
-		OFF.audit_id
-	FROM
+        code,
+        name,
+        rcs_name,
+        cis_name,
+        alloc_source_table,
+        audit_id
+    )
+    SELECT 
+        OFF.code,
+        OFF.name,
+        OFF.rcs_name,
+        OFF.cis_name,
+        OFF.alloc_source_table,
+        OFF.audit_id
+    FROM
         crs_office OFF
     ORDER BY
         audit_id;
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
@@ -2502,7 +2502,7 @@ BEGIN
     $sql$;
     
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
-	PERFORM LDS.LDS_UpdateSimplifiedTable(
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,

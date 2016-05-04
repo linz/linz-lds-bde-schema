@@ -18,7 +18,7 @@ DO $SCHEMA$
 BEGIN
 
 IF EXISTS (SELECT * FROM pg_namespace where LOWER(nspname) = 'bde_ext') THEN
-	RETURN;
+    RETURN;
 END IF;
 
 CREATE SCHEMA bde_ext AUTHORIZATION bde_dba;
