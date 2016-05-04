@@ -224,6 +224,64 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_protected_marks TO bde_admi
 GRANT SELECT ON TABLE survey_protected_marks TO bde_user;
 
 --------------------------------------------------------------------------------
+-- LDS table all_parcels
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS all_parcels CASCADE;
+
+CREATE TABLE all_parcels (
+    id INTEGER NOT NULL,
+    appellation VARCHAR(2048),
+    affected_surveys VARCHAR(2048),
+    parcel_intent VARCHAR(100) NOT NULL,
+    topology_type VARCHAR(100) NOT NULL,
+    status VARCHAR(25) NOT NULL,
+    statutory_actions VARCHAR(4096),
+    land_district VARCHAR(100) NOT NULL,
+    titles VARCHAR(32768),
+    survey_area NUMERIC(20, 4),
+    calc_area NUMERIC(20, 0)
+);
+PERFORM AddGeometryColumn('all_parcels', 'shape', 4167, 'GEOMETRY', 2);
+
+ALTER TABLE all_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_all_par_shape ON all_parcels USING gist (shape);
+
+ALTER TABLE all_parcels OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE all_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE all_parcels TO bde_admin;
+GRANT SELECT ON TABLE all_parcels TO bde_user;
+
+--------------------------------------------------------------------------------
+-- LDS table all_linear_parcels
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS all_linear_parcels CASCADE;
+
+CREATE TABLE all_linear_parcels (
+    id INTEGER NOT NULL,
+    appellation VARCHAR(2048),
+    affected_surveys VARCHAR(2048),
+    parcel_intent VARCHAR(100) NOT NULL,
+    topology_type VARCHAR(100) NOT NULL,
+    status VARCHAR(25) NOT NULL,
+    statutory_actions VARCHAR(4096),
+    land_district VARCHAR(100) NOT NULL,
+    titles VARCHAR(32768),
+    survey_area NUMERIC(20, 4),
+    calc_area NUMERIC(20, 0)
+);
+PERFORM AddGeometryColumn('all_linear_parcels', 'shape', 4167, 'GEOMETRY', 2);
+
+ALTER TABLE all_linear_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_all_line_par_shape ON all_linear_parcels USING gist (shape);
+
+ALTER TABLE all_linear_parcels OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE all_linear_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE all_linear_parcels TO bde_admin;
+GRANT SELECT ON TABLE all_linear_parcels TO bde_user;
+
+--------------------------------------------------------------------------------
 -- LDS table primary_parcels
 --------------------------------------------------------------------------------
 DROP TABLE IF EXISTS primary_parcels CASCADE;
@@ -434,7 +492,7 @@ CREATE TABLE titles (
     guarantee_status VARCHAR(100) NOT NULL,
     estate_description VARCHAR(4096),
     number_owners INT8 NOT NULL,
-    spatial_extents_shared BOOLEAN NOT NULL
+    spatial_extents_shared BOOLEAN
 );
 PERFORM AddGeometryColumn('titles', 'shape', 4167, 'MULTIPOLYGON', 2);
 
@@ -461,8 +519,8 @@ CREATE TABLE titles_plus (
     issue_date TIMESTAMP NOT NULL,
     guarantee_status VARCHAR(100) NOT NULL,
     estate_description VARCHAR(4096),
-    owners Text,
-    spatial_extents_shared BOOLEAN NOT NULL
+    owners TEXT,
+    spatial_extents_shared BOOLEAN
 );
 PERFORM AddGeometryColumn('titles_plus', 'shape', 4167, 'MULTIPOLYGON', 2);
 
@@ -513,8 +571,10 @@ DROP TABLE IF EXISTS road_centre_line CASCADE;
 CREATE TABLE road_centre_line (
     id INTEGER NOT NULL,
     "name" VARCHAR(100) NOT NULL,
-    locality VARCHAR(30),
-    territorial_authority VARCHAR(255)
+    locality VARCHAR(100),
+    territorial_authority VARCHAR(255),
+    name_utf8 VARCHAR(100),
+    locality_utf8 VARCHAR(100)
 );
 PERFORM AddGeometryColumn('road_centre_line', 'shape', 4167, 'MULTILINESTRING', 2);
 
@@ -536,9 +596,12 @@ CREATE TABLE road_centre_line_subsection (
     id INTEGER NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     other_names VARCHAR(255),
-    locality VARCHAR(30),
+    locality VARCHAR(100),
     territorial_authority VARCHAR(255),
-    parcel_derived BOOLEAN NOT NULL
+    parcel_derived BOOLEAN NOT NULL,
+    name_utf8 VARCHAR(100),
+    other_names_utf8 VARCHAR(255),
+    locality_utf8 VARCHAR(100)
 );
 
 PERFORM AddGeometryColumn('road_centre_line_subsection', 'shape', 4167, 'LINESTRING', 2);
@@ -559,7 +622,8 @@ DROP TABLE IF EXISTS railway_centre_line CASCADE;
 
 CREATE TABLE railway_centre_line (
     id INTEGER NOT NULL,
-    "name" VARCHAR(100) NOT NULL
+    "name" VARCHAR(100) NOT NULL,
+    name_utf8 VARCHAR(100)
 );
 PERFORM AddGeometryColumn('railway_centre_line', 'shape', 4167, 'MULTILINESTRING', 2);
 
@@ -573,7 +637,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE railway_centre_line TO bde_admin;
 GRANT SELECT ON TABLE railway_centre_line TO bde_user;
 
 --------------------------------------------------------------------------------
--- LDS table street_address
+-- LDS table street_address (Historic)
 --------------------------------------------------------------------------------
 DROP TABLE IF EXISTS street_address CASCADE;
 
@@ -596,6 +660,38 @@ ALTER TABLE street_address OWNER TO bde_dba;
 REVOKE ALL ON TABLE street_address FROM PUBLIC;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE street_address TO bde_admin;
 GRANT SELECT ON TABLE street_address TO bde_user;
+
+DROP TABLE IF EXISTS street_address2 CASCADE;
+
+--------------------------------------------------------------------------------
+-- LDS table street_address2 (new version)
+--------------------------------------------------------------------------------
+
+CREATE TABLE street_address2 (
+    id integer NOT NULL,
+    rna_id integer NOT NULL,
+    rcl_id integer NOT NULL,
+    address VARCHAR(126) NOT NULL,
+    house_number VARCHAR(25) NOT NULL,
+    range_low integer NOT NULL,
+    range_high integer,
+    road_name VARCHAR(100) NOT NULL,
+    locality VARCHAR(100),
+    territorial_authority VARCHAR(255),
+    road_name_utf8 VARCHAR(100),
+    address_utf8 VARCHAR(126),
+    locality_utf8 VARCHAR(100)
+);
+
+PERFORM AddGeometryColumn('street_address2', 'shape', 4167, 'POINT', 2);
+
+ALTER TABLE street_address2 ADD PRIMARY KEY (id);
+
+ALTER TABLE street_address2 OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE street_address2 FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE street_address2 TO bde_admin;
+GRANT SELECT ON TABLE street_address2 TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table mesh_blocks
@@ -736,11 +832,12 @@ GRANT SELECT ON TABLE waca_adjustments TO bde_user;
 --------------------------------------------------------------------------------
 DROP TABLE IF EXISTS survey_observations CASCADE;
 
-DROP TABLE IF EXISTS survey_observations CASCADE;
 CREATE TABLE survey_observations (
     id integer NOT NULL,
     nod_id_start integer NOT NULL,
+    mark_name_start VARCHAR(100), 
     nod_id_end integer NOT NULL,
+    mark_name_end VARCHAR(100), 
     obs_type character varying(18) NOT NULL,
     value numeric(22,12) NOT NULL,
     value_accuracy numeric(22,12),
@@ -767,11 +864,12 @@ GRANT SELECT ON TABLE survey_observations TO bde_user;
 --------------------------------------------------------------------------------
 DROP TABLE IF EXISTS survey_arc_observations CASCADE;
 
-DROP TABLE IF EXISTS survey_arc_observations CASCADE;
 CREATE TABLE survey_arc_observations (
     id INTEGER NOT NULL,
-    nod_id_start INTEGER NOT NULL,
-    nod_id_end INTEGER NOT NULL,
+    nod_id_start integer NOT NULL,
+    mark_name_start VARCHAR(100),
+    nod_id_end integer NOT NULL,
+    mark_name_end VARCHAR(100),
     chord_bearing NUMERIC(22,12) NOT NULL,
     arc_length NUMERIC(22,12),
     arc_radius NUMERIC(22,12),
@@ -787,6 +885,7 @@ CREATE TABLE survey_arc_observations (
     arc_length_label VARCHAR(10),
     arc_radius_label VARCHAR(10)
 );
+
 PERFORM AddGeometryColumn('survey_arc_observations', 'shape', 4167, 'LINESTRING', 2);
 
 ALTER TABLE survey_arc_observations ADD PRIMARY KEY (id);
@@ -899,5 +998,206 @@ REVOKE ALL ON TABLE survey_non_bdy_marks FROM PUBLIC;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_non_bdy_marks TO bde_admin;
 GRANT SELECT ON TABLE survey_non_bdy_marks TO bde_user;
 
-END
+--------------------------------------------------------------------------------
+-- LDS table parcel_stat_actions
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS parcel_stat_actions CASCADE;
+
+CREATE TABLE parcel_stat_actions (
+    id INTEGER NOT NULL,
+    par_id INTEGER NOT NULL,
+    status VARCHAR(10) NOT NULL,
+    action VARCHAR(20) NOT NULL,
+    statutory_action VARCHAR(1024)
+);
+
+ALTER TABLE parcel_stat_actions ADD PRIMARY KEY (id);
+
+ALTER TABLE parcel_stat_actions OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE parcel_stat_actions FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE parcel_stat_actions TO bde_admin;
+GRANT SELECT ON TABLE parcel_stat_actions TO bde_user;
+
+--------------------------------------------------------------------------------
+-- LDS table affected_parcel_surveys
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS affected_parcel_surveys CASCADE;
+
+CREATE TABLE affected_parcel_surveys (
+    id INTEGER NOT NULL,
+    par_id INTEGER NOT NULL,
+    sur_wrk_id INTEGER NOT NULL,
+    action VARCHAR(12)
+);
+
+ALTER TABLE affected_parcel_surveys ADD PRIMARY KEY (id);
+
+ALTER TABLE affected_parcel_surveys OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE affected_parcel_surveys FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE affected_parcel_surveys TO bde_admin;
+GRANT SELECT ON TABLE affected_parcel_surveys TO bde_user;
+
+--------------------------------------------------------------------------------
+-- LDS table title_parcel_associations
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS title_parcel_associations CASCADE;
+
+CREATE TABLE title_parcel_associations (
+    id INTEGER NOT NULL,
+    title_no VARCHAR(20) NOT NULL,
+    par_id INTEGER NOT NULL,
+    source VARCHAR(8) NOT NULL
+);
+
+ALTER TABLE title_parcel_associations ADD PRIMARY KEY (id);
+
+ALTER TABLE title_parcel_associations OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE title_parcel_associations FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_parcel_associations TO bde_admin;
+GRANT SELECT ON TABLE title_parcel_associations TO bde_user;
+
+--------------------------------------------------------------------------------
+-- LDS table title_estates
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS title_estates CASCADE;
+
+CREATE TABLE title_estates (
+    id INTEGER NOT NULL,
+    title_no VARCHAR(20) NOT NULL,
+    land_district VARCHAR(100) NOT NULL,
+    status VARCHAR(25) NOT NULL,
+    type VARCHAR(255),
+    share VARCHAR(100) NOT NULL,
+    purpose VARCHAR(255),
+    timeshare_week_no VARCHAR(20),
+    term VARCHAR(255),
+    legal_description VARCHAR(2048),
+    area BIGINT
+);
+
+ALTER TABLE title_estates ADD PRIMARY KEY (id);
+
+ALTER TABLE title_estates OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE title_estates FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_estates TO bde_admin;
+GRANT SELECT ON TABLE title_estates TO bde_user;
+
+--------------------------------------------------------------------------------
+-- LDS table titles_aspatial
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS titles_aspatial CASCADE;
+
+CREATE TABLE titles_aspatial (
+    id INTEGER NOT NULL,
+    title_no VARCHAR(20) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    register_type VARCHAR(50) NOT NULL, 
+    type VARCHAR(100) NOT NULL,
+    land_district VARCHAR(100) NOT NULL,
+    issue_date TIMESTAMP NOT NULL,
+    guarantee_status VARCHAR(100) NOT NULL,
+    provisional CHAR(1) NOT NULL,
+    title_no_srs VARCHAR(20),
+    title_no_head_srs VARCHAR(20),
+    survey_reference VARCHAR(50),
+    maori_land CHAR(1),
+    number_owners INT8 NOT NULL
+);
+
+ALTER TABLE titles_aspatial ADD PRIMARY KEY (id);
+
+ALTER TABLE titles_aspatial OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE titles_aspatial FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE titles_aspatial TO bde_admin;
+GRANT SELECT ON TABLE titles_aspatial TO bde_user;
+
+--------------------------------------------------------------------------------
+-- LDS table title_owners_aspatial
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS title_owners_aspatial CASCADE;
+
+CREATE TABLE title_owners_aspatial (
+    id INTEGER NOT NULL,
+    tte_id INTEGER NOT NULL,
+    title_no VARCHAR(20) NOT NULL,
+    land_district VARCHAR(100) NOT NULL,
+    status VARCHAR(25) NOT NULL,
+    estate_share VARCHAR(100) NOT NULL,
+    owner_type VARCHAR(10) NOT NULL,
+    prime_surname VARCHAR(100),
+    prime_other_names VARCHAR(100),
+    corporate_name VARCHAR(250),
+    name_suffix VARCHAR(6)
+);
+
+ALTER TABLE title_owners_aspatial ADD PRIMARY KEY (id);
+
+ALTER TABLE title_owners_aspatial OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE title_owners_aspatial FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_owners_aspatial TO bde_admin;
+GRANT SELECT ON TABLE title_owners_aspatial TO bde_user;
+
+--------------------------------------------------------------------------------
+-- LDS table title_memorials
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS title_memorials CASCADE;
+
+CREATE TABLE title_memorials
+(
+    id integer NOT NULL,
+    title_no VARCHAR(20) NOT NULL,
+    land_district VARCHAR(100) NOT NULL,
+    memorial_text VARCHAR(18000),
+    "current" BOOLEAN NOT NULL,
+    instrument_number VARCHAR(30),
+    instrument_lodged_datetime TIMESTAMP,
+    instrument_type VARCHAR(100),
+    encumbrancees VARCHAR(4096)
+);
+
+ALTER TABLE title_memorials ADD PRIMARY KEY (id);
+
+ALTER TABLE title_memorials OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE title_memorials FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_memorials TO bde_admin;
+GRANT SELECT ON TABLE title_memorials TO bde_user;
+
+--------------------------------------------------------------------------------
+-- LDS table title_memorial_additional_text
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS title_memorial_additional_text CASCADE;
+
+CREATE TABLE title_memorial_additional_text
+(
+    id integer NOT NULL,
+    ttm_id integer NOT NULL,
+    new_title_legal_description character varying(2048),
+    new_title_reference character varying(2048),
+    easement_type character varying(2048),
+    servient_tenement character varying(2048),
+    easement_area character varying(2048),
+    dominant_tenement_or_grantee character varying(2048),
+    statutory_restriction character varying(2048),
+    principal_unit character varying(2048),
+    future_development_unit character varying(2048),
+    assessory_unit character varying(2048),
+    title_issued character varying(2048)
+);
+
+ALTER TABLE title_memorial_additional_text ADD PRIMARY KEY (id);
+
+ALTER TABLE title_memorial_additional_text OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE title_memorial_additional_text FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_memorial_additional_text TO bde_admin;
+GRANT SELECT ON TABLE title_memorial_additional_text TO bde_user;
+
+END;
 $SCHEMA$;

@@ -84,6 +84,7 @@ CREATE INDEX fk_ttl_ped ON crs_title USING btree (protect_end);
 CREATE INDEX fk_ett_lgd ON crs_title_estate USING btree (lgd_id);
 CREATE INDEX fk_ttl_ett ON crs_title_estate USING btree (ttl_title_no);
 CREATE INDEX fk_tmt_ttm ON crs_title_mem_text USING btree (ttm_id);
+CREATE INDEX tmt_col_1_text_idx ON crs_title_mem_text (col_1_text);
 CREATE INDEX fk_wrk_cos ON crs_work USING btree (cos_id);
 CREATE UNIQUE INDEX ak_ctpa_ttlpar ON cbe_title_parcel_association USING btree (ttl_title_no, par_id);
 CREATE UNIQUE INDEX ak_ctpa_ttlpar1 ON cbe_title_parcel_association USING btree (par_id, ttl_title_no, status);
