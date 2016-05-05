@@ -1,5 +1,5 @@
-linz-lds-bde-schema (1.0.0-1linz~trusty1) UNRELEASED; urgency=medium
+linz-lds-bde-schema (1.0.0-1linz~trusty1) trusty; urgency=medium
 
-  * Initial release.
+  * Packaging for LINZ's Software Repository
 
- -- Jeremy <jpalmer@linz.govt.nz>  Mon, 25 Jan 2016 14:38:46 +1300
+ -- Ivan Mincik <imincik@linz.govt.nz>  Thu, 05 May 2016 15:35:12 +1200
