@@ -478,6 +478,34 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE strata_parcels TO bde_admin;
 GRANT SELECT ON TABLE strata_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
+-- LDS table all_parcels_pend
+--------------------------------------------------------------------------------
+DROP TABLE IF EXISTS all_parcels_pend CASCADE;
+
+CREATE TABLE all_parcels_pend (
+    id INTEGER NOT NULL,
+    appellation VARCHAR(2048),
+    affected_surveys VARCHAR(2048),
+    parcel_intent VARCHAR(100) NOT NULL,
+    topology_type VARCHAR(100) NOT NULL,
+    status VARCHAR(25) NOT NULL,
+    statutory_actions VARCHAR(4096),
+    land_district VARCHAR(100) NOT NULL,
+    titles VARCHAR(32768),
+    survey_area NUMERIC(20, 4),
+    calc_area NUMERIC(20, 0)
+);
+PERFORM AddGeometryColumn('all_parcels_pend', 'shape', 4167, 'GEOMETRY', 2);
+
+ALTER TABLE all_parcels_pend ADD PRIMARY KEY (id);
+CREATE INDEX shx_all_par_pend_shape ON all_parcels_pend USING gist (shape);
+
+ALTER TABLE all_parcels_pend OWNER TO bde_dba;
+
+REVOKE ALL ON TABLE all_parcels_pend FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE all_parcels_pend TO bde_admin;
+GRANT SELECT ON TABLE all_parcels_pend TO bde_user;
+--------------------------------------------------------------------------------
 -- LDS table titles
 --------------------------------------------------------------------------------
 DROP TABLE IF EXISTS titles CASCADE;

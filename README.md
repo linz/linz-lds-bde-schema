@@ -10,13 +10,28 @@ Provides the schemas and functions to generate the layers and tables that are av
 Installation
 ------------
 
+First install the project into the OS data share directory:
+
     sudo make install
     
-You can then execute the installed SQL file with something like:
-    
-    for file in /usr/share/linz-lds-bde-schema/*.sql
-        do psql $DATABASE_NAME -f $file
-    done
+Then you need to install the [linz-bde-schema](https://github.com/linz/linz-bde-schema)
+project.
+
+You can then execute the installed SQL files with something like:
+
+```shell
+for file in /usr/share/linz-lds-bde-schema/sql/*.sql
+    do psql $DB_NAME -f $file -v ON_ERROR_STOP=1
+done
+```
+
+If you would like to revision the tables then install the table_version extension
+and then run the versioning SQL script:
+
+```shell
+psql $DB_NAME -c "CREATE EXTENSION table_version"
+psql $DB_NAME -f /usr/share/linz-lds-bde-schema/sql/versioning/01-version_tables.sql
+```
 
 Testing
 -------

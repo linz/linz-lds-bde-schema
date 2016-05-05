@@ -1801,16 +1801,14 @@ BEGIN
             ST_Buffer(PAR.shape, 0)
         END AS shape
     FROM
-        crs_parcel PAR
-    WHERE
-        PAR.status <> 'PEND';
+        crs_parcel PAR;
     
     ALTER TABLE tmp_parcel_geoms ADD PRIMARY KEY(par_id);
     ANALYSE tmp_parcel_geoms;
     
-    RAISE DEBUG 'Started creating temp table tmp_current_parcels';
+    RAISE DEBUG 'Started creating temp table tmp_parcels';
 
-    CREATE TEMP TABLE tmp_current_parcels AS
+    CREATE TEMP TABLE tmp_parcels AS
     SELECT
         PAR.id,
         bde_get_combined_appellation(PAR.id, 'N') AS appellation,
@@ -1844,14 +1842,14 @@ BEGIN
         LEFT JOIN crs_affected_parcl AFP ON PAR.id = AFP.par_id
         LEFT JOIN tmp_survey_plans SUR ON AFP.sur_wrk_id = SUR.wrk_id
     WHERE
-        PAR.status IN ('CURR', 'HIST', 'APPR', 'SHST') AND
+        PAR.status IN ('CURR', 'HIST', 'APPR', 'SHST', 'PEND') AND
         (ST_Contains(WDR.shape, PAR.shape) OR PAR.shape IS NULL)
     GROUP BY
         1, 2, 4, 5, 6, 7, 8, 10, 11, 12
     ORDER BY
         PAR.id;
 
-    RAISE DEBUG 'Finished creating temp table tmp_current_parcels';
+    RAISE DEBUG 'Finished creating temp table tmp_parcels';
     
     DROP TABLE IF EXISTS tmp_world_regions;
     
@@ -1889,7 +1887,7 @@ BEGIN
         PAR.calc_area,
         PAR.shape
     FROM
-        tmp_current_parcels PAR
+        tmp_parcels PAR
         JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
         LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         LEFT JOIN crs_sys_code SYSS ON PAR.status = SYSS.code AND SYSS.scg_code = 'PARS'
@@ -1904,7 +1902,57 @@ BEGIN
         v_data_insert_sql,
         v_data_insert_sql
     );
+
+    ----------------------------------------------------------------------------
+    -- all_parcels_pend layer
+    ----------------------------------------------------------------------------
+    v_table := LDS.LDS_GetTable('lds', 'all_parcels_pend');
     
+    v_data_insert_sql := $sql$
+    INSERT INTO %1% (
+        id,
+        appellation,
+        affected_surveys,
+        parcel_intent,
+        topology_type,
+        status,
+        statutory_actions,
+        land_district,
+        titles,
+        survey_area,
+        calc_area,
+        shape
+    )
+    SELECT
+        PAR.id,
+        PAR.appellation,
+        PAR.affected_surveys,
+        COALESCE(SYSP.char_value, PAR.parcel_intent) AS parcel_intent,
+        TOC.name AS topology_type,
+        SYSS.char_value AS status,
+        PAR.statutory_actions,
+        PAR.land_district,
+        PAR.titles,
+        PAR.survey_area,
+        PAR.calc_area,
+        PAR.shape
+    FROM
+        tmp_parcels PAR
+        JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
+        LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+        LEFT JOIN crs_sys_code SYSS ON PAR.status = SYSS.code AND SYSS.scg_code = 'PARS'
+    WHERE
+        PAR.status = 'PEND' AND
+        ( ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon') OR shape IS NULL );
+    $sql$;
+        
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
+        p_upload,
+        v_table,
+        v_data_insert_sql,
+        v_data_insert_sql
+    );
+
     ----------------------------------------------------------------------------
     -- all_linear_parcels layer
     ----------------------------------------------------------------------------
@@ -1939,7 +1987,7 @@ BEGIN
         NULL,
         PAR.shape
     FROM
-        tmp_current_parcels PAR
+        tmp_parcels PAR
         JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
         LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         LEFT JOIN crs_sys_code SYSS ON PAR.status = SYSS.code AND SYSS.scg_code = 'PARS'
@@ -1954,7 +2002,7 @@ BEGIN
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     ----------------------------------------------------------------------------
     -- primary_parcels layer
     ----------------------------------------------------------------------------
@@ -1987,7 +2035,7 @@ BEGIN
         PAR.calc_area,
         PAR.shape
     FROM
-        tmp_current_parcels PAR
+        tmp_parcels PAR
         JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
         LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
     WHERE
@@ -2035,7 +2083,7 @@ BEGIN
             PAR.calc_area,
             PAR.shape
         FROM
-            tmp_current_parcels PAR
+            tmp_parcels PAR
             JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
             LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
@@ -2084,7 +2132,7 @@ BEGIN
             PAR.calc_area,
             PAR.shape
         FROM
-            tmp_current_parcels PAR
+            tmp_parcels PAR
             JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
             LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
@@ -2133,7 +2181,7 @@ BEGIN
             PAR.calc_area,
             PAR.shape
         FROM
-            tmp_current_parcels PAR
+            tmp_parcels PAR
             JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
             LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
@@ -2182,7 +2230,7 @@ BEGIN
             PAR.calc_area,
             PAR.shape
         FROM
-            tmp_current_parcels PAR
+            tmp_parcels PAR
             JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
             LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
@@ -2230,7 +2278,7 @@ BEGIN
             NULL,
             PAR.shape
         FROM
-            tmp_current_parcels PAR
+            tmp_parcels PAR
             JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
             LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
@@ -2278,7 +2326,7 @@ BEGIN
             PAR.calc_area,
             PAR.shape
         FROM
-            tmp_current_parcels PAR
+            tmp_parcels PAR
             JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
             LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
@@ -2297,7 +2345,7 @@ BEGIN
     -- These temp table not required from here on...
     DROP TABLE IF EXISTS tmp_par_stat_action;
     DROP TABLE IF EXISTS tmp_par_stat_action_agg;
-    DROP TABLE IF EXISTS tmp_current_parcels;
+    DROP TABLE IF EXISTS tmp_parcels;
     
     RAISE DEBUG 'Started creating temp table tmp_title_estates';
     
