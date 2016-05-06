@@ -13,6 +13,7 @@ Package: linz-lds-bde-schema
 Architecture: all
 Depends: ${misc:Depends},
          postgresql-9.3,
+         postgresql-contrib-9.3,
          postgresql-9.3-postgis-2.1|postgresql-9.3-postgis-2.2,
          postgresql-9.3-dbpatch,
          linz-bde-schema,

@@ -17,6 +17,13 @@ First install the project into the OS data share directory:
 Then you need to install the [linz-bde-schema](https://github.com/linz/linz-bde-schema)
 project.
 
+
+and install the unaccent extension for converting macrons to ASCII:
+
+```shell
+psql $DB_NAME -c "CREATE EXTENSION unaccent"
+```
+
 You can then execute the installed SQL files with something like:
 
 ```shell
