@@ -395,8 +395,8 @@ BEGIN
         v_nupd,
         v_ndel
     FROM
-        bde_control.bde_ApplyTableDifferences(
-            p_upload, p_table, p_temp_copy, p_key_column
+        table_version.ver_apply_table_differences(
+            p_table, p_temp_copy, p_key_column
         );
     
     RAISE INFO 'Finished updating %. % deletes, % inserts and % updates',
