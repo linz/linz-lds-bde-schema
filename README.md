@@ -18,10 +18,11 @@ Then you need to install the [linz-bde-schema](https://github.com/linz/linz-bde-
 project.
 
 
-and install the unaccent extension for converting macrons to ASCII:
+and install the table_version and unaccent (converting macrons to ASCII) extensions:
 
 ```shell
-psql $DB_NAME -c "CREATE EXTENSION unaccent"
+psql $DB_NAME -c "CREATE EXTENSION IF NOT EXISTS unaccent"
+psql $DB_NAME -c "CREATE EXTENSION IF NOT EXISTS table_version"
 ```
 
 You can then execute the installed SQL files with something like:
@@ -36,7 +37,6 @@ If you would like to revision the tables then install the table_version extensio
 and then run the versioning SQL script:
 
 ```shell
-psql $DB_NAME -c "CREATE EXTENSION table_version"
 psql $DB_NAME -f /usr/share/linz-lds-bde-schema/sql/versioning/01-version_tables.sql
 ```
 
@@ -58,7 +58,8 @@ Build the debian packages using the following command:
 Dependencies
 ------------
 
-Requires [linz-bde-schema](https://github.com/linz/linz-bde-schema) and
+Requires [linz-bde-schema](https://github.com/linz/linz-bde-schema),
+[table_version](https://github.com/linz/postgresql-tableversion) and
 [linz-postgresql-functions](https://github.com/linz/linz-postgresql-functions) packages 
 
 License
