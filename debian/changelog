@@ -1,3 +1,9 @@
+linz-lds-bde-schema (1.0.1-2linz~trusty1) trusty; urgency=medium
+
+  * Fixed linz-postgresql-9.3-functions dependency
+
+ -- Ivan Mincik <imincik@linz.govt.nz>  Fri, 20 May 2016 20:08:33 +1200
+
 linz-lds-bde-schema (1.0.1-1linz~trusty1) trusty; urgency=medium
 
   * New upstream version
