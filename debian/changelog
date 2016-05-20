@@ -1,3 +1,9 @@
+linz-lds-bde-schema (1.0.1-3linz~trusty1) trusty; urgency=medium
+
+  * Rebuild due Launchpad issues
+
+ -- Ivan Mincik <imincik@linz.govt.nz>  Fri, 20 May 2016 21:29:02 +1200
+
 linz-lds-bde-schema (1.0.1-2linz~trusty1) trusty; urgency=medium
 
   * Fixed linz-postgresql-9.3-functions dependency
