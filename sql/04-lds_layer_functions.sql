@@ -1787,7 +1787,7 @@ BEGIN
     FROM
         tmp_affected_parcel_surveys APS
     WHERE 
-        APS.par_status = 'PEND';AR.status <> 'PEND';
+        APS.par_status = 'PEND';
 
     $sql$;
 
