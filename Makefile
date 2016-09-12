@@ -1,6 +1,6 @@
 # Minimal script to install the SQL creation scripts ready for postinst script.
 
-VERSION=1.0.1
+VERSION=1.0.2
 
 SED = sed
 
