@@ -2,6 +2,11 @@
 
 All notable changes for the LINZ LDS BDE schema are documented in this file.
 
+## 1.0.2 - 2016-09-13
+### Fixed
+- Create survey tables and columns for pending parcels release
+- Ensure LDS BDE indexes are created in an idempotent way
+
 ## 1.0.1 - 2016-05-16
 ### Fixed
 - Fixed issue with old table differencing code

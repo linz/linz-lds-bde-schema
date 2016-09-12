@@ -1728,14 +1728,13 @@ BEGIN
         AFP.audit_id AS id,
         AFP.par_id,
         AFP.sur_wrk_id,
-        AFPT.char_value AS action
+        AFPT.char_value AS action,
+        PAR.status as par_status
     FROM
         crs_parcel PAR
         JOIN crs_affected_parcl AFP ON PAR.id = AFP.par_id
         LEFT JOIN tmp_survey_plans SUR ON AFP.sur_wrk_id = SUR.wrk_id
-        LEFT JOIN crs_sys_code AFPT ON AFPT.scg_code = 'AFPT' AND AFPT.code = AFP.action
-    WHERE
-        PAR.status <> 'PEND';
+        LEFT JOIN crs_sys_code AFPT ON AFPT.scg_code = 'AFPT' AND AFPT.code = AFP.action;
     
     ANALYSE tmp_affected_parcel_surveys;
     ----------------------------------------------------------------------------
@@ -1756,9 +1755,42 @@ BEGIN
         APS.sur_wrk_id,
         APS.action
     FROM
-        tmp_affected_parcel_surveys APS;
+       tmp_affected_parcel_surveys APS
+    WHERE 
+        APS.par_status <> 'PEND';
     $sql$;
+            
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
+        p_upload,
+        v_table,
+        v_data_insert_sql,
+        v_data_insert_sql
+    );
+                  
+    ----------------------------------------------------------------------------
+    -- affected_parcel_surveys_pend
+    ----------------------------------------------------------------------------
+    v_table := LDS.LDS_GetTable('lds', 'affected_parcel_surveys_pend');
     
+    v_data_insert_sql := $sql$
+    INSERT INTO %1% (
+        id,
+        par_id,
+        sur_wrk_id,
+        action
+    )
+    SELECT
+        APS.id,
+        APS.par_id,
+        APS.sur_wrk_id,
+        APS.action
+    FROM
+        tmp_affected_parcel_surveys APS
+    WHERE 
+        APS.par_status = 'PEND';
+
+    $sql$;
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -3809,6 +3841,8 @@ BEGIN
             description,
             status,
             survey_date,
+            lodged_date,
+            authorised_date,
             purpose,
             type,
             datum,
@@ -3825,6 +3859,8 @@ BEGIN
             SUR.description,
             SCO2.char_value AS status,
             SUR.survey_date,
+            WRK.lodged_date,
+            WRK.authorised_date,
             SCO1.char_value AS purpose,
             TRT.description AS type,
             COALESCE(DTM.name, 'UNKNOWN') AS datum,
@@ -3851,7 +3887,7 @@ BEGIN
             SPF.shape IS NOT NULL AND
             WRK.restricted = 'N'
         GROUP BY
-            1, 2, 3, 4, 5, 6, 7, 8, 9
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
         ORDER BY
             WRK.id;
     $sql$;
