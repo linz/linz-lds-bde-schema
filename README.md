@@ -43,7 +43,7 @@ psql $DB_NAME -f /usr/share/linz-lds-bde-schema/sql/versioning/01-version_tables
 Testing
 -------
 
-Testing is done using pg_regress and PgTap. To run the tests run the following command:
+Testing is done using pg_regress and [PgTap](http://pgtap.org/). To run the tests run the following command:
 
 	make test
 
