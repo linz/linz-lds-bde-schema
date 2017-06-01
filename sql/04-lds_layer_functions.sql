@@ -12,7 +12,6 @@
 --------------------------------------------------------------------------------
 -- Creates functions to maintain LDS simplified layers
 --------------------------------------------------------------------------------
-SET client_min_messages TO WARNING;
 BEGIN;
 
 SET SEARCH_PATH = lds, bde, bde_control, public;

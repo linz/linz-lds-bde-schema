@@ -14,7 +14,6 @@
 --------------------------------------------------------------------------------
 --
 
-SET client_min_messages TO WARNING;
 BEGIN;
 
 SET SEARCH_PATH = bde_ext, bde, bde_control, public;

@@ -12,7 +12,6 @@
 --------------------------------------------------------------------------------
 -- Creates LINZ Data Service (LDS) extended Landonline layers tables
 --------------------------------------------------------------------------------
-SET client_min_messages TO WARNING;
 
 DO $SCHEMA$
 BEGIN

@@ -12,7 +12,6 @@
 --------------------------------------------------------------------------------
 -- BDE indexes required for LDS BDE processing
 --------------------------------------------------------------------------------
-SET client_min_messages TO NOTICE;
 SET search_path = bde, public;
 
 
