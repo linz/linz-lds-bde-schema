@@ -1,0 +1,21 @@
+sudo: required
+language: C++
+services:
+  - postgresql: "9.4"
+addons:
+  apt:
+    packages:
+    - postgresql-9.4
+    - postgresql-9.4-pgtap
+    - postgresql-server-dev-9.4
+before_install:
+  - wget https://github.com/linz/postgresql-dbpatch/archive/1.0.1.tar.gz
+  - tar xzf 1.0.1.tar.gz
+  - cd postgresql-dbpatch-1.0.1
+  - make
+  - sudo make install
+  - cd ..
+script:
+  - make
+  - make check || { cat regression.diffs; false; }
+  - sudo make install
