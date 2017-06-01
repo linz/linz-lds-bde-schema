@@ -48,6 +48,9 @@ check test: $(SQLSCRIPTS)
    --inputdir=./ \
    --inputdir=test \
    --load-language=plpgsql \
+	 --load-extension=postgis \
+	 --load-extension=unaccent \
+	 --load-extension=table_version \
    --dbname=regression base
 
 clean:

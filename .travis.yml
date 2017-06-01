@@ -8,14 +8,25 @@ addons:
     - postgresql-9.4
     - postgresql-9.4-pgtap
     - postgresql-server-dev-9.4
+    - pgxnclient
 before_install:
+  # Install dbpatch
   - wget https://github.com/linz/postgresql-dbpatch/archive/1.0.1.tar.gz
   - tar xzf 1.0.1.tar.gz
   - cd postgresql-dbpatch-1.0.1
   - make
   - sudo make install
   - cd ..
+  # Install linz-bde-schema
+  - wget https://github.com/linz/linz-bde-schema/archive/1.0.2.tar.gz
+  - tar xzf 1.0.2.tar.gz && cd linz-bde-schema-1.0.2
+  - make
+  - sudo make install
+  - cd ..
+  # Install postgresql-tableversion
+  - sudo pgxn install table_version
 script:
   - make
   - make check || { cat regression.diffs; false; }
+  - psql -c "SELECT table_version.ver_is_table_versioned('bde', 'crs_work')" regression
   - sudo make install

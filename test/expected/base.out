@@ -1,13 +1,29 @@
---------------------------------------------------------------------------------
---
--- Copyright 2016 Crown copyright (c)
--- Land Information New Zealand and the New Zealand Government.
--- All rights reserved
---
--- This software is released under the terms of the new BSD license. See the 
--- LICENSE file for more information.
---
---------------------------------------------------------------------------------
--- Provide unit testing for LINZ LDS BDE SCHEMA using pgTAP
---------------------------------------------------------------------------------
 \set ECHO none
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  table "tmp_bde_index" does not exist, skipping
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building fk_app_par
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_epl_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_fen_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_ldt_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_lin_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_loc_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_map_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building fk_mkn_mrk
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_mbk_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_mbl_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_nod_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_ocs_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_par_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_plb_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_rcl_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building fk_sap_sta
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building fk_sap_par
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_stt_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_sad_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_spf_shape
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building fk_sco_scg
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building fk_sco_scg_code
+psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Building shx_vct_shape
+psql:/usr/share/linz-bde-schema/sql/99-patches.sql:56: INFO:  Applying patch BDE - 1.0.2: Remove annotations column from bde.crs_work
+psql:sql/99-patches.sql:81: INFO:  Applying patch BDE - 1.0.2: Create survey tables and columns for pending parcels release
+ok 1 - Schema lds should exist
+1..1
