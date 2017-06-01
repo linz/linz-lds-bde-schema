@@ -43,7 +43,7 @@ install: $(SQLSCRIPTS)
 uninstall:
 	rm -rf ${datadir}
 
-test: $(SQLSCRIPTS)
+check test: $(SQLSCRIPTS)
 	${PG_REGRESS} \
    --inputdir=./ \
    --inputdir=test \
