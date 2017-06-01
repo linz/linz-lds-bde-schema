@@ -1,2 +1,5 @@
 **/*~
-
+regression.diffs
+regression.out
+results/
+sql/03-lds_version.sql
