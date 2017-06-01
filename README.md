@@ -14,11 +14,12 @@ First install the project into the OS data share directory:
 
     sudo make install
     
-Then you need to install the [linz-bde-schema](https://github.com/linz/linz-bde-schema)
-project.
+Then in each target database you need to install the
+[linz-bde-schema](https://github.com/linz/linz-bde-schema)
+project;
 
 
-and install the table_version and unaccent (converting macrons to ASCII) extensions:
+and install the `table_version` and `unaccent` (converting macrons to ASCII) extensions:
 
 ```shell
 psql $DB_NAME -c "CREATE EXTENSION IF NOT EXISTS unaccent"
@@ -33,8 +34,8 @@ for file in /usr/share/linz-lds-bde-schema/sql/*.sql
 done
 ```
 
-If you would like to revision the tables then install the table_version extension
-and then run the versioning SQL script:
+If you would like to revision the tables then install the
+`table_version` extension and then run the versioning SQL script:
 
 ```shell
 psql $DB_NAME -f /usr/share/linz-lds-bde-schema/sql/versioning/01-version_tables.sql
@@ -43,9 +44,10 @@ psql $DB_NAME -f /usr/share/linz-lds-bde-schema/sql/versioning/01-version_tables
 Testing
 -------
 
-Testing is done using pg_regress and [PgTap](http://pgtap.org/). To run the tests run the following command:
+Testing is done using `pg_regress` and [PgTap](http://pgtap.org/).
+To run the tests run the following command:
 
-	make test
+    make check
 
 Building Debian packaging
 --------------------------
