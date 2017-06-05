@@ -708,33 +708,86 @@ SELECT columns_are('lds'::name, 'waca_adjustments'::name,
 
 -- Test functions existance {
 
-SELECT has_function('lds'::name, 'lds_deg_dms'::name);
-SELECT has_function('lds'::name, 'lds_maintainsimplifiedlayers'::name);
-SELECT has_function('lds'::name, 'lds_gettable'::name);
-SELECT has_function('lds'::name, 'lds_updatesimplifiedtable'::name);
-SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
-SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
-SELECT has_function('lds'::name, 'lds_createtempcopy'::name);
 SELECT has_function('lds'::name, 'lds_applyprimarykeyfrom'::name);
-SELECT has_function('lds'::name, 'lds_gettablecontrainstsandindexes'::name);
-SELECT has_function('lds'::name, 'lds_droptablecontrainstsandindexes'::name);
 SELECT has_function('lds'::name, 'lds_applytabledifferences'::name);
-SELECT has_function('lds'::name, 'lds_getprotectedtext'::name);
-SELECT has_function('lds'::name, 'lds_getlanddistict'::name);
 SELECT has_function('lds'::name, 'lds_createsurveyplanstable'::name);
-SELECT has_function('lds'::name, 'lds_dropsurveyplanstable'::name);
-SELECT has_function('lds'::name, 'lds_istablesufiunique'::name);
+SELECT has_function('lds'::name, 'lds_createtempcopy'::name);
 SELECT has_function('lds'::name, 'lds_createtitleexclusiontables'::name);
+SELECT has_function('lds'::name, 'lds_deg_dms'::name);
+SELECT has_function('lds'::name, 'lds_dropsurveyplanstable'::name);
+SELECT has_function('lds'::name, 'lds_droptablecontrainstsandindexes'::name);
 SELECT has_function('lds'::name, 'lds_droptitleexclusiontables'::name);
-SELECT has_function('lds'::name, 'lds_maintainsimplifiedgeodeticlayers'::name);
-SELECT has_function('lds'::name, 'lds_maintainsimplifiedparcellayers'::name);
+SELECT has_function('lds'::name, 'lds_getlanddistict'::name);
+SELECT has_function('lds'::name, 'lds_getprotectedtext'::name);
+SELECT has_function('lds'::name, 'lds_gettablecontrainstsandindexes'::name);
+SELECT has_function('lds'::name, 'lds_gettable'::name);
+SELECT has_function('lds'::name, 'lds_istablesufiunique'::name);
 SELECT has_function('lds'::name, 'lds_maintainsimplifiedelectorallayers'::name);
+SELECT has_function('lds'::name, 'lds_maintainsimplifiedgeodeticlayers'::name);
+SELECT has_function('lds'::name, 'lds_maintainsimplifiedlayers'::name);
+SELECT has_function('lds'::name, 'lds_maintainsimplifiedparcellayers'::name);
 SELECT has_function('lds'::name, 'lds_maintainsimplifiedsurveylayers'::name);
+SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
+SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
+SELECT has_function('lds'::name, 'lds_updatesimplifiedtable'::name);
 
 -- }
 
--- TODO: check lds indexes
+-- Test indexes existance {
 
+SELECT has_index('bde'::name, 'crs_adjustment_run'::name, 'fk_adj_adm'::name, ARRAY['adm_id']);
+SELECT has_index('bde'::name, 'crs_adjustment_run'::name, 'fk_adj_wrk'::name, ARRAY['wrk_id']);
+SELECT has_index('bde'::name, 'crs_affected_parcl'::name, 'fk_afp_par'::name, ARRAY['par_id']);
+SELECT has_index('bde'::name, 'crs_affected_parcl'::name, 'fk_afp_sur'::name, ARRAY['sur_wrk_id']);
+SELECT has_index('bde'::name, 'crs_appellation'::name, 'fk_app_par'::name, ARRAY['par_id']);
+SELECT has_index('bde'::name, 'crs_coordinate'::name, 'fk_coo_cor'::name, ARRAY['cor_id']);
+SELECT has_index('bde'::name, 'crs_coordinate'::name, 'fk_coo_cos'::name, ARRAY['cos_id']);
+SELECT has_index('bde'::name, 'crs_coordinate'::name, 'fk_coo_nod'::name, ARRAY['nod_id']);
+SELECT has_index('bde'::name, 'crs_coordinate_sys'::name, 'fk_cos_cot'::name, ARRAY['cot_id']);
+SELECT has_index('bde'::name, 'crs_coordinate_sys'::name, 'fk_cos_dtm'::name, ARRAY['dtm_id']);
+SELECT has_index('bde'::name, 'crs_estate_share'::name, 'fk_tle_ess'::name, ARRAY['ett_id']);
+SELECT has_index('bde'::name, 'crs_legal_desc'::name, 'fk_lgd_ttl'::name, ARRAY['ttl_title_no']);
+SELECT has_index('bde'::name, 'crs_legal_desc_prl'::name, 'fk_rap_par'::name, ARRAY['par_id']);
+SELECT has_index('bde'::name, 'crs_legal_desc_prl'::name, 'fk_rap_rar'::name, ARRAY['lgd_id']);
+SELECT has_index('bde'::name, 'crs_mark'::name, 'fk_mrk_nod'::name, ARRAY['nod_id']);
+SELECT has_index('bde'::name, 'crs_mark_name'::name, 'fk_mkn_mrk'::name, ARRAY['mrk_id']);
+SELECT has_index('bde'::name, 'crs_mark_name'::name, 'idx_mkn_type_code'::name, ARRAY['type']);
+SELECT has_index('bde'::name, 'crs_mark_name'::name, 'idx_mkn_type'::name, ARRAY['type']);
+SELECT has_index('bde'::name, 'crs_mrk_phys_state'::name, 'fk_mps_mrk'::name, ARRAY['mrk_id']);
+SELECT has_index('bde'::name, 'crs_mrk_phys_state'::name, 'fk_mps_wrk'::name, ARRAY['wrk_id']);
+SELECT has_index('bde'::name, 'crs_node'::name, 'fk_nod_cos'::name, ARRAY['cos_id_official']);
+SELECT has_index('bde'::name, 'crs_node'::name, 'fk_nod_sit'::name, ARRAY['sit_id']);
+SELECT has_index('bde'::name, 'crs_node_works'::name, 'idx_now_purpose'::name, ARRAY['purpose']);
+SELECT has_index('bde'::name, 'crs_obs_accuracy'::name, 'fk_oba_obn2'::name, ARRAY['obn_id1']);
+SELECT has_index('bde'::name, 'crs_observation'::name, 'fk_obn_cos'::name, ARRAY['cos_id']);
+SELECT has_index('bde'::name, 'crs_observation'::name, 'fk_obn_obt'::name, ARRAY['obt_type, obt_sub_type']);
+SELECT has_index('bde'::name, 'crs_observation'::name, 'fk_obn_stp1'::name, ARRAY['stp_id_local']);
+SELECT has_index('bde'::name, 'crs_observation'::name, 'fk_obn_vct'::name, ARRAY['vct_id']);
+SELECT has_index('bde'::name, 'crs_ordinate_adj'::name, 'fk_orj_coo_output'::name, ARRAY['coo_id_output']);
+SELECT has_index('bde'::name, 'crs_ordinate_adj'::name, 'idx_orj_adj_coo'::name, ARRAY['adj_id, coo_id_output']);
+SELECT has_index('bde'::name, 'crs_parcel_bndry'::name, 'fk_pab_lin'::name, ARRAY['lin_id']);
+SELECT has_index('bde'::name, 'crs_parcel_bndry'::name, 'fk_pab_pri'::name, ARRAY['pri_id']);
+SELECT has_index('bde'::name, 'crs_parcel_dimen'::name, 'fk_pdi_obn'::name, ARRAY['obn_id']);
+SELECT has_index('bde'::name, 'crs_parcel_dimen'::name, 'fk_pdi_par'::name, ARRAY['par_id']);
+SELECT has_index('bde'::name, 'crs_parcel'::name, 'idx_par_nonsurvey_def'::name, ARRAY['nonsurvey_def']);
+SELECT has_index('bde'::name, 'crs_parcel_ring'::name, 'fk_pri_par'::name, ARRAY['par_id']);
+SELECT has_index('bde'::name, 'crs_proprietor'::name, 'fk_ess_prp'::name, ARRAY['ets_id']);
+SELECT has_index('bde'::name, 'crs_road_name_asc'::name, 'fk_rns_rcl'::name, ARRAY['rcl_id']);
+SELECT has_index('bde'::name, 'crs_road_name_asc'::name, 'fk_rns_rna'::name, ARRAY['rna_id']);
+SELECT has_index('bde'::name, 'crs_setup'::name, 'fk_stp_wrk'::name, ARRAY['wrk_id']);
+SELECT has_index('bde'::name, 'crs_stat_act_parcl'::name, 'fk_sap_par'::name, ARRAY['par_id']);
+SELECT has_index('bde'::name, 'crs_street_address'::name, 'fk_sad_rna'::name, ARRAY['rna_id']);
+SELECT has_index('bde'::name, 'crs_sur_plan_ref'::name, 'fk_wrk_id'::name, ARRAY['wrk_id']);
+SELECT has_index('bde'::name, 'crs_sys_code'::name, 'fk_sco_scg'::name, ARRAY['scg_code']);
+SELECT has_index('bde'::name, 'crs_title_estate'::name, 'fk_ett_lgd'::name, ARRAY['lgd_id']);
+SELECT has_index('bde'::name, 'crs_title_estate'::name, 'fk_ttl_ett'::name, ARRAY['ttl_title_no']);
+SELECT has_index('bde'::name, 'crs_title_mem_text'::name, 'fk_tmt_ttm'::name, ARRAY['ttm_id']);
+SELECT has_index('bde'::name, 'crs_title_mem_text'::name, 'tmt_col_1_text_idx'::name, ARRAY['col_1_text']);
+SELECT has_index('bde'::name, 'crs_title'::name, 'fk_ttl_ped'::name, ARRAY['protect_end']);
+SELECT has_index('bde'::name, 'crs_title'::name, 'fk_ttl_psd'::name, ARRAY['protect_start']);
+SELECT has_index('bde'::name, 'crs_work'::name, 'fk_wrk_cos'::name, ARRAY['cos_id']);
+
+-- }
 
 SELECT * FROM finish();
 
