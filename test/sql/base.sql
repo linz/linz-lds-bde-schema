@@ -706,7 +706,34 @@ SELECT columns_are('lds'::name, 'waca_adjustments'::name,
 
 -- }
 
--- TODO: check lds tables and columns, functions, indexes etc.
+-- Test functions existance {
+
+SELECT has_function('lds'::name, 'lds_deg_dms'::name);
+SELECT has_function('lds'::name, 'lds_maintainsimplifiedlayers'::name);
+SELECT has_function('lds'::name, 'lds_gettable'::name);
+SELECT has_function('lds'::name, 'lds_updatesimplifiedtable'::name);
+SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
+SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
+SELECT has_function('lds'::name, 'lds_createtempcopy'::name);
+SELECT has_function('lds'::name, 'lds_applyprimarykeyfrom'::name);
+SELECT has_function('lds'::name, 'lds_gettablecontrainstsandindexes'::name);
+SELECT has_function('lds'::name, 'lds_droptablecontrainstsandindexes'::name);
+SELECT has_function('lds'::name, 'lds_applytabledifferences'::name);
+SELECT has_function('lds'::name, 'lds_getprotectedtext'::name);
+SELECT has_function('lds'::name, 'lds_getlanddistict'::name);
+SELECT has_function('lds'::name, 'lds_createsurveyplanstable'::name);
+SELECT has_function('lds'::name, 'lds_dropsurveyplanstable'::name);
+SELECT has_function('lds'::name, 'lds_istablesufiunique'::name);
+SELECT has_function('lds'::name, 'lds_createtitleexclusiontables'::name);
+SELECT has_function('lds'::name, 'lds_droptitleexclusiontables'::name);
+SELECT has_function('lds'::name, 'lds_maintainsimplifiedgeodeticlayers'::name);
+SELECT has_function('lds'::name, 'lds_maintainsimplifiedparcellayers'::name);
+SELECT has_function('lds'::name, 'lds_maintainsimplifiedelectorallayers'::name);
+SELECT has_function('lds'::name, 'lds_maintainsimplifiedsurveylayers'::name);
+
+-- }
+
+-- TODO: check lds indexes
 
 
 SELECT * FROM finish();

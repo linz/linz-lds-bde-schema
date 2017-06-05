@@ -116,4 +116,26 @@ ok 88 - Table lds.titles_plus should exist
 ok 89 - Table lds.titles_plus should have the correct columns
 ok 90 - Table lds.waca_adjustments should exist
 ok 91 - Table lds.waca_adjustments should have the correct columns
-1..91
+ok 92 - Function lds.lds_deg_dms() should exist
+ok 93 - Function lds.lds_maintainsimplifiedlayers() should exist
+ok 94 - Function lds.lds_gettable() should exist
+ok 95 - Function lds.lds_updatesimplifiedtable() should exist
+ok 96 - Function lds.lds_tablehasdata() should exist
+ok 97 - Function lds.lds_tablehasdata() should exist
+ok 98 - Function lds.lds_createtempcopy() should exist
+ok 99 - Function lds.lds_applyprimarykeyfrom() should exist
+ok 100 - Function lds.lds_gettablecontrainstsandindexes() should exist
+ok 101 - Function lds.lds_droptablecontrainstsandindexes() should exist
+ok 102 - Function lds.lds_applytabledifferences() should exist
+ok 103 - Function lds.lds_getprotectedtext() should exist
+ok 104 - Function lds.lds_getlanddistict() should exist
+ok 105 - Function lds.lds_createsurveyplanstable() should exist
+ok 106 - Function lds.lds_dropsurveyplanstable() should exist
+ok 107 - Function lds.lds_istablesufiunique() should exist
+ok 108 - Function lds.lds_createtitleexclusiontables() should exist
+ok 109 - Function lds.lds_droptitleexclusiontables() should exist
+ok 110 - Function lds.lds_maintainsimplifiedgeodeticlayers() should exist
+ok 111 - Function lds.lds_maintainsimplifiedparcellayers() should exist
+ok 112 - Function lds.lds_maintainsimplifiedelectorallayers() should exist
+ok 113 - Function lds.lds_maintainsimplifiedsurveylayers() should exist
+1..113
