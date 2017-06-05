@@ -26,4 +26,94 @@ psql:/usr/share/linz-bde-schema/sql/04-bde_schema_index.sql:153: NOTICE:  Buildi
 psql:/usr/share/linz-bde-schema/sql/99-patches.sql:56: INFO:  Applying patch BDE - 1.0.2: Remove annotations column from bde.crs_work
 psql:sql/99-patches.sql:81: INFO:  Applying patch BDE - 1.0.2: Create survey tables and columns for pending parcels release
 ok 1 - Schema lds should exist
-1..1
+ok 2 - Table lds.affected_parcel_surveys should exist
+ok 3 - Table lds.affected_parcel_surveys should have the correct columns
+ok 4 - Table lds.affected_parcel_surveys_pend should exist
+ok 5 - Table lds.affected_parcel_surveys_pend should have the correct columns
+ok 6 - Table lds.all_linear_parcels should exist
+ok 7 - Table lds.all_linear_parcels should have the correct columns
+ok 8 - Table lds.all_parcels should exist
+ok 9 - Table lds.all_parcels should have the correct columns
+ok 10 - Table lds.all_parcels_pend should exist
+ok 11 - Table lds.all_parcels_pend should have the correct columns
+ok 12 - Table lds.cadastral_adjustments should exist
+ok 13 - Table lds.cadastral_adjustments should have the correct columns
+ok 14 - Table lds.geodetic_antarctic_marks should exist
+ok 15 - Table lds.geodetic_antarctic_marks should have the correct columns
+ok 16 - Table lds.geodetic_antarctic_vertical_marks should exist
+ok 17 - Table lds.geodetic_antarctic_vertical_marks should have the correct columns
+ok 18 - Table lds.geodetic_marks should exist
+ok 19 - Table lds.geodetic_marks should have the correct columns
+ok 20 - Table lds.geodetic_network_marks should exist
+ok 21 - Table lds.geodetic_network_marks should have the correct columns
+ok 22 - Table lds.geodetic_vertical_marks should exist
+ok 23 - Table lds.geodetic_vertical_marks should have the correct columns
+ok 24 - Table lds.hydro_parcels should exist
+ok 25 - Table lds.hydro_parcels should have the correct columns
+ok 26 - Table lds.land_districts should exist
+ok 27 - Table lds.land_districts should have the correct columns
+ok 28 - Table lds.land_parcels should exist
+ok 29 - Table lds.land_parcels should have the correct columns
+ok 30 - Table lds.mesh_blocks should exist
+ok 31 - Table lds.mesh_blocks should have the correct columns
+ok 32 - Table lds.non_primary_linear_parcels should exist
+ok 33 - Table lds.non_primary_linear_parcels should have the correct columns
+ok 34 - Table lds.non_primary_parcels should exist
+ok 35 - Table lds.non_primary_parcels should have the correct columns
+ok 36 - Table lds.parcel_stat_actions should exist
+ok 37 - Table lds.parcel_stat_actions should have the correct columns
+ok 38 - Table lds.parcel_vectors should exist
+ok 39 - Table lds.parcel_vectors should have the correct columns
+ok 40 - Table lds.primary_parcels should exist
+ok 41 - Table lds.primary_parcels should have the correct columns
+ok 42 - Table lds.railway_centre_line should exist
+ok 43 - Table lds.railway_centre_line should have the correct columns
+ok 44 - Table lds.road_centre_line should exist
+ok 45 - Table lds.road_centre_line should have the correct columns
+ok 46 - Table lds.road_centre_line_subsection should exist
+ok 47 - Table lds.road_centre_line_subsection should have the correct columns
+ok 48 - Table lds.road_parcels should exist
+ok 49 - Table lds.road_parcels should have the correct columns
+ok 50 - Table lds.spi_adjustments should exist
+ok 51 - Table lds.spi_adjustments should have the correct columns
+ok 52 - Table lds.strata_parcels should exist
+ok 53 - Table lds.strata_parcels should have the correct columns
+ok 54 - Table lds.street_address should exist
+ok 55 - Table lds.street_address should have the correct columns
+ok 56 - Table lds.street_address2 should exist
+ok 57 - Table lds.street_address2 should have the correct columns
+ok 58 - Table lds.survey_arc_observations should exist
+ok 59 - Table lds.survey_arc_observations should have the correct columns
+ok 60 - Table lds.survey_bdy_marks should exist
+ok 61 - Table lds.survey_bdy_marks should have the correct columns
+ok 62 - Table lds.survey_network_marks should exist
+ok 63 - Table lds.survey_network_marks should have the correct columns
+ok 64 - Table lds.survey_non_bdy_marks should exist
+ok 65 - Table lds.survey_non_bdy_marks should have the correct columns
+ok 66 - Table lds.survey_observations should exist
+ok 67 - Table lds.survey_observations should have the correct columns
+ok 68 - Table lds.survey_plans should exist
+ok 69 - Table lds.survey_plans should have the correct columns
+ok 70 - Table lds.survey_protected_marks should exist
+ok 71 - Table lds.survey_protected_marks should have the correct columns
+ok 72 - Table lds.title_estates should exist
+ok 73 - Table lds.title_estates should have the correct columns
+ok 74 - Table lds.title_memorial_additional_text should exist
+ok 75 - Table lds.title_memorial_additional_text should have the correct columns
+ok 76 - Table lds.title_memorials should exist
+ok 77 - Table lds.title_memorials should have the correct columns
+ok 78 - Table lds.title_owners should exist
+ok 79 - Table lds.title_owners should have the correct columns
+ok 80 - Table lds.title_owners_aspatial should exist
+ok 81 - Table lds.title_owners_aspatial should have the correct columns
+ok 82 - Table lds.title_parcel_associations should exist
+ok 83 - Table lds.title_parcel_associations should have the correct columns
+ok 84 - Table lds.titles should exist
+ok 85 - Table lds.titles should have the correct columns
+ok 86 - Table lds.titles_aspatial should exist
+ok 87 - Table lds.titles_aspatial should have the correct columns
+ok 88 - Table lds.titles_plus should exist
+ok 89 - Table lds.titles_plus should have the correct columns
+ok 90 - Table lds.waca_adjustments should exist
+ok 91 - Table lds.waca_adjustments should have the correct columns
+1..91
