@@ -28,5 +28,4 @@ before_install:
 script:
   - make
   - make check || { cat regression.diffs; false; }
-  - psql -c "SELECT table_version.ver_is_table_versioned('bde', 'crs_work')" regression
   - sudo make install
