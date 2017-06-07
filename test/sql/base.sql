@@ -789,6 +789,79 @@ SELECT has_index('bde'::name, 'crs_work'::name, 'fk_wrk_cos'::name, ARRAY['cos_i
 
 -- }
 
+-- Test versioning {
+
+CREATE FUNCTION pg_temp.check_versioned(tab name, versioned bool)
+RETURNS text AS $$
+  SELECT
+  CASE
+    WHEN versioned THEN
+      ok(table_version.ver_is_table_versioned('lds', tab),
+        'Table ' || tab || ' should be versioned')
+    ELSE
+      ok(not table_version.ver_is_table_versioned('lds', tab),
+        'Table ' || tab || ' should not be versioned')
+  END;
+$$ LANGUAGE sql;
+
+CREATE TEMPORARY TABLE lds_tables (nam) AS VALUES
+('affected_parcel_surveys'),
+('affected_parcel_surveys_pend'),
+('all_linear_parcels'),
+('all_parcels'),
+('all_parcels_pend'),
+('cadastral_adjustments'),
+('geodetic_antarctic_vertical_marks'),
+('geodetic_antarctic_marks'),
+('geodetic_marks'),
+('geodetic_network_marks'),
+('geodetic_vertical_marks'),
+('hydro_parcels'),
+('land_districts'),
+('land_parcels'),
+('mesh_blocks'),
+('non_primary_linear_parcels'),
+('non_primary_parcels'),
+('parcel_stat_actions'),
+('parcel_vectors'),
+('primary_parcels'),
+('railway_centre_line'),
+('road_centre_line'),
+('road_centre_line_subsection'),
+('road_parcels'),
+('spi_adjustments'),
+('strata_parcels'),
+('street_address'),
+('street_address2'),
+('survey_arc_observations'),
+('survey_bdy_marks'),
+('survey_network_marks'),
+('survey_non_bdy_marks'),
+('survey_observations'),
+('survey_plans'),
+('survey_protected_marks'),
+('title_estates'),
+('title_memorial_additional_text'),
+('title_memorials'),
+('title_owners'),
+('title_owners_aspatial'),
+('title_parcel_associations'),
+('titles'),
+('titles_aspatial'),
+('titles_plus'),
+('waca_adjustments')
+;
+
+-- Table X should not be versioned
+SELECT pg_temp.check_versioned(nam, false) from pg_temp.lds_tables;
+
+\i sql/versioning/01-version_tables.sql
+
+-- Table X should be versioned
+SELECT pg_temp.check_versioned(nam, true) from pg_temp.lds_tables;
+
+-- }
+
 SELECT * FROM finish();
 
 ROLLBACK;
