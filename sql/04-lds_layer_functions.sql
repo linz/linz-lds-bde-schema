@@ -582,7 +582,7 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 
-	RAISE DEBUG 'Started creating temp table tmp_training_titles';
+	RAISE INFO 'Started creating temp table tmp_training_titles';
 	
 	CREATE TEMP TABLE tmp_training_titles AS
 	SELECT
@@ -598,7 +598,7 @@ BEGIN
 	ALTER TABLE tmp_training_titles ADD PRIMARY KEY (title_no);
 	ANALYSE tmp_training_titles;
 
-	RAISE DEBUG 'Started creating temp table tmp_excluded_titles';
+	RAISE INFO 'Started creating temp table tmp_excluded_titles';
 
 	CREATE TEMP TABLE tmp_excluded_titles AS
 	SELECT
@@ -616,7 +616,7 @@ BEGIN
 	ALTER TABLE tmp_excluded_titles ADD PRIMARY KEY (title_no);
 	ANALYSE tmp_excluded_titles;
 
-	RAISE DEBUG 'Started creating temp table tmp_protected_titles';
+	RAISE INFO 'Started creating temp table tmp_protected_titles';
 
 	CREATE TEMP TABLE tmp_protected_titles AS
 	SELECT
@@ -773,7 +773,7 @@ BEGIN
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'geodetic_marks');
 
-    RAISE DEBUG 'Started creating temp tables for %', v_table;
+    RAISE INFO 'Started creating temp tables for %', v_table;
 
     -- The windowing partition will prioritise the commissioned, non-replaced marks for each node.
     CREATE TEMP TABLE tmp_geodetic_marks AS
@@ -824,7 +824,7 @@ BEGIN
     WHERE
         row_number NOT IN (SELECT MIN(row_number) FROM tmp_geodetic_marks GROUP BY geodetic_code);
 
-    RAISE DEBUG 'Finished creating temp tables for %', v_table;
+    RAISE INFO 'Finished creating temp tables for %', v_table;
     
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
@@ -926,7 +926,7 @@ BEGIN
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'geodetic_vertical_marks');
     
-    RAISE DEBUG 'Started creating temp tables for %', v_table;
+    RAISE INFO 'Started creating temp tables for %', v_table;
     
     -- The windowing partition will prioritise the commissioned, non-replaced marks for each node.
     CREATE TEMP TABLE tmp_geodetic_vertical_mark AS
@@ -983,7 +983,7 @@ BEGIN
     WHERE
         row_number NOT IN (SELECT MIN(row_number) FROM tmp_geodetic_vertical_mark GROUP BY coordinate_system, nod_id);
 
-    RAISE DEBUG 'Finished creating temp tables for %', v_table;
+    RAISE INFO 'Finished creating temp tables for %', v_table;
     
     v_data_diff_sql := $sql$
         INSERT INTO %1% (
@@ -1274,7 +1274,7 @@ BEGIN
     WHERE
         row_number NOT IN (SELECT MIN(row_number) FROM tmp_geodetic_network_marks GROUP BY nod_id, control_network);
 
-    RAISE DEBUG 'Finished creating temp tables for %', v_table;
+    RAISE INFO 'Finished creating temp tables for %', v_table;
     
     v_data_diff_sql := $sql$
         INSERT INTO %1% (
@@ -1600,7 +1600,7 @@ BEGIN
 
 	PERFORM LDS_CreateTitleExclusionTables(p_upload);    
 
-    RAISE DEBUG 'Started creating temp table tmp_title_parcel_associations';
+    RAISE INFO 'Started creating temp table tmp_title_parcel_associations';
 
     CREATE TEMP TABLE tmp_title_parcel_associations AS
     SELECT
@@ -1652,7 +1652,7 @@ BEGIN
         v_data_insert_sql
     );
     
-    RAISE DEBUG 'Started creating temp table tmp_par_stat_action';
+    RAISE INFO 'Started creating temp table tmp_par_stat_action';
     
     CREATE TEMP TABLE tmp_par_stat_action AS
     SELECT
@@ -1818,7 +1818,7 @@ BEGIN
     CREATE INDEX tmp_world_regions_shpx ON tmp_world_regions USING gist (shape);
     ANALYSE tmp_world_regions;
 
-    RAISE DEBUG 'Started creating temp table tmp_parcel_geoms';
+    RAISE INFO 'Started creating temp table tmp_parcel_geoms';
     
     -- Some Landonline parcel polygons have rings that self-intersect, typically
     -- banana polygons. So here we use the buffer 0 trick to build a polygon
@@ -1837,7 +1837,7 @@ BEGIN
     ALTER TABLE tmp_parcel_geoms ADD PRIMARY KEY(par_id);
     ANALYSE tmp_parcel_geoms;
     
-    RAISE DEBUG 'Started creating temp table tmp_parcels';
+    RAISE INFO 'Started creating temp table tmp_parcels';
 
     CREATE TEMP TABLE tmp_parcels AS
     SELECT
@@ -1880,7 +1880,7 @@ BEGIN
     ORDER BY
         PAR.id;
 
-    RAISE DEBUG 'Finished creating temp table tmp_parcels';
+    RAISE INFO 'Finished creating temp table tmp_parcels';
     
     DROP TABLE IF EXISTS tmp_world_regions;
     
@@ -2378,7 +2378,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_par_stat_action_agg;
     DROP TABLE IF EXISTS tmp_parcels;
     
-    RAISE DEBUG 'Started creating temp table tmp_title_estates';
+    RAISE INFO 'Started creating temp table tmp_title_estates';
     
     DROP TABLE IF EXISTS tmp_title_estates;
     
@@ -2407,7 +2407,7 @@ BEGIN
         TTL.status IN ('LIVE', 'PRTC') AND
         TTL.title_no NOT IN (SELECT title_no FROM tmp_excluded_titles);
     
-    RAISE DEBUG 'Finished creating temp table tmp_title_estates';
+    RAISE INFO 'Finished creating temp table tmp_title_estates';
     
     ----------------------------------------------------------------------------
     -- title_estates table
@@ -2451,7 +2451,7 @@ BEGIN
         v_data_insert_sql
     );
     
-    RAISE DEBUG 'Started creating temp table tmp_title_owners_aspatial';
+    RAISE INFO 'Started creating temp table tmp_title_owners_aspatial';
     
     DROP TABLE IF EXISTS tmp_title_owners_aspatial;
     
@@ -2513,7 +2513,7 @@ BEGIN
     WHERE
         PRO.title_no IS NOT NULL;
     
-    RAISE DEBUG 'Finished creating temp table tmp_title_owners_aspatial';
+    RAISE INFO 'Finished creating temp table tmp_title_owners_aspatial';
     
     ----------------------------------------------------------------------------
     -- title_owners_aspatial table
@@ -2616,7 +2616,7 @@ BEGIN
     
     DROP TABLE IF EXISTS tmp_title_owners_aspatial;
         
-    RAISE DEBUG 'Started creating temp table tmp_titles';
+    RAISE INFO 'Started creating temp table tmp_titles';
         
     CREATE TEMP TABLE tmp_titles AS
     SELECT
@@ -2687,7 +2687,7 @@ BEGIN
     
     DROP TABLE IF EXISTS tmp_title_polygon;
     
-    RAISE DEBUG 'Finished creating temp table tmp_titles';
+    RAISE INFO 'Finished creating temp table tmp_titles';
     
     ----------------------------------------------------------------------------
     -- titles layer
@@ -2825,7 +2825,7 @@ BEGIN
         v_data_insert_sql
     );
 
-    RAISE DEBUG 'Started creating temp table tmp_title_owners';
+    RAISE INFO 'Started creating temp table tmp_title_owners';
     
     CREATE TEMP TABLE tmp_title_owners AS
     WITH title_owner_parcels (
@@ -2874,7 +2874,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_title_parcel_associations;
     DROP TABLE IF EXISTS tmp_title_owner_concat;
     
-    RAISE DEBUG 'Finished creating temp table tmp_title_owners';
+    RAISE INFO 'Finished creating temp table tmp_title_owners';
 
     ----------------------------------------------------------------------------
     -- title_owners layer
@@ -4054,7 +4054,7 @@ BEGIN
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'parcel_vectors');
 
-    RAISE DEBUG 'Started creating temp table tmp_parcel_vectors';
+    RAISE INFO 'Started creating temp table tmp_parcel_vectors';
     
     CREATE TEMP TABLE tmp_parcel_vectors AS
     SELECT
@@ -4080,7 +4080,7 @@ BEGIN
     ANALYSE tmp_parcel_vectors;
 
 
-    RAISE DEBUG 'Started creating table tmp_parcel_vector_detail';
+    RAISE INFO 'Started creating table tmp_parcel_vector_detail';
 
     CREATE TEMP TABLE tmp_parcel_vector_detail AS
     WITH latest_vector (row_number, id, type, bearing, distance, shape) AS (
@@ -4115,7 +4115,7 @@ BEGIN
     WHERE
         row_number = 1;
 
-    RAISE DEBUG 'Started inserting vector rows into table tmp_parcel_vector_detail';
+    RAISE INFO 'Started inserting vector rows into table tmp_parcel_vector_detail';
     
     INSERT INTO tmp_parcel_vector_detail(
         id,
@@ -4165,7 +4165,7 @@ BEGIN
         LVT.row_number = 1 AND
         PVD.id IS NULL;
 
-    RAISE DEBUG 'Finished creating table tmp_parcel_vector_detail';
+    RAISE INFO 'Finished creating table tmp_parcel_vector_detail';
     
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
@@ -4313,7 +4313,7 @@ BEGIN
 
     -- Temp tables required for survey_bdy_marks and survey_non_bdy_marks
 
-    RAISE DEBUG 'Started creating table tmp_bdy_nodes';
+    RAISE INFO 'Started creating table tmp_bdy_nodes';
     
     CREATE TEMP TABLE tmp_bdy_nodes AS
     WITH bdy_nodes (nod_id_start, nod_id_end) AS (
@@ -4341,7 +4341,7 @@ BEGIN
     FROM
         bdy_nodes;
 
-    RAISE DEBUG 'Started creating table tmp_node_last_adjusted';
+    RAISE INFO 'Started creating table tmp_node_last_adjusted';
 
     CREATE TEMP TABLE tmp_node_last_adjusted AS
     SELECT
@@ -4359,7 +4359,7 @@ BEGIN
     GROUP BY
         NOD.id;
 
-    RAISE DEBUG 'Started creating table tmp_cadastral_marks';
+    RAISE INFO 'Started creating table tmp_cadastral_marks';
 
     CREATE TEMP TABLE tmp_cadastral_marks AS
     WITH t (
@@ -4411,7 +4411,7 @@ BEGIN
     WHERE
         row_number = 1;
 
-    RAISE DEBUG 'Finished creating table tmp_cadastral_marks';
+    RAISE INFO 'Finished creating table tmp_cadastral_marks';
     
     ----------------------------------------------------------------------------
     -- survey_bdy_marks layer
