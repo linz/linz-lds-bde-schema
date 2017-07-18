@@ -1,4 +1,4 @@
-﻿--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --
 -- linz-lds-bde-schema - LINZ LDS BDE simplified schema
 --
@@ -6,7 +6,7 @@
 -- Land Information New Zealand and the New Zealand Government.
 -- All rights reserved
 --
--- This software is released under the terms of the new BSD license. See the 
+-- This software is released under the terms of the new BSD license. See the
 -- LICENSE file for more information.
 --
 --------------------------------------------------------------------------------
@@ -511,7 +511,7 @@ DROP TABLE IF EXISTS titles CASCADE;
 CREATE TABLE titles (
     id INTEGER NOT NULL,
     title_no VARCHAR(20) NOT NULL,
-    status VARCHAR(4) NOT NULL, 
+    status VARCHAR(4) NOT NULL,
     type VARCHAR(100) NOT NULL,
     land_district VARCHAR(100) NOT NULL,
     issue_date TIMESTAMP NOT NULL,
@@ -539,7 +539,7 @@ DROP TABLE IF EXISTS titles_plus CASCADE;
 CREATE TABLE titles_plus (
     id INTEGER NOT NULL,
     title_no VARCHAR(20) NOT NULL,
-    status VARCHAR(4) NOT NULL, 
+    status VARCHAR(4) NOT NULL,
     type VARCHAR(100) NOT NULL,
     land_district VARCHAR(100) NOT NULL,
     issue_date TIMESTAMP NOT NULL,
@@ -568,7 +568,7 @@ CREATE TABLE title_owners (
     id INTEGER NOT NULL,
     owner VARCHAR(250) NOT NULL,
     title_no VARCHAR(20) NOT NULL,
-    title_status VARCHAR(4) NOT NULL, 
+    title_status VARCHAR(4) NOT NULL,
     land_district VARCHAR(100) NOT NULL,
     part_ownership BOOLEAN NOT NULL
 );
@@ -861,9 +861,9 @@ DROP TABLE IF EXISTS survey_observations CASCADE;
 CREATE TABLE survey_observations (
     id integer NOT NULL,
     nod_id_start integer NOT NULL,
-    mark_name_start VARCHAR(100), 
+    mark_name_start VARCHAR(100),
     nod_id_end integer NOT NULL,
-    mark_name_end VARCHAR(100), 
+    mark_name_end VARCHAR(100),
     obs_type character varying(18) NOT NULL,
     value numeric(22,12) NOT NULL,
     value_accuracy numeric(22,12),
@@ -1121,7 +1121,7 @@ CREATE TABLE titles_aspatial (
     id INTEGER NOT NULL,
     title_no VARCHAR(20) NOT NULL,
     status VARCHAR(50) NOT NULL,
-    register_type VARCHAR(50) NOT NULL, 
+    register_type VARCHAR(50) NOT NULL,
     type VARCHAR(100) NOT NULL,
     land_district VARCHAR(100) NOT NULL,
     issue_date TIMESTAMP NOT NULL,
