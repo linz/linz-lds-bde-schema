@@ -1,4 +1,4 @@
-﻿--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --
 -- linz-lds-bde-schema - LINZ LDS BDE simplified schema
 --
@@ -6,7 +6,7 @@
 -- Land Information New Zealand and the New Zealand Government.
 -- All rights reserved
 --
--- This software is released under the terms of the new BSD license. See the 
+-- This software is released under the terms of the new BSD license. See the
 -- LICENSE file for more information.
 --
 --------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE encumbrancee TO bde_admin;
 GRANT SELECT ON TABLE encumbrancee TO bde_user;
 
 -- =============================================================================
--- N O M I N A L   I N D E X 
+-- N O M I N A L   I N D E X
 -- =============================================================================
 DROP TABLE IF EXISTS nominal_index CASCADE;
 CREATE TABLE nominal_index
@@ -119,7 +119,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE nominal_index TO bde_admin;
 GRANT SELECT ON TABLE nominal_index TO bde_user;
 
 -- =============================================================================
--- A L I A S 
+-- A L I A S
 -- =============================================================================
 DROP TABLE IF EXISTS alias CASCADE;
 CREATE TABLE alias
@@ -666,7 +666,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_action TO bde_admin;
 GRANT SELECT ON TABLE title_action TO bde_user;
 
 -- =============================================================================
--- T I T L E   D O C   R E F 
+-- T I T L E   D O C   R E F
 -- =============================================================================
 DROP TABLE IF EXISTS title_doc_ref CASCADE;
 CREATE TABLE title_doc_ref
@@ -711,7 +711,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_estate TO bde_admin;
 GRANT SELECT ON TABLE title_estate TO bde_user;
 
 -- =============================================================================
--- T I T L E   M E M   T E X T 
+-- T I T L E   M E M   T E X T
 -- =============================================================================
 DROP TABLE IF EXISTS title_mem_text CASCADE;
 CREATE TABLE title_mem_text
@@ -794,7 +794,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_parcel_association TO bde_ad
 GRANT SELECT ON TABLE title_parcel_association TO bde_user;
 
 -- =============================================================================
--- T I T L E   T R A N S A C T   T Y P E 
+-- T I T L E   T R A N S A C T   T Y P E
 -- =============================================================================
 DROP TABLE IF EXISTS transact_type CASCADE;
 CREATE TABLE transact_type
@@ -813,7 +813,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE transact_type TO bde_admin;
 GRANT SELECT ON TABLE transact_type TO bde_user;
 
 -- =============================================================================
--- T T L   E N C 
+-- T T L   E N C
 -- =============================================================================
 DROP TABLE IF EXISTS ttl_enc CASCADE;
 CREATE TABLE ttl_enc
@@ -920,7 +920,7 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE "user" TO bde_admin;
 GRANT SELECT ON TABLE "user" TO bde_user;
 
 -- =============================================================================
--- V E C T O R   L S 
+-- V E C T O R   L S
 -- =============================================================================
 DROP TABLE IF EXISTS vector_ls CASCADE;
 CREATE TABLE vector_ls

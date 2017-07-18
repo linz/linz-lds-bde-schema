@@ -1,4 +1,4 @@
-﻿--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
 --
 -- linz-lds-bde-schema - LINZ LDS BDE simplified schema
 --
@@ -6,7 +6,7 @@
 -- Land Information New Zealand and the New Zealand Government.
 -- All rights reserved
 --
--- This software is released under the terms of the new BSD license. See the 
+-- This software is released under the terms of the new BSD license. See the
 -- LICENSE file for more information.
 --
 --------------------------------------------------------------------------------
@@ -21,9 +21,9 @@ DECLARE
    v_pcid    TEXT;
    v_schema  TEXT = 'lds';
 BEGIN
-    FOR v_pcid IN 
+    FOR v_pcid IN
         SELECT v_schema || '.' || proname || '(' || pg_get_function_identity_arguments(oid) || ')'
-        FROM pg_proc 
+        FROM pg_proc
         WHERE pronamespace=(SELECT oid FROM pg_namespace WHERE nspname = v_schema)
         AND  proname <> 'lds_getprotectedtext'
     LOOP
@@ -90,16 +90,16 @@ BEGIN
         bde_control.bde_GetOption(p_upload_id, '_dataset'),
         '(undefined dataset)'
     );
-    
+
     RAISE INFO 'Maintaining simplified layers for dataset %', v_dataset;
-    
+
     PERFORM LDS.LDS_MaintainSimplifiedGeodeticLayers(p_upload_id);
     PERFORM LDS.LDS_MaintainSimplifiedElectoralLayers(p_upload_id);
     PERFORM LDS.LDS_MaintainSimplifiedParcelLayers(p_upload_id);
     PERFORM LDS.LDS_MaintainSimplifiedSurveyLayers(p_upload_id);
-    
+
     RAISE INFO 'Finished maintaining simplified layers %', v_dataset;
-    
+
     RETURN 1;
 END;
 $$ LANGUAGE plpgsql VOLATILE STRICT SECURITY DEFINER;
@@ -118,11 +118,11 @@ DECLARE
     v_table REGCLASS;
 BEGIN
     v_table := bde_control.bde_TableOid(p_schema, p_table_name);
-    
+
     IF v_table IS NULL THEN
         RAISE EXCEPTION '%.% table does not exist', p_schema, p_table_name;
     END IF;
-    
+
     RETURN v_table;
 END;
 $$ LANGUAGE plpgsql;
@@ -147,54 +147,54 @@ BEGIN
     IF LDS.LDS_TableHasData(p_table) THEN
         RAISE INFO 'Started creating new version of table % for differencing',
             p_table;
-        
+
         SELECT LDS.LDS_CreateTempCopy(p_table)
         INTO   v_temp_copy;
-        
+
         v_count := bde_control.bde_ExecuteTemplate(
             p_data_diff_tmpl,
             ARRAY[v_temp_copy::TEXT, p_table::TEXT]
         );
-        
+
         SELECT LDS.LDS_ApplyPrimaryKeyFrom(p_table, v_temp_copy)
         INTO   v_key_column;
-        
+
         EXECUTE 'ANALYSE ' || v_temp_copy;
 
         RAISE INFO
             'Finished creating new version of table % for differencing. % rows were created',
             p_table, v_count;
-        
+
         PERFORM LDS.LDS_ApplyTableDifferences(p_upload, p_table, v_temp_copy, v_key_column);
-        
+
         EXECUTE 'DROP TABLE ' || v_temp_copy;
     ELSE
         RAISE INFO 'Started creating new version of table %', p_table;
-        
+
         SELECT LDS.LDS_GetTableContrainstsAndIndexes(p_table)
         INTO   v_indexes;
 
         PERFORM LDS.LDS_DropTableContrainstsAndIndexes(p_table);
-        
+
         EXECUTE 'TRUNCATE ' || p_table;
-        
+
         v_count := bde_control.bde_ExecuteTemplate(
             p_data_insert_tmpl,
             ARRAY[p_table::TEXT]
         );
-        
+
         PERFORM bde_control.bde_ExecuteSqlArray(
             p_upload,
             'Applying Indexes and constraints',
             v_indexes
         );
-        
+
         EXECUTE 'ANALYSE ' || p_table;
-        
+
         RAISE INFO 'Finished creating new version of table %. % rows were created',
             p_table, v_count;
     END IF;
-    
+
     RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql;
@@ -212,7 +212,7 @@ DECLARE
 BEGIN
     EXECUTE 'SELECT EXISTS (SELECT * FROM ' || p_table::TEXT || ' LIMIT 1)'
     INTO v_exists;
-    
+
     RETURN v_exists;
 END;
 $$ LANGUAGE plpgsql;
@@ -243,13 +243,13 @@ BEGIN
     IF NOT EXISTS(SELECT * FROM pg_class where oid = p_table) THEN
         RAISE EXCEPTION 'Input table % does not exist', p_table;
     END IF;
-    
+
     v_table_name := REPLACE(REPLACE(p_table::TEXT, '.', '_'),'"','') || E'_\$\$';
 
     v_sql := 'CREATE TEMP TABLE ' || v_table_name
         || ' (LIKE ' || p_table::TEXT
         || ' INCLUDING DEFAULTS)';
-    
+
     EXECUTE v_sql;
 
     SELECT bde_TempTableOid(v_table_name)
@@ -258,7 +258,7 @@ BEGIN
     IF v_table_oid IS NULL THEN
         RAISE EXCEPTION 'Created temp working copy % does not exist', v_table_name;
     END IF;
-    
+
     RETURN v_table_oid;
 END;
 $$ LANGUAGE plpgsql;
@@ -276,7 +276,7 @@ DECLARE
     v_key_column TEXT;
     v_sql        TEXT;
 BEGIN
-    SELECT               
+    SELECT
         ATT.attname
     INTO
         v_key_column
@@ -284,14 +284,14 @@ BEGIN
         pg_index     IDX,
         pg_class     CLS,
         pg_attribute ATT
-    WHERE 
+    WHERE
         CLS.oid = p_table_from AND
         IDX.indrelid = CLS.oid AND
-        ATT.attrelid = CLS.oid AND 
+        ATT.attrelid = CLS.oid AND
         ATT.attnum = any(IDX.indkey) AND
         IDX.indisprimary AND
         array_length(IDX.indkey, 1) = 1;
-    
+
     IF NOT bde_control.bde_TableKeyIsValid(p_table_from, v_key_column) THEN
         RAISE EXCEPTION 'Table % does not have a valid primary key', p_table_from;
     END IF;
@@ -303,7 +303,7 @@ BEGIN
         WHEN others THEN
             RAISE EXCEPTION 'Error applying primary key SQL %, ERROR %',  v_sql, SQLERRM;
     END;
- 
+
     RETURN v_key_column;
 END;
 $$ LANGUAGE plpgsql;
@@ -330,11 +330,11 @@ BEGIN
         SELECT pg_get_indexdef(indexrelid)
         FROM   pg_index
         WHERE  indrelid = p_table
-        AND    NOT indisprimary 
+        AND    NOT indisprimary
     LOOP
         v_objects := v_objects || v_sql;
     END LOOP;
-    
+
     RETURN v_objects;
 END;
 $$ LANGUAGE plpgsql;
@@ -397,10 +397,10 @@ BEGIN
         table_version.ver_apply_table_differences(
             p_table, p_temp_copy, p_key_column
         );
-    
+
     RAISE INFO 'Finished updating %. % deletes, % inserts and % updates',
         p_table, v_ndel, v_nins, v_nupd;
-    
+
     RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql;
@@ -417,7 +417,7 @@ CREATE FUNCTION LDS_GetProtectedText(
     p_text VARCHAR(20)
 )
 RETURNS
-    TEXT AS 
+    TEXT AS
 $FUNC$
     SELECT ''''::VARCHAR;
 $FUNC$ LANGUAGE sql;
@@ -468,7 +468,7 @@ BEGIN
     THEN
         RETURN FALSE;
     END IF;
-    
+
     CREATE TEMP TABLE tmp_survey_plans AS
     SELECT
         SUR.wrk_id,
@@ -490,7 +490,7 @@ BEGIN
 
     ALTER TABLE tmp_survey_plans ADD PRIMARY KEY (wrk_id);
     ANALYSE tmp_survey_plans;
-    
+
     RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql;
@@ -540,7 +540,7 @@ BEGIN
         $SQL$,
         ARRAY[p_table::TEXT]
     );
-    
+
     EXECUTE
         v_sql
     INTO
@@ -583,7 +583,7 @@ BEGIN
 	END IF;
 
 	RAISE INFO 'Started creating temp table tmp_training_titles';
-	
+
 	CREATE TEMP TABLE tmp_training_titles AS
 	SELECT
 		DISTINCT TTL.title_no
@@ -683,7 +683,7 @@ DECLARE
     v_data_insert_sql  TEXT;
 BEGIN
     RAISE INFO 'Starting maintenance on geodetic simplified layers';
-    
+
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
@@ -721,7 +721,7 @@ BEGIN
             'Maintain geodetic simplified layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
-    
+
     -- Upper is used on the mark type to
     -- force the planner to do a seq scan on crs_mark_name.
     CREATE TEMP TABLE tmp_geo_nodes AS
@@ -752,22 +752,22 @@ BEGIN
             'are still malformed after white space has been trimmed will ' ||
             'be removed from the geodetic layers.';
         RAISE WARNING '%', v_message;
-        
+
         UPDATE
             tmp_geo_nodes
         SET
             geodetic_code = trim(both ' ' FROM geodetic_code)
         WHERE
             LENGTH(trim(both ' ' FROM geodetic_code)) <> LENGTH(geodetic_code);
-    
+
         DELETE FROM tmp_geo_nodes
         WHERE LENGTH(geodetic_code) <> 4;
     END IF;
 
     ALTER TABLE tmp_geo_nodes ADD PRIMARY KEY(nod_id);
-    
+
     ANALYSE tmp_geo_nodes;
-    
+
     ----------------------------------------------------------------------------
     -- geodetic_marks layer
     ----------------------------------------------------------------------------
@@ -780,9 +780,9 @@ BEGIN
     SELECT
         row_number() OVER (PARTITION BY NOD.id ORDER BY MRK.status ASC, MRK.replaced ASC, MRK.id DESC) AS row_number,
         NOD.id,
-        GEO.geodetic_code, 
-        MKN.name AS current_mark_name, 
-        MRK.desc AS description, 
+        GEO.geodetic_code,
+        MKN.name AS current_mark_name,
+        MRK.desc AS description,
         SCOM.char_value AS mark_type,
         SCOB.char_value AS beacon_type,
         SCOC.char_value AS mark_condition,
@@ -818,14 +818,14 @@ BEGIN
     WHERE
         NOD.status = 'AUTH' AND
         NOD.cos_id_official IN (109, 142);
-    
+
     DELETE FROM
         tmp_geodetic_marks
     WHERE
         row_number NOT IN (SELECT MIN(row_number) FROM tmp_geodetic_marks GROUP BY geodetic_code);
 
     RAISE INFO 'Finished creating temp tables for %', v_table;
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -863,19 +863,19 @@ BEGIN
         ORDER BY
             id;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     ----------------------------------------------------------------------------
     -- geodetic_antarctic_marks layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'geodetic_antarctic_marks');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -911,23 +911,23 @@ BEGIN
         ORDER BY
             id;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     DROP TABLE IF EXISTS tmp_geodetic_marks;
-    
+
     ----------------------------------------------------------------------------
     -- geodetic_vertical_marks layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'geodetic_vertical_marks');
-    
+
     RAISE INFO 'Started creating temp tables for %', v_table;
-    
+
     -- The windowing partition will prioritise the commissioned, non-replaced marks for each node.
     CREATE TEMP TABLE tmp_geodetic_vertical_mark AS
     SELECT
@@ -957,11 +957,11 @@ BEGIN
         END AS shape
     FROM
         tmp_geo_nodes GEO
-        JOIN crs_node NOD ON NOD.id = GEO.NOD_ID 
+        JOIN crs_node NOD ON NOD.id = GEO.NOD_ID
         JOIN crs_mark MRK ON MRK.nod_id = NOD.id
-        LEFT JOIN crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR' 
-        LEFT JOIN crs_site_locality SLO ON SLO.sit_id = NOD.sit_id 
-        LEFT JOIN crs_locality LOC ON LOC.id = SLO.loc_id AND LOC.type = 'LDST' 
+        LEFT JOIN crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
+        LEFT JOIN crs_site_locality SLO ON SLO.sit_id = NOD.sit_id
+        LEFT JOIN crs_locality LOC ON LOC.id = SLO.loc_id AND LOC.type = 'LDST'
         LEFT JOIN crs_coordinate ANT_COO ON ANT_COO.nod_id = NOD.id AND ANT_COO.status = 'AUTH' AND ANT_COO.cos_id = 142
         JOIN crs_coordinate COO ON COO.nod_id = NOD.id AND COO.status = 'AUTH'
         JOIN crs_coordinate_sys COS ON COO.cos_id = COS.id
@@ -977,21 +977,21 @@ BEGIN
         NOD.status = 'AUTH' AND
         MRK.status = 'COMM'  AND
         NOD.cos_id_official IN (109, 142);
-    
+
     DELETE FROM
         tmp_geodetic_vertical_mark
     WHERE
         row_number NOT IN (SELECT MIN(row_number) FROM tmp_geodetic_vertical_mark GROUP BY coordinate_system, nod_id);
 
     RAISE INFO 'Finished creating temp tables for %', v_table;
-    
+
     v_data_diff_sql := $sql$
         INSERT INTO %1% (
             id,
             nod_id,
-            geodetic_code, 
-            current_mark_name, 
-            description, 
+            geodetic_code,
+            current_mark_name,
+            description,
             mark_type,
             beacon_type,
             mark_condition,
@@ -1004,9 +1004,9 @@ BEGIN
         SELECT
             COALESCE(ORG.id, nextval('lds.geodetic_vertical_marks_id_seq')) AS id,
             TMP.nod_id,
-            TMP.geodetic_code, 
-            TMP.current_mark_name, 
-            TMP.description, 
+            TMP.geodetic_code,
+            TMP.current_mark_name,
+            TMP.description,
             TMP.mark_type,
             TMP.beacon_type,
             TMP.mark_condition,
@@ -1024,13 +1024,13 @@ BEGIN
             TMP.nod_id,
             TMP.coordinate_system
     $sql$;
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             nod_id,
-            geodetic_code, 
-            current_mark_name, 
-            description, 
+            geodetic_code,
+            current_mark_name,
+            description,
             mark_type,
             beacon_type,
             mark_condition,
@@ -1042,9 +1042,9 @@ BEGIN
         )
         SELECT
             nod_id,
-            geodetic_code, 
-            current_mark_name, 
-            description, 
+            geodetic_code,
+            current_mark_name,
+            description,
             mark_type,
             beacon_type,
             mark_condition,
@@ -1061,26 +1061,26 @@ BEGIN
             nod_id,
             coordinate_system
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_diff_sql,
         v_data_insert_sql
     );
-    
+
     ----------------------------------------------------------------------------
     -- geodetic_antarctic_vertical_marks layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'geodetic_antarctic_vertical_marks');
-    
+
     v_data_diff_sql := $sql$
         INSERT INTO %1% (
             id,
             nod_id,
-            geodetic_code, 
-            current_mark_name, 
-            description, 
+            geodetic_code,
+            current_mark_name,
+            description,
             mark_type,
             beacon_type,
             mark_condition,
@@ -1092,9 +1092,9 @@ BEGIN
         SELECT
             COALESCE(ORG.id, nextval('lds.geodetic_antarctic_vertical_marks_id_seq')) AS id,
             TMP.nod_id,
-            TMP.geodetic_code, 
-            TMP.current_mark_name, 
-            TMP.description, 
+            TMP.geodetic_code,
+            TMP.current_mark_name,
+            TMP.description,
             TMP.mark_type,
             TMP.beacon_type,
             TMP.mark_condition,
@@ -1111,13 +1111,13 @@ BEGIN
             TMP.nod_id,
             TMP.coordinate_system
     $sql$;
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             nod_id,
-            geodetic_code, 
-            current_mark_name, 
-            description, 
+            geodetic_code,
+            current_mark_name,
+            description,
             mark_type,
             beacon_type,
             mark_condition,
@@ -1128,9 +1128,9 @@ BEGIN
         )
         SELECT
             nod_id,
-            geodetic_code, 
-            current_mark_name, 
-            description, 
+            geodetic_code,
+            current_mark_name,
+            description,
             mark_type,
             beacon_type,
             mark_condition,
@@ -1146,25 +1146,25 @@ BEGIN
             nod_id,
             coordinate_system
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_diff_sql,
         v_data_insert_sql
     );
-    
+
     DROP TABLE IF EXISTS tmp_geodetic_vertical_mark;
-    
+
     ----------------------------------------------------------------------------
     -- geodetic_network_marks layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'geodetic_network_marks');
-    
+
     RAISE INFO 'Started creating temp tables for %', v_table;
-    
+
     -- Create the geodetic network marks layer.
-    -- 
+    --
     -- In principle this is base on the crs_geodetic_node_network table, but in
     -- practice this is not properly maintained in Landonline (as at 3/11/2015),
     -- as there are many processes that can change coordinate orders which do
@@ -1172,26 +1172,26 @@ BEGIN
     -- adding or removing geodetic codes from marks may not result in updates.
     --
     -- To bypass this issue the query below automatically builds the CHN, CVN,
-    -- and NHN networks using the coordinate orders.  The other networks are 
+    -- and NHN networks using the coordinate orders.  The other networks are
     -- maintained manually.
 
     CREATE TEMP TABLE tmp_geodetic_network_marks AS
     WITH fixed_gnn AS
     (
-	SELECT 
+	SELECT
 	   nod_id,
 	   gdn_id
-	FROM 
+	FROM
 	   crs_geodetic_node_network gnn
 	   JOIN crs_geodetic_network gdn ON gdn.id = gnn.gdn_id
-	WHERE 
+	WHERE
 	   gdn.code NOT IN ('CHN','CVN','NHN')
 	-- CHN and CVN networks contain all 5th and better order geodetic marks
 	UNION
-	SELECT 
+	SELECT
 	  tgn.nod_id,
 	  gdn.id AS gdn_id
-	FROM 
+	FROM
 	  tmp_geo_nodes tgn
 	  JOIN crs_node nod ON nod.id=tgn.nod_id
 	  JOIN crs_coordinate coo ON coo.cos_id=nod.cos_id_official AND coo.nod_id=nod.id AND coo.status='AUTH'
@@ -1203,10 +1203,10 @@ BEGIN
 	  gdn.code IN ('CHN','CVN')
        -- CVN also contains any marks with order 3V or better orthometric heights
        UNION
-	SELECT 
+	SELECT
 	  tgn.nod_id,
 	  (SELECT id FROM crs_geodetic_network WHERE code='CVN') AS gdn_id
-	FROM 
+	FROM
 	  tmp_geo_nodes tgn
 	  JOIN crs_coordinate coo ON coo.ort_type_3='HGHT' AND coo.nod_id=tgn.nod_id AND coo.status='AUTH'
 	  JOIN crs_cord_order cor ON cor.id=coo.cor_id
@@ -1214,23 +1214,23 @@ BEGIN
 	  cor.display IN ('1V','2V','3V')
 	-- NHN contains any marks with 1V heights
         UNION
-	SELECT 
+	SELECT
 	  tgn.nod_id,
 	  (SELECT id FROM crs_geodetic_network WHERE code='NHN') AS gdn_id
-	FROM 
+	FROM
 	  tmp_geo_nodes tgn
 	  JOIN crs_coordinate coo ON coo.ort_type_3='HGHT' AND coo.nod_id=tgn.nod_id AND coo.status='AUTH'
 	  JOIN crs_cord_order cor ON cor.id=coo.cor_id
 	WHERE
-	  cor.display = '1V'  
+	  cor.display = '1V'
     )
     SELECT
         row_number() OVER (PARTITION BY GDN.code, NOD.id ORDER BY MRK.status ASC, MRK.replaced ASC, MRK.id DESC) AS row_number,
         NOD.id AS nod_id,
         GEO.geodetic_code,
         GDN.code as control_network,
-        MKN.name AS current_mark_name, 
-        MRK.desc AS description, 
+        MKN.name AS current_mark_name,
+        MRK.desc AS description,
         SCOM.char_value AS mark_type,
         SCOB.char_value AS beacon_type,
         SCOC.char_value AS mark_condition,
@@ -1268,14 +1268,14 @@ BEGIN
     WHERE
         NOD.status = 'AUTH' AND
         NOD.cos_id_official IN (109, 142);
-       
+
     DELETE FROM
         tmp_geodetic_network_marks
     WHERE
         row_number NOT IN (SELECT MIN(row_number) FROM tmp_geodetic_network_marks GROUP BY nod_id, control_network);
 
     RAISE INFO 'Finished creating temp tables for %', v_table;
-    
+
     v_data_diff_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -1319,7 +1319,7 @@ BEGIN
             TMP.nod_id,
             TMP.control_network
     $sql$;
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             nod_id,
@@ -1360,23 +1360,23 @@ BEGIN
             nod_id,
             control_network
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_diff_sql,
         v_data_insert_sql
     );
-    
+
     DROP TABLE IF EXISTS tmp_geodetic_network_marks;
 
     ----------------------------------------------------------------------------
     -- survey_protected_marks layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'survey_protected_marks');
-    
+
     PERFORM LDS.LDS_CreateSurveyPlansTable(p_upload);
-    
+
     CREATE TEMP TABLE tmp_protect_nodes AS
     SELECT
         GEO.nod_id as id
@@ -1390,7 +1390,7 @@ BEGIN
     UNION
     SELECT
         COO.nod_id as id
-    FROM 
+    FROM
         crs_coordinate COO
         JOIN crs_node NOD ON COO.nod_id = NOD.id
     WHERE
@@ -1400,7 +1400,7 @@ BEGIN
             FROM
                 crs_coordinate_tpe COT
                 JOIN crs_coordinate_sys COS ON COT.id = COS.cot_id
-                JOIN crs_cord_order COR ON COS.dtm_id = COR.dtm_id 
+                JOIN crs_cord_order COR ON COS.dtm_id = COR.dtm_id
             WHERE
                 COT.dimension = 'HEGT' AND
                 COR.display= '1V'
@@ -1419,16 +1419,16 @@ BEGIN
         NOD.id IN (
             SELECT nod_id FROM crs_node_works WHERE purpose IN ('PRMA', 'PRBD')
         );
-    
+
     ALTER TABLE tmp_protect_nodes ADD PRIMARY KEY (id);
     ANALYSE tmp_protect_nodes;
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
-            geodetic_code, 
-            current_mark_name, 
-            description, 
+            geodetic_code,
+            current_mark_name,
+            description,
             mark_type,
             mark_condition,
             "order",
@@ -1452,9 +1452,9 @@ BEGIN
             SELECT
                 row_number() OVER (PARTITION BY NOD.id ORDER BY MRK.status ASC, MRK.replaced ASC, MRK.id DESC) AS row_number,
                 NOD.id AS id,
-                GEO.name AS geodetic_code, 
+                GEO.name AS geodetic_code,
                 MKN.name AS current_mark_name,
-                MRK.desc AS description, 
+                MRK.desc AS description,
                 SCOM.char_value AS mark_type,
                 SCOC.char_value AS mark_condition,
                 CAST(COR.display AS INTEGER) AS "order",
@@ -1477,7 +1477,7 @@ BEGIN
                 MRK.status <> 'PEND' AND
                 MRK.disturbed = 'N' AND
                 (
-                    MPS.condition IS NULL OR 
+                    MPS.condition IS NULL OR
                     MPS.condition IN (
                        'EMPL',
                        'MKFD',
@@ -1507,21 +1507,21 @@ BEGIN
         ORDER BY
             id;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     DROP TABLE IF EXISTS tmp_protect_nodes;
     DROP TABLE IF EXISTS tmp_geo_nodes;
 
     RAISE INFO 'Finished maintenance on geodetic simplified layers';
-    
+
     RETURN 1;
-    
+
 EXCEPTION
     WHEN others THEN
         RAISE EXCEPTION 'Could not maintain geodetic simplified layers, ERROR %',
@@ -1598,7 +1598,7 @@ BEGIN
         RETURN 1;
     END IF;
 
-	PERFORM LDS_CreateTitleExclusionTables(p_upload);    
+	PERFORM LDS_CreateTitleExclusionTables(p_upload);
 
     RAISE INFO 'Started creating temp table tmp_title_parcel_associations';
 
@@ -1619,16 +1619,16 @@ BEGIN
     WHERE
         status = 'VALD' AND
         ttl_title_no NOT IN (SELECT title_no FROM tmp_excluded_titles);
-    
+
     ALTER TABLE tmp_title_parcel_associations ADD PRIMARY KEY (par_id, title_no);
-    
+
     ANALYSE tmp_title_parcel_associations;
-    
+
     ----------------------------------------------------------------------------
     -- title_parcel_associations table
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'title_parcel_associations');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -1644,16 +1644,16 @@ BEGIN
         FROM
             tmp_title_parcel_associations TPA;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     RAISE INFO 'Started creating temp table tmp_par_stat_action';
-    
+
     CREATE TEMP TABLE tmp_par_stat_action AS
     SELECT
         SAP.audit_id as id,
@@ -1666,14 +1666,14 @@ BEGIN
         LEFT JOIN  crs_sys_code SAPA ON SAPA.scg_code ='SAPA' AND SAP.action = SAPA.code
         LEFT JOIN  crs_sys_code SAPS ON SAPS.scg_code ='SAPS' AND SAP.status = SAPS.code
     ORDER BY SAP.par_id;
-    
+
     ANALYSE tmp_par_stat_action;
 
     ----------------------------------------------------------------------------
     -- parcel_stat_actions
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'parcel_stat_actions');
-    
+
     v_data_insert_sql := $sql$
     INSERT INTO %1% (
         id,
@@ -1691,14 +1691,14 @@ BEGIN
     FROM
         tmp_par_stat_action PSA;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     -- create aggregated listing of statutory actions for the parcels layers
     CREATE TEMP TABLE tmp_par_stat_action_agg AS
     SELECT
@@ -1718,10 +1718,10 @@ BEGIN
 
     ALTER TABLE tmp_par_stat_action_agg ADD PRIMARY KEY (par_id);
     ANALYSE tmp_par_stat_action_agg;
-    
+
     -- create a list of survey plans references
     PERFORM LDS.LDS_CreateSurveyPlansTable(p_upload);
-    
+
     CREATE TEMP TABLE tmp_affected_parcel_surveys AS
     SELECT
         AFP.audit_id AS id,
@@ -1734,13 +1734,13 @@ BEGIN
         JOIN crs_affected_parcl AFP ON PAR.id = AFP.par_id
         LEFT JOIN tmp_survey_plans SUR ON AFP.sur_wrk_id = SUR.wrk_id
         LEFT JOIN crs_sys_code AFPT ON AFPT.scg_code = 'AFPT' AND AFPT.code = AFP.action;
-    
+
     ANALYSE tmp_affected_parcel_surveys;
     ----------------------------------------------------------------------------
     -- affected_parcel_surveys
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'affected_parcel_surveys');
-    
+
     v_data_insert_sql := $sql$
     INSERT INTO %1% (
         id,
@@ -1755,22 +1755,22 @@ BEGIN
         APS.action
     FROM
        tmp_affected_parcel_surveys APS
-    WHERE 
+    WHERE
         APS.par_status <> 'PEND';
     $sql$;
-            
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-                  
+
     ----------------------------------------------------------------------------
     -- affected_parcel_surveys_pend
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'affected_parcel_surveys_pend');
-    
+
     v_data_insert_sql := $sql$
     INSERT INTO %1% (
         id,
@@ -1785,7 +1785,7 @@ BEGIN
         APS.action
     FROM
         tmp_affected_parcel_surveys APS
-    WHERE 
+    WHERE
         APS.par_status = 'PEND';
 
     $sql$;
@@ -1796,9 +1796,9 @@ BEGIN
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     DROP TABLE IF EXISTS tmp_affected_parcel_surveys;
-    
+
     -- make region data for determining how to calc areas
     CREATE TEMP TABLE tmp_world_regions (
         id INTEGER NOT NULL PRIMARY KEY,
@@ -1806,20 +1806,20 @@ BEGIN
         epsg_id INTEGER NOT NULL,
         shape GEOMETRY NOT NULL
     );
-    
+
     INSERT INTO tmp_world_regions (id, name, epsg_id, shape) VALUES
     ( 1, 'Chatham Islands',   3793, 'SRID=4167;POLYGON((182 -43,185 -43,185 -45,182 -45,182 -43))' ),
     ( 2, 'NZ Mainland',       2193, 'SRID=4167;POLYGON((166 -34,179 -34,179 -48,166 -48,166 -34))' ),
     ( 3, 'Auckland Islands',  3788, 'SRID=4167;POLYGON((164.5 -52,164.5 -48,167.5 -48,167.5 -52,164.5 -52))' ),
     ( 4, 'Campbell Islands',  3789, 'SRID=4167;POLYGON((168 -54,168 -51,170 -51,170 -54,168 -54))' ),
     ( 5, 'Antipodes Islands', 3790, 'SRID=4167;POLYGON((177.5 -51,177.5 -46,180.5 -46,180.5 -51,177.5 -51))' ),
-    ( 6, 'Raoul Islands',     3791, 'SRID=4167;POLYGON((180.5 -32,180.5 -28,183.5 -28,183.5 -32,180.5 -32))' ); 
-    
+    ( 6, 'Raoul Islands',     3791, 'SRID=4167;POLYGON((180.5 -32,180.5 -28,183.5 -28,183.5 -32,180.5 -32))' );
+
     CREATE INDEX tmp_world_regions_shpx ON tmp_world_regions USING gist (shape);
     ANALYSE tmp_world_regions;
 
     RAISE INFO 'Started creating temp table tmp_parcel_geoms';
-    
+
     -- Some Landonline parcel polygons have rings that self-intersect, typically
     -- banana polygons. So here we use the buffer 0 trick to build a polygon
     -- that is structurally identical but follows OGC topology rules.
@@ -1828,15 +1828,15 @@ BEGIN
         PAR.id as par_id,
         CASE WHEN ST_IsValid(PAR.shape) THEN
             PAR.shape
-        ELSE 
+        ELSE
             ST_Buffer(PAR.shape, 0)
         END AS shape
     FROM
         crs_parcel PAR;
-    
+
     ALTER TABLE tmp_parcel_geoms ADD PRIMARY KEY(par_id);
     ANALYSE tmp_parcel_geoms;
-    
+
     RAISE INFO 'Started creating temp table tmp_parcels';
 
     CREATE TEMP TABLE tmp_parcels AS
@@ -1844,7 +1844,7 @@ BEGIN
         PAR.id,
         bde_get_combined_appellation(PAR.id, 'N') AS appellation,
         string_agg(
-            DISTINCT 
+            DISTINCT
                 SUR.survey_reference,
             ', '
             ORDER BY
@@ -1881,14 +1881,14 @@ BEGIN
         PAR.id;
 
     RAISE INFO 'Finished creating temp table tmp_parcels';
-    
+
     DROP TABLE IF EXISTS tmp_world_regions;
-    
+
     ----------------------------------------------------------------------------
     -- all_parcels layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'all_parcels');
-    
+
     v_data_insert_sql := $sql$
     INSERT INTO %1% (
         id,
@@ -1926,7 +1926,7 @@ BEGIN
         PAR.status <> 'PEND' AND
         ( ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon') OR shape IS NULL );
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -1938,7 +1938,7 @@ BEGIN
     -- all_parcels_pend layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'all_parcels_pend');
-    
+
     v_data_insert_sql := $sql$
     INSERT INTO %1% (
         id,
@@ -1976,7 +1976,7 @@ BEGIN
         PAR.status = 'PEND' AND
         ( ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon') OR shape IS NULL );
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -1988,7 +1988,7 @@ BEGIN
     -- all_linear_parcels layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'all_linear_parcels');
-    
+
     v_data_insert_sql := $sql$
     INSERT INTO %1% (
         id,
@@ -2026,7 +2026,7 @@ BEGIN
         PAR.status <> 'PEND' AND
         ST_GeometryType(PAR.shape) IN ('ST_LineString', 'ST_MultiLineString');
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -2038,7 +2038,7 @@ BEGIN
     -- primary_parcels layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'primary_parcels');
-    
+
     v_data_insert_sql := $sql$
     INSERT INTO %1% (
         id,
@@ -2074,19 +2074,19 @@ BEGIN
         PAR.toc_code =  'PRIM' AND
         ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon');
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     ----------------------------------------------------------------------------
     -- land_parcels layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'land_parcels');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2123,7 +2123,7 @@ BEGIN
             PAR.parcel_intent NOT IN ('HYDR', 'ROAD') AND
             ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon');
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -2135,7 +2135,7 @@ BEGIN
     -- hydro_parcels layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'hydro_parcels');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2172,7 +2172,7 @@ BEGIN
             PAR.parcel_intent = 'HYDR' AND
             ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon');
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -2184,7 +2184,7 @@ BEGIN
     -- road_parcels layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'road_parcels');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2221,7 +2221,7 @@ BEGIN
             PAR.parcel_intent = 'ROAD' AND
             ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon');
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -2233,7 +2233,7 @@ BEGIN
     -- non_primary_parcels layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'non_primary_parcels');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2269,7 +2269,7 @@ BEGIN
             PAR.toc_code IN ('SECO', 'TERT', 'STRA') AND
             ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon');
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -2281,7 +2281,7 @@ BEGIN
     -- non_primary_linear_parcels layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'non_primary_linear_parcels');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2317,7 +2317,7 @@ BEGIN
             PAR.toc_code IN ('SECL', 'TECL') AND
             ST_GeometryType(PAR.shape) IN ('ST_LineString', 'ST_MultiLineString');
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -2329,7 +2329,7 @@ BEGIN
     -- strata_parcels layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'strata_parcels');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2365,7 +2365,7 @@ BEGIN
             PAR.toc_code IN ('STRA') AND
             ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon');
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -2377,11 +2377,11 @@ BEGIN
     DROP TABLE IF EXISTS tmp_par_stat_action;
     DROP TABLE IF EXISTS tmp_par_stat_action_agg;
     DROP TABLE IF EXISTS tmp_parcels;
-    
+
     RAISE INFO 'Started creating temp table tmp_title_estates';
-    
+
     DROP TABLE IF EXISTS tmp_title_estates;
-    
+
     CREATE TEMP TABLE tmp_title_estates AS
     SELECT
         ETT.id,
@@ -2406,14 +2406,14 @@ BEGIN
      WHERE
         TTL.status IN ('LIVE', 'PRTC') AND
         TTL.title_no NOT IN (SELECT title_no FROM tmp_excluded_titles);
-    
+
     RAISE INFO 'Finished creating temp table tmp_title_estates';
-    
+
     ----------------------------------------------------------------------------
     -- title_estates table
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'title_estates');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2443,18 +2443,18 @@ BEGIN
         FROM
             tmp_title_estates ETT;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     RAISE INFO 'Started creating temp table tmp_title_owners_aspatial';
-    
+
     DROP TABLE IF EXISTS tmp_title_owners_aspatial;
-    
+
     CREATE TEMP TABLE tmp_title_owners_aspatial AS
     SELECT
         PRP.id,
@@ -2479,8 +2479,8 @@ BEGIN
         LEFT JOIN crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
     WHERE
         PRO.title_no IS NULL;
-    
-    
+
+
     INSERT INTO tmp_title_owners_aspatial(
         id,
         tte_id,
@@ -2512,14 +2512,14 @@ BEGIN
         LEFT JOIN crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
     WHERE
         PRO.title_no IS NOT NULL;
-    
+
     RAISE INFO 'Finished creating temp table tmp_title_owners_aspatial';
-    
+
     ----------------------------------------------------------------------------
     -- title_owners_aspatial table
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'title_owners_aspatial');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2556,7 +2556,7 @@ BEGIN
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     DROP TABLE IF EXISTS tmp_title_polygon;
 
     CREATE TEMP TABLE tmp_title_polygon AS
@@ -2575,7 +2575,7 @@ BEGIN
     SELECT
         TPA.title_no,
         -- With Postgis 1.5.2 the ST_Collect aggregate returns a truncated
-        -- collection when a null value is found. To fix this the shapes 
+        -- collection when a null value is found. To fix this the shapes
         -- are ordered so all null rows are at the end of input list.
         -- We also want to ensure the newly constructed polygon has valid OGC
         -- Topology so use the buffer 0 trick
@@ -2586,7 +2586,7 @@ BEGIN
         LEFT JOIN (
             SELECT
                 par_id,
-                (ST_Dump(shape)).geom AS shape  
+                (ST_Dump(shape)).geom AS shape
             FROM
                 tmp_parcel_geoms
             WHERE
@@ -2599,7 +2599,7 @@ BEGIN
     ANALYSE tmp_title_polygon;
 
     DROP TABLE IF EXISTS tmp_title_owner_concat;
-    
+
     CREATE TEMP TABLE tmp_title_owner_concat AS
     SELECT DISTINCT
         TOW.title_no,
@@ -2611,13 +2611,13 @@ BEGIN
         tmp_title_owners_aspatial TOW;
 
     ANALYSE tmp_title_owner_concat;
-    
+
     ALTER TABLE tmp_title_owner_concat ADD PRIMARY KEY (title_no, owner);
-    
+
     DROP TABLE IF EXISTS tmp_title_owners_aspatial;
-        
+
     RAISE INFO 'Started creating temp table tmp_titles';
-        
+
     CREATE TEMP TABLE tmp_titles AS
     SELECT
         TTL.audit_id AS id,
@@ -2636,13 +2636,13 @@ BEGIN
         CASE WHEN TTL.maori_land IN ('Y','L') THEN 'Y' ELSE NULL END AS maori_land,
         string_agg(
             DISTINCT(
-                TTE.type || ', ' || 
+                TTE.type || ', ' ||
                 TTE.share || COALESCE(', ' || TTE.legal_description, '') ||
                 COALESCE(', ' || to_char(ROUND(TTE.area, 0), 'FM9G999G999G999G999') || ' m2', '')
             ),
             E'\r\n'
             ORDER BY
-                TTE.type || ', ' || 
+                TTE.type || ', ' ||
                 TTE.share || COALESCE(', ' || TTE.legal_description, '') ||
                 COALESCE(', ' || to_char(ROUND(TTE.area, 0), 'FM9G999G999G999G999') || ' m2', '') ASC
         ) AS estate_description,
@@ -2684,16 +2684,16 @@ BEGIN
         TTL.maori_land,
         TTP.spatial_extents_shared,
         TTP.shape;
-    
+
     DROP TABLE IF EXISTS tmp_title_polygon;
-    
+
     RAISE INFO 'Finished creating temp table tmp_titles';
-    
+
     ----------------------------------------------------------------------------
     -- titles layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'titles');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2711,7 +2711,7 @@ BEGIN
         SELECT
             id,
             title_no,
-            status_code, 
+            status_code,
             type,
             land_district,
             issue_date,
@@ -2725,7 +2725,7 @@ BEGIN
         WHERE
             status_code IN ('LIVE', 'PRTC');
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -2737,7 +2737,7 @@ BEGIN
     -- titles_plus layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'titles_plus');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2776,18 +2776,18 @@ BEGIN
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     ----------------------------------------------------------------------------
     -- titles_aspatial table
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'titles_aspatial');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
             title_no,
             status,
-            register_type, 
+            register_type,
             type,
             land_district,
             issue_date,
@@ -2803,7 +2803,7 @@ BEGIN
             id,
             title_no,
             status,
-            register_type, 
+            register_type,
             type,
             land_district,
             issue_date,
@@ -2826,7 +2826,7 @@ BEGIN
     );
 
     RAISE INFO 'Started creating temp table tmp_title_owners';
-    
+
     CREATE TEMP TABLE tmp_title_owners AS
     WITH title_owner_parcels (
         par_id
@@ -2867,20 +2867,20 @@ BEGIN
         TTL.status_code,
         TTL.land_district,
         TTL.shape;
-    
+
     DROP TABLE IF EXISTS tmp_titles;
     DROP TABLE IF EXISTS tmp_title_estates;
     DROP TABLE IF EXISTS tmp_parcel_geoms;
     DROP TABLE IF EXISTS tmp_title_parcel_associations;
     DROP TABLE IF EXISTS tmp_title_owner_concat;
-    
+
     RAISE INFO 'Finished creating temp table tmp_title_owners';
 
     ----------------------------------------------------------------------------
     -- title_owners layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'title_owners');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             owner,
@@ -2923,21 +2923,21 @@ BEGIN
             tmp_title_owners AS TMP
             LEFT JOIN %2% AS ORG ON (ORG.owner = TMP.owner AND ORG.title_no = TMP.title_no)
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_diff_sql,
         v_data_insert_sql
     );
-    
+
     DROP TABLE IF EXISTS tmp_title_owners;
-    
+
     ----------------------------------------------------------------------------
     -- title_memorials table
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'title_memorials');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -2988,17 +2988,17 @@ BEGIN
                       THEN NULL
                       ELSE TIN.inst_no
                 END AS instrument_number,
-                CASE 
+                CASE
                     WHEN upper(TIN.inst_no) = 'DEFAULT'
                     THEN NULL
                     ELSE TIN.lodged_datetime
                 END AS instrument_lodged_datetime,
-                CASE 
+                CASE
                     WHEN upper(TRT.description) = 'DEFAULT'
                     THEN NULL
                     ELSE TRT.description
                 END AS instrument_type,
-                CASE 
+                CASE
                     WHEN (TTM.curr_hist_flag != 'HIST' AND TTM.status != 'HIST' AND TTL.STATUS IN ('LIVE', 'PRTC'))
                     THEN string_agg(
                         DISTINCT trim(regexp_replace(ENE.name, E'[\\n\\r]+', '', 'g' )),
@@ -3024,11 +3024,11 @@ BEGIN
                 TTL.status IN ('LIVE','PRTC','UNCV','CNCV','CNCD')
                 AND NOT
                 (
-                    TTL.status = 'CNCD' AND 
-                    TTM.status = 'HIST' AND 
+                    TTL.status = 'CNCD' AND
+                    TTM.status = 'HIST' AND
                     TTM.curr_hist_flag = 'CURR'
                 ) AND
-                trim(regexp_replace(TMT.std_text, E'[\\n\\r]+', '', 'g' )) != '' AND 
+                trim(regexp_replace(TMT.std_text, E'[\\n\\r]+', '', 'g' )) != '' AND
                 PRO.title_no IS NULL AND
                EXL.title_no IS NULL
             GROUP BY
@@ -3043,14 +3043,14 @@ BEGIN
                 TTL.status
         ),
         tmp_title_memorials_nodups (
-            id, 
-            title_no, 
+            id,
+            title_no,
             land_district,
             memorial_text,
             "current",
             instrument_number,
             instrument_lodged_datetime,
-            instrument_type, 
+            instrument_type,
             encumbrancees
         ) AS
         (
@@ -3061,15 +3061,15 @@ BEGIN
                 instrument_number,
                 instrument_lodged_datetime,
                 instrument_type
-            ) 
-                id, 
-                title_no, 
+            )
+                id,
+                title_no,
                 land_district,
                 memorial_text,
                 "current",
                 instrument_number,
                 instrument_lodged_datetime,
-                instrument_type, 
+                instrument_type,
                 encumbrancees
             FROM
                 tmp_title_memorials
@@ -3085,27 +3085,27 @@ BEGIN
                 id
         )
         SELECT
-            id, 
-            title_no, 
+            id,
+            title_no,
             land_district,
             memorial_text,
             "current",
             instrument_number,
             instrument_lodged_datetime,
-            instrument_type, 
+            instrument_type,
             encumbrancees
         FROM
             tmp_title_memorials_nodups
         ORDER BY id;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     ----------------------------------------------------------------------------
     -- title_memorial_additional_text table
     ----------------------------------------------------------------------------
@@ -3167,7 +3167,7 @@ BEGIN
             WHERE
                 T2.col_1_text IS NOT NULL
             UNION
-            SELECT 
+            SELECT
                 T2.audit_id as id,
                 T2.ttm_id,
                 T2.curr_hist_flag,
@@ -3182,12 +3182,12 @@ BEGIN
                 CASE
                     WHEN T1.col_2_text = 'FDU' THEN T2.col_2_text
                 END AS future_development_unit,
-                CASE 
+                CASE
                     WHEN T1.col_2_text = 'Accessory Unit' THEN T2.col_2_text
                     WHEN T1.col_3_text = 'Accessory Unit' THEN T2.col_3_text
                 END	 AS assessory_unit,
-        
-                CASE 
+
+                CASE
                     WHEN T1.col_3_text = 'CT Issued' THEN T2.col_3_text
                     WHEN T1.col_4_text = 'CT Issued' THEN T2.col_4_text
                 END AS ct_issued
@@ -3199,7 +3199,7 @@ BEGIN
             WHERE
                 T2.col_1_text IS NOT NULL
             UNION
-            SELECT 
+            SELECT
                 T2.audit_id AS id,
                 T2.ttm_id,
                 T2.curr_hist_flag,
@@ -3270,20 +3270,20 @@ BEGIN
             TXT.ttm_id,
             TXT.id;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     PERFORM LDS_DropTitleExclusionTables(p_upload);
 
     RAISE INFO 'Finished maintenance on cadastral parcel simplified layers';
-    
+
     RETURN 1;
-    
+
 EXCEPTION
     WHEN others THEN
         RAISE EXCEPTION 'Could not maintain simplified parcel and title layers, ERROR %', SQLERRM;
@@ -3303,7 +3303,7 @@ DECLARE
     v_data_insert_sql  TEXT;
 BEGIN
     RAISE INFO 'Starting maintenance on electoral simplified layers';
-    
+
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
@@ -3346,14 +3346,14 @@ BEGIN
         RNA.unofficial_flag::CHAR(1)
     FROM
         crs_road_name RNA;
-        
+
     ALTER TABLE tmp_road_name ADD PRIMARY KEY (id);
     ANALYSE tmp_road_name;
-        
+
     -- Need to check for unique SUFI because Landonline currently is not enforcing it!
     IF LDS_IsTableSufiUnique(p_upload, 'crs_road_name') THEN
-    
-    
+
+
         -- build mapping between road centre line and TA using grid index.
         CREATE TEMP TABLE tmp_road_tla AS
         SELECT DISTINCT
@@ -3367,15 +3367,15 @@ BEGIN
             TLA.ogc_fid = TAG.territorial_authority_ogc_fid AND
             ST_Intersects(TAG.geom, RCL.shape) AND
             TLA.name <> 'Area Outside Territorial Authority';
-    
+
         ALTER TABLE tmp_road_tla ADD PRIMARY KEY (rcl_id, tla_name);
         ANALYSE tmp_road_tla;
-        
+
         ----------------------------------------------------------------------------
         -- road_centre_line layer
         ----------------------------------------------------------------------------
         v_table := LDS.LDS_GetTable('lds', 'road_centre_line');
-        
+
         v_data_insert_sql := $sql$
             INSERT INTO %1% (
                 id,
@@ -3425,7 +3425,7 @@ BEGIN
                 string_agg(DISTINCT territorial_authority, ', ' ORDER BY territorial_authority ASC) AS territorial_authority,
                 ST_Collect(shape_hex::geometry ORDER BY shape_hex ASC) AS shape
             FROM
-                roads 
+                roads
             GROUP BY
                 sufi_id,
                 "name",
@@ -3435,19 +3435,19 @@ BEGIN
             ORDER BY
                 sufi_id;
         $sql$;
-            
+
         PERFORM LDS.LDS_UpdateSimplifiedTable(
             p_upload,
             v_table,
             v_data_insert_sql,
             v_data_insert_sql
         );
-        
+
         ----------------------------------------------------------------------------
         -- road_centre_line_subsection layer
         ----------------------------------------------------------------------------
         v_table := LDS.LDS_GetTable('lds', 'road_centre_line_subsection');
-        
+
         CREATE TEMP TABLE tmp_roads AS
             SELECT
                 row_number() OVER (
@@ -3489,9 +3489,9 @@ BEGIN
                 RNA.location,
                 RNA.location_utf8,
                 RCL.shape;
-    
+
         ANALYSE tmp_roads;
-        
+
         v_data_insert_sql := $sql$
             INSERT INTO %1% (
                 id,
@@ -3532,25 +3532,25 @@ BEGIN
             ORDER BY
                 ROADS.rcl_id;
         $sql$;
-        
+
         PERFORM LDS.LDS_UpdateSimplifiedTable(
             p_upload,
             v_table,
             v_data_insert_sql,
             v_data_insert_sql
         );
-        
+
         DROP TABLE IF EXISTS tmp_roads;
         DROP TABLE IF EXISTS tmp_road_tla;
-        
+
         ----------------------------------------------------------------------------
         -- railway_centre_line layer
         ----------------------------------------------------------------------------
         v_table := LDS.LDS_GetTable('lds', 'railway_centre_line');
-        
+
         v_data_insert_sql := $sql$
             INSERT INTO %1% (
-                id, 
+                id,
                 "name",
                 name_utf8,
                 shape
@@ -3575,7 +3575,7 @@ BEGIN
                 RNA.name_utf8,
                 RNA.location;
         $sql$;
-            
+
         PERFORM LDS.LDS_UpdateSimplifiedTable(
             p_upload,
             v_table,
@@ -3590,9 +3590,9 @@ BEGIN
     -- street_address layer
     ----------------------------------------------------------------------------
     IF LDS_IsTableSufiUnique(p_upload, 'crs_street_address') THEN
-        
+
         v_table := LDS.LDS_GetTable('lds', 'street_address2');
-        
+
         v_data_insert_sql := $sql$
             INSERT INTO %1% (
                 id,
@@ -3629,7 +3629,7 @@ BEGIN
                 crs_street_address SAD
                 JOIN tmp_road_name RNA ON RNA.id = SAD.rna_id
                 JOIN territorial_authority_grid TAG ON ST_Intersects(SAD.shape, TAG.geom)
-                JOIN territorial_authority TLA ON TLA.ogc_fid = TAG.territorial_authority_ogc_fid AND TLA.name <> 'Area Outside Territorial Authority' 
+                JOIN territorial_authority TLA ON TLA.ogc_fid = TAG.territorial_authority_ogc_fid AND TLA.name <> 'Area Outside Territorial Authority'
             WHERE
                 SAD.status = 'CURR' AND
                 SAD.house_number != 'UNH' AND
@@ -3647,25 +3647,25 @@ BEGIN
                 RNA.location_utf8,
                 SAD.shape
         $sql$;
-        
+
         PERFORM LDS.LDS_UpdateSimplifiedTable(
             p_upload,
             v_table,
             v_data_insert_sql,
             v_data_insert_sql
         );
-        
+
     ELSE
         RAISE WARNING 'street_address2 will not be maintained due to non-unique sufi records';
     END IF;
-    
+
     DROP TABLE tmp_road_name;
-        
+
     ----------------------------------------------------------------------------
     -- mesh_blocks layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'mesh_blocks');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
@@ -3683,18 +3683,18 @@ BEGIN
         ORDER BY
             id;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     RAISE INFO 'Finished maintenance on electoral simplified layers';
-    
+
     RETURN 1;
-    
+
 EXCEPTION
     WHEN others THEN
         RAISE EXCEPTION 'Could not maintain simplified electoral layers, ERROR %', SQLERRM;
@@ -3775,7 +3775,7 @@ BEGIN
     -- land_districts layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'land_districts');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
             id,
@@ -3790,7 +3790,7 @@ BEGIN
             crs_locality LOC
             JOIN crs_land_district LDT ON LOC.id = LDT.loc_id;
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -3800,38 +3800,38 @@ BEGIN
 
     -- build survey plan reference cache
     PERFORM LDS.LDS_CreateSurveyPlansTable(p_upload);
-    
+
     -- build mapping for datums
 
     CREATE TEMP TABLE tmp_proxy_datum AS
     SELECT id AS cos_id,
-           'NZGD2000'::VARCHAR(10) AS name 
+           'NZGD2000'::VARCHAR(10) AS name
     FROM   crs_coordinate_sys
     WHERE  dtm_id = 19;
 
     INSERT INTO tmp_proxy_datum
     SELECT id AS cos_id,
-           'NZGD1949'::VARCHAR(10) AS name 
+           'NZGD1949'::VARCHAR(10) AS name
     FROM   crs_coordinate_sys
     WHERE  dtm_id = 18;
 
     INSERT INTO tmp_proxy_datum
     SELECT id AS cos_id,
-           'OCD'::VARCHAR(10) AS name 
+           'OCD'::VARCHAR(10) AS name
     FROM   crs_coordinate_sys
-    WHERE  cot_id = 65 
+    WHERE  cot_id = 65
     AND    dtm_id <> 10;
 
     ALTER TABLE tmp_proxy_datum ADD CONSTRAINT
            pkey_proxy_datum PRIMARY KEY (cos_id);
 
     ANALYSE tmp_proxy_datum;
-       
+
     ----------------------------------------------------------------------------
     -- survey_plans layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'survey_plans');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
             id,
@@ -3890,7 +3890,7 @@ BEGIN
         ORDER BY
             WRK.id;
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -3904,7 +3904,7 @@ BEGIN
     -- cadastral_adjustments layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'cadastral_adjustments');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
             id,
@@ -3941,7 +3941,7 @@ BEGIN
         ORDER BY
             ADJ.id;
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -3953,7 +3953,7 @@ BEGIN
     -- spi_adjustments layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'spi_adjustments');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
             id,
@@ -3991,19 +3991,19 @@ BEGIN
         ORDER BY
             ADJ.id;
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     ----------------------------------------------------------------------------
     -- waca_adjustments layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'waca_adjustments');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
             id,
@@ -4041,21 +4041,21 @@ BEGIN
         ORDER BY
             ADJ.id;
     $sql$;
-        
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     ----------------------------------------------------------------------------
     -- parcel_vectors layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'parcel_vectors');
 
     RAISE INFO 'Started creating temp table tmp_parcel_vectors';
-    
+
     CREATE TEMP TABLE tmp_parcel_vectors AS
     SELECT
         OBN.vct_id
@@ -4075,7 +4075,7 @@ BEGIN
         PAR.id IS NOT NULL
     GROUP BY
         OBN.vct_id;
-    
+
     ALTER TABLE tmp_parcel_vectors ADD PRIMARY KEY (vct_id);
     ANALYSE tmp_parcel_vectors;
 
@@ -4116,7 +4116,7 @@ BEGIN
         row_number = 1;
 
     RAISE INFO 'Started inserting vector rows into table tmp_parcel_vector_detail';
-    
+
     INSERT INTO tmp_parcel_vector_detail(
         id,
         type,
@@ -4150,7 +4150,7 @@ BEGIN
                 OBN_D.status = 'AUTH' AND
                 OBN_D.surveyed_class IN ('ADPT', 'CALC', 'MEAS')
     )
-    SELECT 
+    SELECT
         LVT.id,
         LVT.type,
         LVT.bearing,
@@ -4166,7 +4166,7 @@ BEGIN
         PVD.id IS NULL;
 
     RAISE INFO 'Finished creating table tmp_parcel_vector_detail';
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
             id,
@@ -4188,7 +4188,7 @@ BEGIN
         FROM
             tmp_parcel_vector_detail
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -4202,7 +4202,7 @@ BEGIN
     ----------------------------------------------------------------------------
     -- survey_network_marks layer
     ----------------------------------------------------------------------------
-    
+
     -- create temp table to hold NZGD2000 nominal accuracy error values,
     -- because the error values in crs_cord_order do not match up with the
     -- standard
@@ -4210,7 +4210,7 @@ BEGIN
         cor_id INTEGER NOT NULL PRIMARY KEY,
         error numeric(4,2)
     );
-    
+
     INSERT INTO tmp_cord_nominal_error (cor_id, error) VALUES
         ( 1901, 0.05 ),
         ( 1902, 0.05 ),
@@ -4225,17 +4225,17 @@ BEGIN
         ( 1912, 20.0 ),
         ( 1913, 50.0 ),
         ( 1914, NULL );
-    
+
     ANALYSE tmp_cord_nominal_error;
-    
+
     v_table := LDS.LDS_GetTable('lds', 'survey_network_marks');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
             id,
-            geodetic_code, 
-            current_mark_name, 
-            description, 
+            geodetic_code,
+            current_mark_name,
+            description,
             mark_type,
             mark_condition,
             "order",
@@ -4259,9 +4259,9 @@ BEGIN
             SELECT
                 row_number() OVER (PARTITION BY NOD.id ORDER BY MRK.status ASC, MRK.replaced ASC, MRK.id DESC) AS row_number,
                 NOD.id,
-                GEO.name AS geodetic_code, 
+                GEO.name AS geodetic_code,
                 MKN.name AS current_mark_name,
-                MRK.desc AS description, 
+                MRK.desc AS description,
                 SCOM.char_value AS mark_type,
                 SCOC.char_value AS mark_condition,
                 CAST(COR.display AS INTEGER) AS "order",
@@ -4303,7 +4303,7 @@ BEGIN
         ORDER BY
             id;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -4314,7 +4314,7 @@ BEGIN
     -- Temp tables required for survey_bdy_marks and survey_non_bdy_marks
 
     RAISE INFO 'Started creating table tmp_bdy_nodes';
-    
+
     CREATE TEMP TABLE tmp_bdy_nodes AS
     WITH bdy_nodes (nod_id_start, nod_id_end) AS (
         SELECT
@@ -4412,7 +4412,7 @@ BEGIN
         row_number = 1;
 
     RAISE INFO 'Finished creating table tmp_cadastral_marks';
-    
+
     ----------------------------------------------------------------------------
     -- survey_bdy_marks layer
     ----------------------------------------------------------------------------
@@ -4439,7 +4439,7 @@ BEGIN
         WHERE
             is_bdy = TRUE;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -4473,27 +4473,27 @@ BEGIN
         WHERE
             is_bdy = FALSE;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     DROP TABLE IF EXISTS tmp_bdy_nodes;
     DROP TABLE IF EXISTS tmp_node_last_adjusted;
-    
+
     ----------------------------------------------------------------------------
     -- survey_observations layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'survey_observations');
-    
+
     -- NOTE: There are authoritative survey (arc) observations connected to
     -- decommissioned nodes. It has been decided to filter these observations
     -- from this table until the data has been fixed.
     -- Data Improvement issue has been created for this – DI#146
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
             id,
@@ -4556,7 +4556,7 @@ BEGIN
         ORDER BY
             OBN.id;
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
@@ -4568,7 +4568,7 @@ BEGIN
     -- survey_arc_observations layer
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'survey_arc_observations');
-    
+
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
             id,
@@ -4634,23 +4634,23 @@ BEGIN
         OBN.status = 'AUTH' AND
         OBN.surveyed_class IN ('ADPT', 'CALC', 'MEAS');
     $sql$;
-    
+
     PERFORM LDS.LDS_UpdateSimplifiedTable(
         p_upload,
         v_table,
         v_data_insert_sql,
         v_data_insert_sql
     );
-    
+
     RAISE INFO 'Finished maintenance on cadastral survey simplified layers';
-    
+
     PERFORM LDS.LDS_DropSurveyPlansTable(p_upload);
-    
+
     DROP TABLE IF EXISTS tmp_cord_nominal_error;
     DROP TABLE IF EXISTS tmp_cadastral_marks;
-    
+
     RETURN 1;
-    
+
 EXCEPTION
     WHEN others THEN
         RAISE EXCEPTION 'Could not maintain simplified survey layers, ERROR %', SQLERRM;
@@ -4680,11 +4680,11 @@ BEGIN
         ELSE
             v_comment := E'\n\n' || v_comment;
         END IF;
-       
+
         v_comment := 'Version: ' ||  '$Id$'
                     || E'\n' || 'Installed: ' ||
                     to_char(current_timestamp,'YYYY-MM-DD HH:MI') || v_comment;
-       
+
         EXECUTE 'COMMENT ON FUNCTION ' || v_schema || '.' || v_pcid || ' IS '
             || quote_literal( v_comment );
     END LOOP;
