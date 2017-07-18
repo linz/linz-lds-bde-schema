@@ -61,8 +61,9 @@ Dependencies
 ------------
 
 Requires [linz-bde-schema](https://github.com/linz/linz-bde-schema),
-[table_version](https://github.com/linz/postgresql-tableversion) and
-[linz-postgresql-functions](https://github.com/linz/linz-postgresql-functions) packages 
+[table_version](https://github.com/linz/postgresql-tableversion),
+[linz-postgresql-functions](https://github.com/linz/linz-postgresql-functions)
+and [linz_bde_uploader](https://github.com/linz/linz_bde_uploader) packages 
 
 License
 ---------------------
