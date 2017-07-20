@@ -4663,6 +4663,8 @@ $$ LANGUAGE plpgsql;
 
 ALTER FUNCTION LDS_MaintainSimplifiedSurveyLayers(INTEGER) OWNER TO bde_dba;
 
+ALTER FUNCTION LDS_MaintainSimplifiedSurveyLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
+
 DO $$
 DECLARE
     v_comment TEXT;
