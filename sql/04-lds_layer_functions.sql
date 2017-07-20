@@ -3294,6 +3294,8 @@ $$ LANGUAGE plpgsql;
 
 ALTER FUNCTION LDS_MaintainSimplifiedParcelLayers(INTEGER) OWNER TO bde_dba;
 
+ALTER FUNCTION LDS_MaintainSimplifiedParcelLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
+
 CREATE OR REPLACE FUNCTION LDS_MaintainSimplifiedElectoralLayers(
     p_upload INTEGER
 )
