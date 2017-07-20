@@ -1531,6 +1531,8 @@ $$ LANGUAGE plpgsql;
 
 ALTER FUNCTION LDS_MaintainSimplifiedGeodeticLayers(INTEGER) OWNER TO bde_dba;
 
+ALTER FUNCTION LDS_MaintainSimplifiedGeodeticLayers(INTEGER) SET search_path=bde, bde_control, public;
+
 
 CREATE OR REPLACE FUNCTION LDS_MaintainSimplifiedParcelLayers(
     p_upload INTEGER
