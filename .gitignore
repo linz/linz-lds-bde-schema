@@ -3,3 +3,5 @@ regression.diffs
 regression.out
 results/
 sql/03-lds_version.sql
+sql/04-lds_layer_functions.sql
+sql/06-bde_ext_functions.sql

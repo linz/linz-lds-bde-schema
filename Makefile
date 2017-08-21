@@ -1,6 +1,7 @@
 # Minimal script to install the SQL creation scripts ready for postinst script.
 
 VERSION=dev
+REVISION=$(shell test -d .git && which git > /dev/null && git describe --always)
 
 SED = sed
 
@@ -24,15 +25,15 @@ SQLSCRIPTS = \
   sql/99-patches.sql \
   sql/versioning/01-version_tables.sql
   $(END)
-  
+
 EXTRA_CLEAN = sql/03-lds_version.sql
 
 .dummy:
 
 all: $(SQLSCRIPTS)
 
-sql/03-lds_version.sql: sql/03-lds_version.sql.in
-	$(SED) -e 's/@@VERSION@@/$(VERSION)/' $< > $@
+%.sql: %.sql.in
+	$(SED) -e 's/@@VERSION@@/$(VERSION)/;s/@@REVISION@@/$(REVISION)/' $< > $@
 
 install: $(SQLSCRIPTS)
 	mkdir -p ${datadir}/sql
