@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/linz/linz-lds-bde-schema.svg)](http://travis-ci.org/linz/linz-lds-bde-schema)
+
 LINZ LDS BDE Schemas
 =================================
 
@@ -13,7 +15,7 @@ Installation
 First install the project into the OS data share directory:
 
     sudo make install
-    
+
 Then in each target database you need to install the
 [linz-bde-schema](https://github.com/linz/linz-bde-schema)
 project;
@@ -63,7 +65,7 @@ Dependencies
 Requires [linz-bde-schema](https://github.com/linz/linz-bde-schema),
 [table_version](https://github.com/linz/postgresql-tableversion),
 [linz-postgresql-functions](https://github.com/linz/linz-postgresql-functions)
-and [linz_bde_uploader](https://github.com/linz/linz_bde_uploader) packages 
+and [linz_bde_uploader](https://github.com/linz/linz_bde_uploader) packages
 
 License
 ---------------------
