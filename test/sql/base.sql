@@ -5,7 +5,7 @@
 -- Land Information New Zealand and the New Zealand Government.
 -- All rights reserved
 --
--- This software is released under the terms of the new BSD license. See the 
+-- This software is released under the terms of the new BSD license. See the
 -- LICENSE file for more information.
 --
 --------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ SELECT has_schema('lds'::name);
 -- Test tables existance and their composition {
 
 SELECT has_table('lds'::name, 'affected_parcel_surveys'::name);
-SELECT columns_are('lds'::name, 'affected_parcel_surveys'::name, 
+SELECT columns_are('lds'::name, 'affected_parcel_surveys'::name,
   ARRAY[
   'id',
   'par_id',
@@ -56,7 +56,7 @@ SELECT columns_are('lds'::name, 'affected_parcel_surveys'::name,
   ]);
 
 SELECT has_table('lds'::name, 'affected_parcel_surveys_pend'::name);
-SELECT columns_are('lds'::name, 'affected_parcel_surveys_pend'::name, 
+SELECT columns_are('lds'::name, 'affected_parcel_surveys_pend'::name,
   ARRAY[
   'id',
   'par_id',
@@ -65,7 +65,7 @@ SELECT columns_are('lds'::name, 'affected_parcel_surveys_pend'::name,
   ]);
 
 SELECT has_table('lds'::name, 'all_linear_parcels'::name);
-SELECT columns_are('lds'::name, 'all_linear_parcels'::name, 
+SELECT columns_are('lds'::name, 'all_linear_parcels'::name,
   ARRAY[
   'calc_area',
   'survey_area',
@@ -82,7 +82,7 @@ SELECT columns_are('lds'::name, 'all_linear_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'all_parcels'::name);
-SELECT columns_are('lds'::name, 'all_parcels'::name, 
+SELECT columns_are('lds'::name, 'all_parcels'::name,
   ARRAY[
   'land_district',
   'status',
@@ -99,7 +99,7 @@ SELECT columns_are('lds'::name, 'all_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'all_parcels_pend'::name);
-SELECT columns_are('lds'::name, 'all_parcels_pend'::name, 
+SELECT columns_are('lds'::name, 'all_parcels_pend'::name,
   ARRAY[
   'land_district',
   'survey_area',
@@ -116,7 +116,7 @@ SELECT columns_are('lds'::name, 'all_parcels_pend'::name,
   ]);
 
 SELECT has_table('lds'::name, 'cadastral_adjustments'::name);
-SELECT columns_are('lds'::name, 'cadastral_adjustments'::name, 
+SELECT columns_are('lds'::name, 'cadastral_adjustments'::name,
   ARRAY[
   'survey_reference',
   'adjusted_nodes',
@@ -126,7 +126,7 @@ SELECT columns_are('lds'::name, 'cadastral_adjustments'::name,
   ]);
 
 SELECT has_table('lds'::name, 'geodetic_antarctic_marks'::name);
-SELECT columns_are('lds'::name, 'geodetic_antarctic_marks'::name, 
+SELECT columns_are('lds'::name, 'geodetic_antarctic_marks'::name,
   ARRAY[
   'current_mark_name',
   'id',
@@ -144,7 +144,7 @@ SELECT columns_are('lds'::name, 'geodetic_antarctic_marks'::name,
 
 SELECT has_table('lds'::name,
 'geodetic_antarctic_vertical_marks'::name);
-SELECT columns_are('lds'::name, 'geodetic_antarctic_vertical_marks'::name, 
+SELECT columns_are('lds'::name, 'geodetic_antarctic_vertical_marks'::name,
   ARRAY[
   'order',
   'normal_orthometric_height',
@@ -161,7 +161,7 @@ SELECT columns_are('lds'::name, 'geodetic_antarctic_vertical_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'geodetic_marks'::name);
-SELECT columns_are('lds'::name, 'geodetic_marks'::name, 
+SELECT columns_are('lds'::name, 'geodetic_marks'::name,
   ARRAY[
   'geodetic_code',
   'shape',
@@ -179,7 +179,7 @@ SELECT columns_are('lds'::name, 'geodetic_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'geodetic_network_marks'::name);
-SELECT columns_are('lds'::name, 'geodetic_network_marks'::name, 
+SELECT columns_are('lds'::name, 'geodetic_network_marks'::name,
   ARRAY[
   'shape',
   'ellipsoidal_height',
@@ -199,7 +199,7 @@ SELECT columns_are('lds'::name, 'geodetic_network_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'geodetic_vertical_marks'::name);
-SELECT columns_are('lds'::name, 'geodetic_vertical_marks'::name, 
+SELECT columns_are('lds'::name, 'geodetic_vertical_marks'::name,
   ARRAY[
   'shape',
   'coordinate_system',
@@ -217,7 +217,7 @@ SELECT columns_are('lds'::name, 'geodetic_vertical_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'hydro_parcels'::name);
-SELECT columns_are('lds'::name, 'hydro_parcels'::name, 
+SELECT columns_are('lds'::name, 'hydro_parcels'::name,
   ARRAY[
   'titles',
   'id',
@@ -233,7 +233,7 @@ SELECT columns_are('lds'::name, 'hydro_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'land_districts'::name);
-SELECT columns_are('lds'::name, 'land_districts'::name, 
+SELECT columns_are('lds'::name, 'land_districts'::name,
   ARRAY[
   'id',
   'shape',
@@ -241,7 +241,7 @@ SELECT columns_are('lds'::name, 'land_districts'::name,
   ]);
 
 SELECT has_table('lds'::name, 'land_parcels'::name);
-SELECT columns_are('lds'::name, 'land_parcels'::name, 
+SELECT columns_are('lds'::name, 'land_parcels'::name,
   ARRAY[
   'topology_type',
   'calc_area',
@@ -257,7 +257,7 @@ SELECT columns_are('lds'::name, 'land_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'mesh_blocks'::name);
-SELECT columns_are('lds'::name, 'mesh_blocks'::name, 
+SELECT columns_are('lds'::name, 'mesh_blocks'::name,
   ARRAY[
   'shape',
   'code',
@@ -265,7 +265,7 @@ SELECT columns_are('lds'::name, 'mesh_blocks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'non_primary_linear_parcels'::name);
-SELECT columns_are('lds'::name, 'non_primary_linear_parcels'::name, 
+SELECT columns_are('lds'::name, 'non_primary_linear_parcels'::name,
   ARRAY[
   'shape',
   'id',
@@ -281,7 +281,7 @@ SELECT columns_are('lds'::name, 'non_primary_linear_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'non_primary_parcels'::name);
-SELECT columns_are('lds'::name, 'non_primary_parcels'::name, 
+SELECT columns_are('lds'::name, 'non_primary_parcels'::name,
   ARRAY[
   'shape',
   'id',
@@ -297,7 +297,7 @@ SELECT columns_are('lds'::name, 'non_primary_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'parcel_stat_actions'::name);
-SELECT columns_are('lds'::name, 'parcel_stat_actions'::name, 
+SELECT columns_are('lds'::name, 'parcel_stat_actions'::name,
   ARRAY[
   'statutory_action',
   'status',
@@ -307,7 +307,7 @@ SELECT columns_are('lds'::name, 'parcel_stat_actions'::name,
   ]);
 
 SELECT has_table('lds'::name, 'parcel_vectors'::name);
-SELECT columns_are('lds'::name, 'parcel_vectors'::name, 
+SELECT columns_are('lds'::name, 'parcel_vectors'::name,
   ARRAY[
   'shape',
   'id',
@@ -319,7 +319,7 @@ SELECT columns_are('lds'::name, 'parcel_vectors'::name,
   ]);
 
 SELECT has_table('lds'::name, 'primary_parcels'::name);
-SELECT columns_are('lds'::name, 'primary_parcels'::name, 
+SELECT columns_are('lds'::name, 'primary_parcels'::name,
   ARRAY[
   'survey_area',
   'shape',
@@ -335,7 +335,7 @@ SELECT columns_are('lds'::name, 'primary_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'railway_centre_line'::name);
-SELECT columns_are('lds'::name, 'railway_centre_line'::name, 
+SELECT columns_are('lds'::name, 'railway_centre_line'::name,
   ARRAY[
   'shape',
   'name',
@@ -344,7 +344,7 @@ SELECT columns_are('lds'::name, 'railway_centre_line'::name,
   ]);
 
 SELECT has_table('lds'::name, 'road_centre_line'::name);
-SELECT columns_are('lds'::name, 'road_centre_line'::name, 
+SELECT columns_are('lds'::name, 'road_centre_line'::name,
   ARRAY[
   'shape',
   'name',
@@ -356,7 +356,7 @@ SELECT columns_are('lds'::name, 'road_centre_line'::name,
   ]);
 
 SELECT has_table('lds'::name, 'road_centre_line_subsection'::name);
-SELECT columns_are('lds'::name, 'road_centre_line_subsection'::name, 
+SELECT columns_are('lds'::name, 'road_centre_line_subsection'::name,
   ARRAY[
   'shape',
   'other_names_utf8',
@@ -371,7 +371,7 @@ SELECT columns_are('lds'::name, 'road_centre_line_subsection'::name,
   ]);
 
 SELECT has_table('lds'::name, 'road_parcels'::name);
-SELECT columns_are('lds'::name, 'road_parcels'::name, 
+SELECT columns_are('lds'::name, 'road_parcels'::name,
   ARRAY[
   'calc_area',
   'id',
@@ -387,7 +387,7 @@ SELECT columns_are('lds'::name, 'road_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'spi_adjustments'::name);
-SELECT columns_are('lds'::name, 'spi_adjustments'::name, 
+SELECT columns_are('lds'::name, 'spi_adjustments'::name,
   ARRAY[
   'shape',
   'id',
@@ -397,7 +397,7 @@ SELECT columns_are('lds'::name, 'spi_adjustments'::name,
   ]);
 
 SELECT has_table('lds'::name, 'strata_parcels'::name);
-SELECT columns_are('lds'::name, 'strata_parcels'::name, 
+SELECT columns_are('lds'::name, 'strata_parcels'::name,
   ARRAY[
   'titles',
   'land_district',
@@ -413,7 +413,7 @@ SELECT columns_are('lds'::name, 'strata_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'street_address'::name);
-SELECT columns_are('lds'::name, 'street_address'::name, 
+SELECT columns_are('lds'::name, 'street_address'::name,
   ARRAY[
   'road_name',
   'territorial_authority',
@@ -426,7 +426,7 @@ SELECT columns_are('lds'::name, 'street_address'::name,
   ]);
 
 SELECT has_table('lds'::name, 'street_address2'::name);
-SELECT columns_are('lds'::name, 'street_address2'::name, 
+SELECT columns_are('lds'::name, 'street_address2'::name,
   ARRAY[
   'house_number',
   'shape',
@@ -445,7 +445,7 @@ SELECT columns_are('lds'::name, 'street_address2'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_arc_observations'::name);
-SELECT columns_are('lds'::name, 'survey_arc_observations'::name, 
+SELECT columns_are('lds'::name, 'survey_arc_observations'::name,
   ARRAY[
   'survey_reference',
   'id',
@@ -470,7 +470,7 @@ SELECT columns_are('lds'::name, 'survey_arc_observations'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_bdy_marks'::name);
-SELECT columns_are('lds'::name, 'survey_bdy_marks'::name, 
+SELECT columns_are('lds'::name, 'survey_bdy_marks'::name,
   ARRAY[
   'shape',
   'id',
@@ -481,7 +481,7 @@ SELECT columns_are('lds'::name, 'survey_bdy_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_network_marks'::name);
-SELECT columns_are('lds'::name, 'survey_network_marks'::name, 
+SELECT columns_are('lds'::name, 'survey_network_marks'::name,
   ARRAY[
   'id',
   'shape',
@@ -496,7 +496,7 @@ SELECT columns_are('lds'::name, 'survey_network_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_non_bdy_marks'::name);
-SELECT columns_are('lds'::name, 'survey_non_bdy_marks'::name, 
+SELECT columns_are('lds'::name, 'survey_non_bdy_marks'::name,
   ARRAY[
   'nominal_accuracy',
   'date_last_adjusted',
@@ -507,7 +507,7 @@ SELECT columns_are('lds'::name, 'survey_non_bdy_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_observations'::name);
-SELECT columns_are('lds'::name, 'survey_observations'::name, 
+SELECT columns_are('lds'::name, 'survey_observations'::name,
   ARRAY[
   'value',
   'value_accuracy',
@@ -527,7 +527,7 @@ SELECT columns_are('lds'::name, 'survey_observations'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_plans'::name);
-SELECT columns_are('lds'::name, 'survey_plans'::name, 
+SELECT columns_are('lds'::name, 'survey_plans'::name,
   ARRAY[
   'authorised_date',
   'id',
@@ -544,7 +544,7 @@ SELECT columns_are('lds'::name, 'survey_plans'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_protected_marks'::name);
-SELECT columns_are('lds'::name, 'survey_protected_marks'::name, 
+SELECT columns_are('lds'::name, 'survey_protected_marks'::name,
   ARRAY[
   'mark_condition',
   'order',
@@ -559,7 +559,7 @@ SELECT columns_are('lds'::name, 'survey_protected_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_estates'::name);
-SELECT columns_are('lds'::name, 'title_estates'::name, 
+SELECT columns_are('lds'::name, 'title_estates'::name,
   ARRAY[
   'id',
   'status',
@@ -575,7 +575,7 @@ SELECT columns_are('lds'::name, 'title_estates'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_memorial_additional_text'::name);
-SELECT columns_are('lds'::name, 'title_memorial_additional_text'::name, 
+SELECT columns_are('lds'::name, 'title_memorial_additional_text'::name,
   ARRAY[
   'new_title_reference',
   'title_issued',
@@ -593,7 +593,7 @@ SELECT columns_are('lds'::name, 'title_memorial_additional_text'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_memorials'::name);
-SELECT columns_are('lds'::name, 'title_memorials'::name, 
+SELECT columns_are('lds'::name, 'title_memorials'::name,
   ARRAY[
   'id',
   'title_no',
@@ -607,7 +607,7 @@ SELECT columns_are('lds'::name, 'title_memorials'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_owners'::name);
-SELECT columns_are('lds'::name, 'title_owners'::name, 
+SELECT columns_are('lds'::name, 'title_owners'::name,
   ARRAY[
   'owner',
   'shape',
@@ -619,7 +619,7 @@ SELECT columns_are('lds'::name, 'title_owners'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_owners_aspatial'::name);
-SELECT columns_are('lds'::name, 'title_owners_aspatial'::name, 
+SELECT columns_are('lds'::name, 'title_owners_aspatial'::name,
   ARRAY[
   'tte_id',
   'status',
@@ -635,7 +635,7 @@ SELECT columns_are('lds'::name, 'title_owners_aspatial'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_parcel_associations'::name);
-SELECT columns_are('lds'::name, 'title_parcel_associations'::name, 
+SELECT columns_are('lds'::name, 'title_parcel_associations'::name,
   ARRAY[
   'id',
   'title_no',
@@ -644,7 +644,7 @@ SELECT columns_are('lds'::name, 'title_parcel_associations'::name,
   ]);
 
 SELECT has_table('lds'::name, 'titles'::name);
-SELECT columns_are('lds'::name, 'titles'::name, 
+SELECT columns_are('lds'::name, 'titles'::name,
   ARRAY[
   'title_no',
   'issue_date',
@@ -660,7 +660,7 @@ SELECT columns_are('lds'::name, 'titles'::name,
   ]);
 
 SELECT has_table('lds'::name, 'titles_aspatial'::name);
-SELECT columns_are('lds'::name, 'titles_aspatial'::name, 
+SELECT columns_are('lds'::name, 'titles_aspatial'::name,
   ARRAY[
   'register_type',
   'status',
@@ -679,7 +679,7 @@ SELECT columns_are('lds'::name, 'titles_aspatial'::name,
   ]);
 
 SELECT has_table('lds'::name, 'titles_plus'::name);
-SELECT columns_are('lds'::name, 'titles_plus'::name, 
+SELECT columns_are('lds'::name, 'titles_plus'::name,
   ARRAY[
   'owners',
   'guarantee_status',
@@ -695,7 +695,7 @@ SELECT columns_are('lds'::name, 'titles_plus'::name,
   ]);
 
 SELECT has_table('lds'::name, 'waca_adjustments'::name);
-SELECT columns_are('lds'::name, 'waca_adjustments'::name, 
+SELECT columns_are('lds'::name, 'waca_adjustments'::name,
   ARRAY[
   'date_adjusted',
   'adjusted_nodes',
