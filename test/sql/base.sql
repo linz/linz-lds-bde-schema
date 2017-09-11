@@ -862,6 +862,21 @@ SELECT pg_temp.check_versioned(nam, true) from pg_temp.lds_tables;
 
 -- }
 
+-- Test lds_deg_dms {
+
+SELECT results_eq($$
+    SELECT lds.lds_deg_dms(x,2,'ab')::text
+    FROM ( VALUES
+        (3),(-3),
+        (180),(-180)
+    ) t(x)
+$$, $$ VALUES
+    ('3°00''00.00" b'),('-3°00''00.00" a'),
+    ('180°00''00.00" b'),('-180°00''00.00" a')
+$$, 'lds_deg_dms behaves as expected');
+
+-- }
+
 SELECT * FROM finish();
 
 ROLLBACK;

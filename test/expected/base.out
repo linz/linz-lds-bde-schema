@@ -279,4 +279,5 @@ ok 251 - Table titles should be versioned
 ok 252 - Table titles_aspatial should be versioned
 ok 253 - Table titles_plus should be versioned
 ok 254 - Table waca_adjustments should be versioned
-1..254
+ok 255 - lds_deg_dms behaves as expected
+1..255
