@@ -1,31 +1,72 @@
 sudo: required
 language: C++
-services:
-  - postgresql: "9.4"
+
+matrix:
+
+  include:
+
+  - env: PG=9.3/2.3
+    addons:
+      postgresql: 9.3
+      apt:
+        packages:
+        - postgresql-9.3
+        - postgresql-9.3-pgtap
+        - postgresql-server-dev-9.3
+        - postgresql-9.3-postgis-2.3
+
+  - env: PG=9.4/2.3
+    addons:
+      postgresql: 9.4
+      apt:
+        packages:
+        - postgresql-9.4
+        - postgresql-9.4-pgtap
+        - postgresql-server-dev-9.4
+        - postgresql-9.4-postgis-2.3
+
+  - env: PG=9.5/2.3
+    addons:
+      postgresql: 9.5
+      apt:
+        packages:
+        - postgresql-9.5
+        - postgresql-9.5-pgtap
+        - postgresql-server-dev-9.5
+        - postgresql-9.5-postgis-2.3
+
+  - env: PG=9.6/2.3
+    addons:
+      postgresql: 9.6
+      apt:
+        packages:
+        - postgresql-9.6
+        - postgresql-9.6-pgtap
+        - postgresql-server-dev-9.6
+        - postgresql-9.6-postgis-2.3
+
 addons:
   apt:
     packages:
-    - postgresql-9.4
-    - postgresql-9.4-pgtap
-    - postgresql-server-dev-9.4
     - pgxnclient
+
 before_install:
   # Install dbpatch
   - wget https://github.com/linz/postgresql-dbpatch/archive/1.0.1.tar.gz
   - tar xzf 1.0.1.tar.gz
   - cd postgresql-dbpatch-1.0.1
   - make
-  - sudo make install
+  - sudo env "PATH=$PATH" make install
   - cd ..
   # Install linz-bde-schema
   - wget https://github.com/linz/linz-bde-schema/archive/1.0.2.tar.gz
   - tar xzf 1.0.2.tar.gz && cd linz-bde-schema-1.0.2
   - make
-  - sudo make install
+  - sudo env "PATH=$PATH" make install
   - cd ..
   # Install postgresql-tableversion
-  - sudo pgxn install table_version
+  - sudo env "PATH=$PATH" pgxn install table_version
 script:
   - make
   - make check || { cat regression.diffs; false; }
-  - sudo make install
+  - sudo env "PATH=$PATH" make install
