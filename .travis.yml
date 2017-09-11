@@ -61,7 +61,7 @@ before_install:
   - tar xzf 1.0.1.tar.gz
   - cd postgresql-dbpatch-1.0.1
   - make
-  - sudo env "PATH=$PATH" make install
+  - sudo env "PATH=$PATH" make install || true # workaround for https://github.com/linz/postgresql-dbpatch/issues/4
   - cd ..
   # Install linz-bde-schema
   - wget https://github.com/linz/linz-bde-schema/archive/1.0.2.tar.gz
