@@ -14,6 +14,7 @@ matrix:
         - postgresql-9.3-pgtap
         - postgresql-server-dev-9.3
         - postgresql-9.3-postgis-2.3
+        - pgxnclient
 
   - env: PG=9.4/2.3
     addons:
@@ -24,6 +25,7 @@ matrix:
         - postgresql-9.4-pgtap
         - postgresql-server-dev-9.4
         - postgresql-9.4-postgis-2.3
+        - pgxnclient
 
   - env: PG=9.5/2.3
     addons:
@@ -34,6 +36,7 @@ matrix:
         - postgresql-9.5-pgtap
         - postgresql-server-dev-9.5
         - postgresql-9.5-postgis-2.3
+        - pgxnclient
 
   - env: PG=9.6/2.3
     addons:
@@ -44,13 +47,15 @@ matrix:
         - postgresql-9.6-pgtap
         - postgresql-server-dev-9.6
         - postgresql-9.6-postgis-2.3
+        - pgxnclient
 
-addons:
-  apt:
-    packages:
-    - pgxnclient
 
 before_install:
+  # Install pgxnclient
+  - sudo apt-cache search pgxn
+  - sudo apt-cache search pgxnclient
+  - which pgxn
+  - sudo env "PATH=$PATH" which pgxn
   # Install dbpatch
   - wget https://github.com/linz/postgresql-dbpatch/archive/1.0.1.tar.gz
   - tar xzf 1.0.1.tar.gz
