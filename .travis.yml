@@ -70,7 +70,7 @@ before_install:
   - sudo env "PATH=$PATH" make install
   - cd ..
   # Install postgresql-tableversion
-  - sudo env "PATH=$PATH" pgxn install table_version
+  - sudo env "PATH=$PATH" pgxn install table_version || true # workaround table_version bug in version 1.1.1, see https://github.com/linz/postgresql-tableversion/pull/31
 script:
   - make
   - make check || { cat regression.diffs; false; }
