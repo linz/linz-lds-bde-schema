@@ -125,7 +125,7 @@ BEGIN
 
     RETURN v_table;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql STABLE;
 
 ALTER FUNCTION LDS_GetTable(NAME, NAME) OWNER TO bde_dba;
 
@@ -197,7 +197,7 @@ BEGIN
 
     RETURN TRUE;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_UpdateSimplifiedTable(INTEGER, REGCLASS, TEXT, TEXT) OWNER TO bde_dba;
 
@@ -215,7 +215,7 @@ BEGIN
 
     RETURN v_exists;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql STABLE;
 
 ALTER FUNCTION LDS_TableHasData(REGCLASS) OWNER TO bde_dba;
 
@@ -226,7 +226,7 @@ CREATE OR REPLACE FUNCTION LDS_TableHasData(
 RETURNS
     BOOLEAN AS $$
     SELECT LDS.LDS_TableHasData(LDS.LDS_GetTable($1, $2));
-$$ LANGUAGE sql;
+$$ LANGUAGE sql STABLE;
 
 ALTER FUNCTION LDS_TableHasData(NAME, NAME) OWNER TO bde_dba;
 
@@ -261,7 +261,7 @@ BEGIN
 
     RETURN v_table_oid;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_CreateTempCopy(REGCLASS) OWNER TO bde_dba;
 
@@ -306,7 +306,7 @@ BEGIN
 
     RETURN v_key_column;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_ApplyPrimaryKeyFrom(REGCLASS, REGCLASS) OWNER TO bde_dba;
 
@@ -337,7 +337,7 @@ BEGIN
 
     RETURN v_objects;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_GetTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
 
@@ -367,7 +367,7 @@ BEGIN
 
     RETURN TRUE;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_DropTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
 
@@ -403,7 +403,7 @@ BEGIN
 
     RETURN TRUE;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME) OWNER TO bde_dba;
 
@@ -420,7 +420,7 @@ RETURNS
     TEXT AS
 $FUNC$
     SELECT ''''::VARCHAR;
-$FUNC$ LANGUAGE sql;
+$FUNC$ LANGUAGE sql IMMUTABLE;
 ';
 
 ALTER FUNCTION LDS_GetProtectedText(VARCHAR(20)) OWNER TO bde_dba;
@@ -429,6 +429,7 @@ END IF;
 END;
 $$;
 
+-- Should this be District ? (missing `r')
 CREATE OR REPLACE FUNCTION LDS_GetLandDistict(p_shape GEOMETRY)
 RETURNS
     TEXT
@@ -443,7 +444,7 @@ AS $$
         LDT.shape && $1
     ORDER BY
         ST_Distance(LDT.shape, $1) ASC
-$$ LANGUAGE sql;
+$$ LANGUAGE sql STABLE;
 
 ALTER FUNCTION LDS_GetLandDistict(GEOMETRY) OWNER TO bde_dba;
 
@@ -493,7 +494,7 @@ BEGIN
 
     RETURN TRUE;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_CreateSurveyPlansTable(INTEGER) OWNER TO bde_dba;
 
@@ -511,7 +512,7 @@ EXCEPTION
     WHEN undefined_table THEN
         RETURN FALSE;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_DropSurveyPlansTable(INTEGER) OWNER TO bde_dba;
 
@@ -556,7 +557,7 @@ BEGIN
 
     RETURN v_result;
 END;
-$$ LANGUAGE plpgsql VOLATILE;
+$$ LANGUAGE plpgsql STABLE;
 
 ALTER FUNCTION LDS_IsTableSufiUnique(INTEGER, REGCLASS) OWNER TO bde_dba;
 
@@ -645,7 +646,7 @@ BEGIN
 
 	RETURN TRUE;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_CreateTitleExclusionTables(INTEGER) OWNER TO bde_dba;
 
@@ -665,7 +666,7 @@ EXCEPTION
 	WHEN undefined_table THEN
 		RETURN FALSE;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_DropTitleExclusionTables(INTEGER) OWNER TO bde_dba;
 
@@ -1527,7 +1528,7 @@ EXCEPTION
         RAISE EXCEPTION 'Could not maintain geodetic simplified layers, ERROR %',
             SQLERRM;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_MaintainSimplifiedGeodeticLayers(INTEGER) OWNER TO bde_dba;
 
@@ -3290,7 +3291,7 @@ EXCEPTION
     WHEN others THEN
         RAISE EXCEPTION 'Could not maintain simplified parcel and title layers, ERROR %', SQLERRM;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_MaintainSimplifiedParcelLayers(INTEGER) OWNER TO bde_dba;
 
@@ -3703,7 +3704,7 @@ EXCEPTION
     WHEN others THEN
         RAISE EXCEPTION 'Could not maintain simplified electoral layers, ERROR %', SQLERRM;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_MaintainSimplifiedElectoralLayers(INTEGER) OWNER TO bde_dba;
 
@@ -4659,7 +4660,7 @@ EXCEPTION
     WHEN others THEN
         RAISE EXCEPTION 'Could not maintain simplified survey layers, ERROR %', SQLERRM;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql VOLATILE;
 
 ALTER FUNCTION LDS_MaintainSimplifiedSurveyLayers(INTEGER) OWNER TO bde_dba;
 
