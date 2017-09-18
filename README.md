@@ -20,28 +20,25 @@ Then in each target database you need to install the
 [linz-bde-schema](https://github.com/linz/linz-bde-schema)
 project;
 
-
-and install the `table_version` and `unaccent` (converting macrons to ASCII) extensions:
-
-```shell
-psql $DB_NAME -c "CREATE EXTENSION IF NOT EXISTS unaccent"
-psql $DB_NAME -c "CREATE EXTENSION IF NOT EXISTS table_version"
-```
-
-You can then execute the installed SQL files with something like:
+Then you can load the schema into a target database
 
 ```shell
-for file in /usr/share/linz-lds-bde-schema/sql/*.sql
-    do psql $DB_NAME -f $file -v ON_ERROR_STOP=1
-done
+linz-lds-bde-schema-load $DB_NAME
 ```
 
-If you would like to revision the tables then install the
-`table_version` extension and then run the versioning SQL script:
+If you would like to revision the table, add `--revision`
+to the `linz-bde-schema-load` invocation:
 
 ```shell
-psql $DB_NAME -f /usr/share/linz-lds-bde-schema/sql/versioning/01-version_tables.sql
+linz-lds-bde-schema-load --revision $DB_NAME
 ```
+
+Upgrade
+-------
+
+You can upgrade the schema in an existing database by following
+the install procedure. The `linz-lds-bde-schema-load` script is able
+to both install or upgrade databases.
 
 Testing
 -------

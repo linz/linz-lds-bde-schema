@@ -1,0 +1,38 @@
+#!/bin/sh
+
+DB_NAME=
+export SKIP_INDEXES=no
+export PSQL=psql
+export SCRIPTSDIR=/usr/share/linz-bde-schema/sql/
+
+while test -n "$1"; do
+    if test $1 = "--noindexes"; then
+        SKIP_INDEXES=yes
+        shift; continue
+    else
+        DB_NAME=$1; shift
+    fi
+done
+
+if test -z "$DB_NAME"; then
+    echo "Usage: $0 [--revision] <database>" >&2
+    exit 1
+fi
+
+export PGDATABASE=$DB_NAME
+(
+cat << EOF
+CREATE EXTENSION IF NOT EXISTS unaccent;
+EOF
+
+for file in ${SCRIPTSDIR}/*.sql; do
+    cat ${file}
+done
+
+if test "${ADD_REVISIONS}" = "yes"; then
+    echo 'CREATE EXTENSION IF NOT EXISTS table_version;'
+    file=${SCRIPTSDIR}/versioning/01-version_tables.sql
+    cat ${file} || exit 1
+fi
+
+) | $PSQL -tA --set ON_ERROR_STOP=1
