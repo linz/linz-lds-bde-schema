@@ -4,7 +4,10 @@ All notable changes for the LINZ LDS BDE schema are documented in this file.
 
 ## 1.1.0dev - 2017-09-DD
 ### Added
-- `linz-lds-bde-schema-load` script
+- Review immutable/stable/volatile flag on all defined functions
+- Embed revision info in all functions
+- New `linz-lds-bde-schema-load` script for easier install/upgrade
+- Allow using more functions without `bde` in `search_path`
 
 ## 1.0.2 - 2016-09-13
 ### Fixed
