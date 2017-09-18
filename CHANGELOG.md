@@ -2,6 +2,10 @@
 
 All notable changes for the LINZ LDS BDE schema are documented in this file.
 
+## 1.1.0dev - 2017-09-DD
+### Added
+- `linz-lds-bde-schema-load` script
+
 ## 1.0.2 - 2016-09-13
 ### Fixed
 - Create survey tables and columns for pending parcels release
