@@ -6,6 +6,7 @@ REVISION=$(shell test -d .git && which git > /dev/null && git describe --always)
 SED = sed
 
 datadir=${DESTDIR}/usr/share/linz-lds-bde-schema
+bindir=${DESTDIR}/usr/local/bin
 
 #
 # Uncoment these line to support testing via pg_regress
@@ -26,6 +27,10 @@ SQLSCRIPTS = \
   sql/versioning/01-version_tables.sql
   $(END)
 
+SCRIPTS = \
+    scripts/linz-lds-bde-schema-load \
+    $(END)
+
 EXTRA_CLEAN = sql/03-lds_version.sql
 
 .dummy:
@@ -35,11 +40,13 @@ all: $(SQLSCRIPTS)
 %.sql: %.sql.in
 	$(SED) -e 's/@@VERSION@@/$(VERSION)/;s/@@REVISION@@/$(REVISION)/' $< > $@
 
-install: $(SQLSCRIPTS)
+install: $(SQLSCRIPTS) $(SCRIPTS)
 	mkdir -p ${datadir}/sql
 	cp sql/*.sql ${datadir}/sql
 	mkdir -p ${datadir}/sql/versioning
 	cp sql/versioning/*.sql ${datadir}/sql/versioning
+	mkdir -p ${bindir}
+	cp $(SCRIPTS) ${bindir}
 
 uninstall:
 	rm -rf ${datadir}
