@@ -31,6 +31,11 @@ to the `linz-bde-schema-load` invocation:
 
 ```shell
 linz-lds-bde-schema-load --revision $DB_NAME
+
+NOTE: the loader script will expect to find SQL scripts
+      under `/usr/share/linz-lds-bde-schema/sql`, if you want
+      them found in a different directory you can set the
+      ``LDSBDESCHEMA_SQLDIR`` environment variable.
 ```
 
 Upgrade

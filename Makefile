@@ -6,7 +6,7 @@ REVISION=$(shell test -d .git && which git > /dev/null && git describe --always)
 SED = sed
 
 datadir=${DESTDIR}/usr/share/linz-lds-bde-schema
-bindir=${DESTDIR}/usr/local/bin
+bindir=${DESTDIR}/usr/bin
 
 #
 # Uncoment these line to support testing via pg_regress

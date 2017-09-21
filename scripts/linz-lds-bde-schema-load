@@ -5,6 +5,10 @@ export SKIP_INDEXES=no
 export PSQL=psql
 export SCRIPTSDIR=/usr/share/linz-bde-schema/sql/
 
+if test -n "${LDSBDESCHEMA_SQLDIR}"; then
+    SCRIPTSDIR=${LDSBDESCHEMA_SQLDIR}
+fi
+
 while test -n "$1"; do
     if test $1 = "--noindexes"; then
         SKIP_INDEXES=yes
