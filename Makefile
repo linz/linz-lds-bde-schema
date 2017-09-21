@@ -31,7 +31,11 @@ SCRIPTS = \
     scripts/linz-lds-bde-schema-load \
     $(END)
 
-EXTRA_CLEAN = sql/03-lds_version.sql
+EXTRA_CLEAN = \
+    sql/03-lds_version.sql \
+    sql/04-lds_layer_functions.sql \
+    sql/06-bde_ext_functions.sql \
+    $(END)
 
 .dummy:
 
