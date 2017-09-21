@@ -1,6 +1,7 @@
 # Change Log
 
-All notable changes for the LINZ LDS BDE schema are documented in this file.
+All notable changes for the LINZ LDS BDE schema are documented in
+this file.
 
 ## 1.1.0dev - 2017-09-DD
 ### Added
@@ -20,4 +21,5 @@ All notable changes for the LINZ LDS BDE schema are documented in this file.
 
 ## [1.0.0] - 2016-05-05
 ### Added
-- Initial release of LDS BDE schema (now separated from linz_bde_uploader project)
+- Initial release of LDS BDE schema (now separated from
+  `linz_bde_uploader` project)
