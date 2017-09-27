@@ -18,7 +18,7 @@ First install the project into the OS data share directory:
 
 Then in each target database you need to install the
 [linz-bde-schema](https://github.com/linz/linz-bde-schema)
-project;
+project.
 
 Then you can load the schema into a target database
 
@@ -27,7 +27,7 @@ linz-lds-bde-schema-load $DB_NAME
 ```
 
 If you would like to revision the table, add `--revision`
-to the `linz-bde-schema-load` invocation:
+to the `linz-lds-bde-schema-load` invocation:
 
 ```shell
 linz-lds-bde-schema-load --revision $DB_NAME
@@ -64,7 +64,7 @@ Build the debian packages using the following command:
 Dependencies
 ------------
 
-Requires [linz-bde-schema](https://github.com/linz/linz-bde-schema),
+Requires [linz-bde-schema](https://github.com/linz/linz-bde-schema) (v1.1.0+),
 [table_version](https://github.com/linz/postgresql-tableversion),
 [linz-postgresql-functions](https://github.com/linz/linz-postgresql-functions)
 and [linz_bde_uploader](https://github.com/linz/linz_bde_uploader) packages
