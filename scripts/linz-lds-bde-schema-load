@@ -9,6 +9,14 @@ if test -n "${LDSBDESCHEMA_SQLDIR}"; then
     SCRIPTSDIR=${LDSBDESCHEMA_SQLDIR}
 fi
 
+if test ! -f "${SCRIPTSDIR}/01-lds_layer_tables.sql"; then
+    cat >&2 <<EOF
+Cannot find 01-lds_layer_tables.sql in ${SCRIPTSDIR}
+Please set LDSBDESCHEMA_SQLDIR environment variable
+EOF
+    exit 1
+fi
+
 while test -n "$1"; do
     if test $1 = "--noindexes"; then
         SKIP_INDEXES=yes
