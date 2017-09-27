@@ -59,7 +59,7 @@ REVOKE ALL ON TABLE affected_parcel_surveys_pend FROM PUBLIC;
 GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE affected_parcel_surveys_pend TO bde_admin;
 GRANT SELECT ON TABLE affected_parcel_surveys_pend TO bde_user;
 -- only enable versioning if we already have versioned tables
-IF EXISTS (SELECT table_version.ver_get_versioned_tables()) THEN
+IF table_version.ver_is_table_versioned(''lds'', ''survey_plans'') THEN
     PERFORM table_version.ver_enable_versioning(''lds'', ''affected_parcel_surveys_pend'');
 END IF;
 --------------------------------------------------------------------------------
