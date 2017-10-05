@@ -2125,7 +2125,7 @@ BEGIN
         WHERE
             PAR.status = 'CURR' AND
             PAR.toc_code =  'PRIM' AND
-            PAR.parcel_intent NOT IN ('HYDR', 'ROAD') AND
+            PAR.parcel_intent NOT IN ('HYDR', 'VCMC', 'VDCO', 'VDLA', 'ROAD') AND
             ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon');
     $sql$;
 
@@ -2174,7 +2174,7 @@ BEGIN
         WHERE
             PAR.status = 'CURR' AND
             PAR.toc_code =  'PRIM' AND
-            PAR.parcel_intent = 'HYDR' AND
+            PAR.parcel_intent IN ('HYDR', 'VCMC', 'VDCO', 'VDLA') AND
             ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon');
     $sql$;
 
