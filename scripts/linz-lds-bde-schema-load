@@ -2,6 +2,7 @@
 
 DB_NAME=
 export SKIP_INDEXES=no
+export EXTENSION_MODE=on
 export PSQL=psql
 export SCRIPTSDIR=/usr/share/linz-lds-bde-schema/sql/
 
@@ -21,14 +22,27 @@ while test -n "$1"; do
     if test $1 = "--noindexes"; then
         SKIP_INDEXES=yes
         shift; continue
+    elif test $1 = "--noextension"; then
+        EXTENSION_MODE=off
+        shift; continue
     else
         DB_NAME=$1; shift
     fi
 done
 
 if test -z "$DB_NAME"; then
-    echo "Usage: $0 [--revision] <database>" >&2
+    echo "Usage: $0 [--revision] [--noextension] <database>" >&2
     exit 1
+fi
+
+# Enable table_version fi needed
+if test "${ADD_REVISIONS}" = "yes"; then
+    LOADER=`pg_config --bindir`/table_version-loader
+    OPTS=
+    if test "${EXTENSION_MODE}" = "off"; then
+        OPTS="--no-extension"
+    fi
+    ${LOADER} ${OPTS} $PGDATABASE || exit 1
 fi
 
 export PGDATABASE=$DB_NAME
@@ -42,7 +56,6 @@ for file in ${SCRIPTSDIR}/*.sql; do
 done
 
 if test "${ADD_REVISIONS}" = "yes"; then
-    echo 'CREATE EXTENSION IF NOT EXISTS table_version;'
     file=${SCRIPTSDIR}/versioning/01-version_tables.sql
     cat ${file} || exit 1
 fi
