@@ -3319,8 +3319,7 @@ BEGIN
                     'crs_street_address',
                     'crs_road_name',
                     'crs_road_ctr_line',
-                    'crs_road_name_asc',
-                    'crs_mesh_blk'
+                    'crs_road_name_asc'
                 ],
                 'any affected'
             )
@@ -3329,7 +3328,6 @@ BEGIN
         AND LDS.LDS_TableHasData('lds', 'railway_centre_line')
         AND LDS.LDS_TableHasData('lds', 'street_address')
         AND LDS.LDS_TableHasData('lds', 'road_centre_line_subsection')
-        AND LDS.LDS_TableHasData('lds', 'mesh_blocks')
     )
     THEN
         RAISE INFO
@@ -3667,36 +3665,6 @@ BEGIN
     END IF;
 
     DROP TABLE tmp_road_name;
-
-    ----------------------------------------------------------------------------
-    -- mesh_blocks layer
-    ----------------------------------------------------------------------------
-    v_table := LDS.LDS_GetTable('lds', 'mesh_blocks');
-
-    v_data_insert_sql := $sql$
-        INSERT INTO %1% (
-            id,
-            code,
-            shape
-        )
-        SELECT
-            MBK.id,
-            MBK.code,
-            MBK.shape
-        FROM
-            crs_mesh_blk MBK
-        WHERE
-            MBK.end_datetime IS NULL
-        ORDER BY
-            id;
-    $sql$;
-
-    PERFORM LDS.LDS_UpdateSimplifiedTable(
-        p_upload,
-        v_table,
-        v_data_insert_sql,
-        v_data_insert_sql
-    );
 
     RAISE INFO 'Finished maintenance on electoral simplified layers';
 
