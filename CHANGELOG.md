@@ -9,6 +9,8 @@ this file.
 - Embed revision info in all functions
 - New `linz-lds-bde-schema-load` script for easier install/upgrade
 - Allow using more functions without `bde` in `search_path`
+### Changed
+- Remove meshblock LDS function  (LoL 3.14)
 
 ## 1.0.2 - 2016-09-13
 ### Fixed
