@@ -70,3 +70,19 @@ clean:
 	rm -f regression.out
 	rm -rf results
 	rm -f $(EXTRA_CLEAN)
+
+installcheck:
+
+	dropdb --if-exists linz-lds-bde-schema-test-db
+
+	createdb linz-lds-bde-schema-test-db
+	linz-bde-schema-load linz-lds-bde-schema-test-db
+	linz-lds-bde-schema-load linz-lds-bde-schema-test-db
+	psql -c 'select lds.lds_version()' linz-lds-bde-schema-test-db
+	dropdb linz-lds-bde-schema-test-db
+
+	createdb linz-lds-bde-schema-test-db
+	linz-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	linz-lds-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	psql -c 'select lds.lds_version()' linz-lds-bde-schema-test-db
+	dropdb linz-lds-bde-schema-test-db
