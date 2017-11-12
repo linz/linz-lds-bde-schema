@@ -35,15 +35,13 @@ if test -z "$DB_NAME"; then
     exit 1
 fi
 
-# Enable table_version fi needed
-if test "${ADD_REVISIONS}" = "yes"; then
-    LOADER=`pg_config --bindir`/table_version-loader
-    OPTS=
-    if test "${EXTENSION_MODE}" = "off"; then
-        OPTS="--no-extension"
-    fi
-    ${LOADER} ${OPTS} $PGDATABASE || exit 1
+# Always enable table_version (is required!)
+LOADER=`pg_config --bindir`/table_version-loader
+OPTS=
+if test "${EXTENSION_MODE}" = "off"; then
+    OPTS="--no-extension"
 fi
+${LOADER} ${OPTS} $DB_NAME || exit 1
 
 export PGDATABASE=$DB_NAME
 (
