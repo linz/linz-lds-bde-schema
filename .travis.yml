@@ -54,22 +54,23 @@ before_install:
   # Check pgxnclient version
   - pgxn --version
   # Install dbpatch
-  - wget https://github.com/linz/postgresql-dbpatch/archive/1.1.0.tar.gz
-  - tar xzf 1.1.0.tar.gz
-  - cd postgresql-dbpatch-1.1.0
+  - wget https://github.com/linz/postgresql-dbpatch/archive/1.2.0.tar.gz
+  - tar xzf 1.2.0.tar.gz
+  - cd postgresql-dbpatch-1.2.0
   - make
   - sudo env "PATH=$PATH" make install
-  - cd ..
+  - cd .. && rm -f 1.2.0.tar.gz
   # Install linz-bde-schema
-  - wget https://github.com/linz/linz-bde-schema/archive/1.0.2.tar.gz
-  - tar xzf 1.0.2.tar.gz && cd linz-bde-schema-1.0.2
+  - wget https://github.com/linz/linz-bde-schema/archive/master.tar.gz
+  - tar xzf master.tar.gz && cd linz-bde-schema-master
   - make
   - sudo env "PATH=$PATH" make install
-  - cd ..
+  - cd .. && rm -f master.tar.gz
   # Install postgresql-tableversion
   - sudo env "PATH=$PATH" pgxn install
-    https://github.com/linz/postgresql-tableversion/archive/1.3.1.tar.gz
+    https://github.com/linz/postgresql-tableversion/archive/1.4.0.tar.gz
 script:
   - make
   - make check || { cat regression.diffs; false; }
   - sudo env "PATH=$PATH" make install
+  - make installcheck
