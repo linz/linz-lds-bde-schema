@@ -138,146 +138,147 @@ ok 110 - Function lds.lds_maintainsimplifiedsurveylayers() should exist
 ok 111 - Function lds.lds_tablehasdata() should exist
 ok 112 - Function lds.lds_tablehasdata() should exist
 ok 113 - Function lds.lds_updatesimplifiedtable() should exist
-ok 114 - Index fk_adj_adm should exist
-ok 115 - Index fk_adj_wrk should exist
-ok 116 - Index fk_afp_par should exist
-ok 117 - Index fk_afp_sur should exist
-ok 118 - Index fk_app_par should exist
-ok 119 - Index fk_coo_cor should exist
-ok 120 - Index fk_coo_cos should exist
-ok 121 - Index fk_coo_nod should exist
-ok 122 - Index fk_cos_cot should exist
-ok 123 - Index fk_cos_dtm should exist
-ok 124 - Index fk_tle_ess should exist
-ok 125 - Index fk_lgd_ttl should exist
-ok 126 - Index fk_rap_par should exist
-ok 127 - Index fk_rap_rar should exist
-ok 128 - Index fk_mrk_nod should exist
-ok 129 - Index fk_mkn_mrk should exist
-ok 130 - Index idx_mkn_type_code should exist
-ok 131 - Index idx_mkn_type should exist
-ok 132 - Index fk_mps_mrk should exist
-ok 133 - Index fk_mps_wrk should exist
-ok 134 - Index fk_nod_cos should exist
-ok 135 - Index fk_nod_sit should exist
-ok 136 - Index idx_now_purpose should exist
-ok 137 - Index fk_oba_obn2 should exist
-ok 138 - Index fk_obn_cos should exist
-ok 139 - Index fk_obn_obt should exist
-ok 140 - Index fk_obn_stp1 should exist
-ok 141 - Index fk_obn_vct should exist
-ok 142 - Index fk_orj_coo_output should exist
-ok 143 - Index idx_orj_adj_coo should exist
-ok 144 - Index fk_pab_lin should exist
-ok 145 - Index fk_pab_pri should exist
-ok 146 - Index fk_pdi_obn should exist
-ok 147 - Index fk_pdi_par should exist
-ok 148 - Index idx_par_nonsurvey_def should exist
-ok 149 - Index fk_pri_par should exist
-ok 150 - Index fk_ess_prp should exist
-ok 151 - Index fk_rns_rcl should exist
-ok 152 - Index fk_rns_rna should exist
-ok 153 - Index fk_stp_wrk should exist
-ok 154 - Index fk_sap_par should exist
-ok 155 - Index fk_sad_rna should exist
-ok 156 - Index fk_wrk_id should exist
-ok 157 - Index fk_sco_scg should exist
-ok 158 - Index fk_ett_lgd should exist
-ok 159 - Index fk_ttl_ett should exist
-ok 160 - Index fk_tmt_ttm should exist
-ok 161 - Index tmt_col_1_text_idx should exist
-ok 162 - Index fk_ttl_ped should exist
-ok 163 - Index fk_ttl_psd should exist
-ok 164 - Index fk_wrk_cos should exist
-ok 165 - Table affected_parcel_surveys should not be versioned
-ok 166 - Table affected_parcel_surveys_pend should not be versioned
-ok 167 - Table all_linear_parcels should not be versioned
-ok 168 - Table all_parcels should not be versioned
-ok 169 - Table all_parcels_pend should not be versioned
-ok 170 - Table cadastral_adjustments should not be versioned
-ok 171 - Table geodetic_antarctic_vertical_marks should not be versioned
-ok 172 - Table geodetic_antarctic_marks should not be versioned
-ok 173 - Table geodetic_marks should not be versioned
-ok 174 - Table geodetic_network_marks should not be versioned
-ok 175 - Table geodetic_vertical_marks should not be versioned
-ok 176 - Table hydro_parcels should not be versioned
-ok 177 - Table land_districts should not be versioned
-ok 178 - Table land_parcels should not be versioned
-ok 179 - Table mesh_blocks should not be versioned
-ok 180 - Table non_primary_linear_parcels should not be versioned
-ok 181 - Table non_primary_parcels should not be versioned
-ok 182 - Table parcel_stat_actions should not be versioned
-ok 183 - Table parcel_vectors should not be versioned
-ok 184 - Table primary_parcels should not be versioned
-ok 185 - Table railway_centre_line should not be versioned
-ok 186 - Table road_centre_line should not be versioned
-ok 187 - Table road_centre_line_subsection should not be versioned
-ok 188 - Table road_parcels should not be versioned
-ok 189 - Table spi_adjustments should not be versioned
-ok 190 - Table strata_parcels should not be versioned
-ok 191 - Table street_address should not be versioned
-ok 192 - Table street_address2 should not be versioned
-ok 193 - Table survey_arc_observations should not be versioned
-ok 194 - Table survey_bdy_marks should not be versioned
-ok 195 - Table survey_network_marks should not be versioned
-ok 196 - Table survey_non_bdy_marks should not be versioned
-ok 197 - Table survey_observations should not be versioned
-ok 198 - Table survey_plans should not be versioned
-ok 199 - Table survey_protected_marks should not be versioned
-ok 200 - Table title_estates should not be versioned
-ok 201 - Table title_memorial_additional_text should not be versioned
-ok 202 - Table title_memorials should not be versioned
-ok 203 - Table title_owners should not be versioned
-ok 204 - Table title_owners_aspatial should not be versioned
-ok 205 - Table title_parcel_associations should not be versioned
-ok 206 - Table titles should not be versioned
-ok 207 - Table titles_aspatial should not be versioned
-ok 208 - Table titles_plus should not be versioned
-ok 209 - Table waca_adjustments should not be versioned
-ok 210 - Table affected_parcel_surveys should be versioned
-ok 211 - Table affected_parcel_surveys_pend should be versioned
-ok 212 - Table all_linear_parcels should be versioned
-ok 213 - Table all_parcels should be versioned
-ok 214 - Table all_parcels_pend should be versioned
-ok 215 - Table cadastral_adjustments should be versioned
-ok 216 - Table geodetic_antarctic_vertical_marks should be versioned
-ok 217 - Table geodetic_antarctic_marks should be versioned
-ok 218 - Table geodetic_marks should be versioned
-ok 219 - Table geodetic_network_marks should be versioned
-ok 220 - Table geodetic_vertical_marks should be versioned
-ok 221 - Table hydro_parcels should be versioned
-ok 222 - Table land_districts should be versioned
-ok 223 - Table land_parcels should be versioned
-ok 224 - Table mesh_blocks should be versioned
-ok 225 - Table non_primary_linear_parcels should be versioned
-ok 226 - Table non_primary_parcels should be versioned
-ok 227 - Table parcel_stat_actions should be versioned
-ok 228 - Table parcel_vectors should be versioned
-ok 229 - Table primary_parcels should be versioned
-ok 230 - Table railway_centre_line should be versioned
-ok 231 - Table road_centre_line should be versioned
-ok 232 - Table road_centre_line_subsection should be versioned
-ok 233 - Table road_parcels should be versioned
-ok 234 - Table spi_adjustments should be versioned
-ok 235 - Table strata_parcels should be versioned
-ok 236 - Table street_address should be versioned
-ok 237 - Table street_address2 should be versioned
-ok 238 - Table survey_arc_observations should be versioned
-ok 239 - Table survey_bdy_marks should be versioned
-ok 240 - Table survey_network_marks should be versioned
-ok 241 - Table survey_non_bdy_marks should be versioned
-ok 242 - Table survey_observations should be versioned
-ok 243 - Table survey_plans should be versioned
-ok 244 - Table survey_protected_marks should be versioned
-ok 245 - Table title_estates should be versioned
-ok 246 - Table title_memorial_additional_text should be versioned
-ok 247 - Table title_memorials should be versioned
-ok 248 - Table title_owners should be versioned
-ok 249 - Table title_owners_aspatial should be versioned
-ok 250 - Table title_parcel_associations should be versioned
-ok 251 - Table titles should be versioned
-ok 252 - Table titles_aspatial should be versioned
-ok 253 - Table titles_plus should be versioned
-ok 254 - Table waca_adjustments should be versioned
-ok 255 - lds_deg_dms behaves as expected
-1..255
+ok 114 - Function lds.lds_version() should exist
+ok 115 - Index fk_adj_adm should exist
+ok 116 - Index fk_adj_wrk should exist
+ok 117 - Index fk_afp_par should exist
+ok 118 - Index fk_afp_sur should exist
+ok 119 - Index fk_app_par should exist
+ok 120 - Index fk_coo_cor should exist
+ok 121 - Index fk_coo_cos should exist
+ok 122 - Index fk_coo_nod should exist
+ok 123 - Index fk_cos_cot should exist
+ok 124 - Index fk_cos_dtm should exist
+ok 125 - Index fk_tle_ess should exist
+ok 126 - Index fk_lgd_ttl should exist
+ok 127 - Index fk_rap_par should exist
+ok 128 - Index fk_rap_rar should exist
+ok 129 - Index fk_mrk_nod should exist
+ok 130 - Index fk_mkn_mrk should exist
+ok 131 - Index idx_mkn_type_code should exist
+ok 132 - Index idx_mkn_type should exist
+ok 133 - Index fk_mps_mrk should exist
+ok 134 - Index fk_mps_wrk should exist
+ok 135 - Index fk_nod_cos should exist
+ok 136 - Index fk_nod_sit should exist
+ok 137 - Index idx_now_purpose should exist
+ok 138 - Index fk_oba_obn2 should exist
+ok 139 - Index fk_obn_cos should exist
+ok 140 - Index fk_obn_obt should exist
+ok 141 - Index fk_obn_stp1 should exist
+ok 142 - Index fk_obn_vct should exist
+ok 143 - Index fk_orj_coo_output should exist
+ok 144 - Index idx_orj_adj_coo should exist
+ok 145 - Index fk_pab_lin should exist
+ok 146 - Index fk_pab_pri should exist
+ok 147 - Index fk_pdi_obn should exist
+ok 148 - Index fk_pdi_par should exist
+ok 149 - Index idx_par_nonsurvey_def should exist
+ok 150 - Index fk_pri_par should exist
+ok 151 - Index fk_ess_prp should exist
+ok 152 - Index fk_rns_rcl should exist
+ok 153 - Index fk_rns_rna should exist
+ok 154 - Index fk_stp_wrk should exist
+ok 155 - Index fk_sap_par should exist
+ok 156 - Index fk_sad_rna should exist
+ok 157 - Index fk_wrk_id should exist
+ok 158 - Index fk_sco_scg should exist
+ok 159 - Index fk_ett_lgd should exist
+ok 160 - Index fk_ttl_ett should exist
+ok 161 - Index fk_tmt_ttm should exist
+ok 162 - Index tmt_col_1_text_idx should exist
+ok 163 - Index fk_ttl_ped should exist
+ok 164 - Index fk_ttl_psd should exist
+ok 165 - Index fk_wrk_cos should exist
+ok 166 - Table affected_parcel_surveys should not be versioned
+ok 167 - Table affected_parcel_surveys_pend should not be versioned
+ok 168 - Table all_linear_parcels should not be versioned
+ok 169 - Table all_parcels should not be versioned
+ok 170 - Table all_parcels_pend should not be versioned
+ok 171 - Table cadastral_adjustments should not be versioned
+ok 172 - Table geodetic_antarctic_vertical_marks should not be versioned
+ok 173 - Table geodetic_antarctic_marks should not be versioned
+ok 174 - Table geodetic_marks should not be versioned
+ok 175 - Table geodetic_network_marks should not be versioned
+ok 176 - Table geodetic_vertical_marks should not be versioned
+ok 177 - Table hydro_parcels should not be versioned
+ok 178 - Table land_districts should not be versioned
+ok 179 - Table land_parcels should not be versioned
+ok 180 - Table mesh_blocks should not be versioned
+ok 181 - Table non_primary_linear_parcels should not be versioned
+ok 182 - Table non_primary_parcels should not be versioned
+ok 183 - Table parcel_stat_actions should not be versioned
+ok 184 - Table parcel_vectors should not be versioned
+ok 185 - Table primary_parcels should not be versioned
+ok 186 - Table railway_centre_line should not be versioned
+ok 187 - Table road_centre_line should not be versioned
+ok 188 - Table road_centre_line_subsection should not be versioned
+ok 189 - Table road_parcels should not be versioned
+ok 190 - Table spi_adjustments should not be versioned
+ok 191 - Table strata_parcels should not be versioned
+ok 192 - Table street_address should not be versioned
+ok 193 - Table street_address2 should not be versioned
+ok 194 - Table survey_arc_observations should not be versioned
+ok 195 - Table survey_bdy_marks should not be versioned
+ok 196 - Table survey_network_marks should not be versioned
+ok 197 - Table survey_non_bdy_marks should not be versioned
+ok 198 - Table survey_observations should not be versioned
+ok 199 - Table survey_plans should not be versioned
+ok 200 - Table survey_protected_marks should not be versioned
+ok 201 - Table title_estates should not be versioned
+ok 202 - Table title_memorial_additional_text should not be versioned
+ok 203 - Table title_memorials should not be versioned
+ok 204 - Table title_owners should not be versioned
+ok 205 - Table title_owners_aspatial should not be versioned
+ok 206 - Table title_parcel_associations should not be versioned
+ok 207 - Table titles should not be versioned
+ok 208 - Table titles_aspatial should not be versioned
+ok 209 - Table titles_plus should not be versioned
+ok 210 - Table waca_adjustments should not be versioned
+ok 211 - Table affected_parcel_surveys should be versioned
+ok 212 - Table affected_parcel_surveys_pend should be versioned
+ok 213 - Table all_linear_parcels should be versioned
+ok 214 - Table all_parcels should be versioned
+ok 215 - Table all_parcels_pend should be versioned
+ok 216 - Table cadastral_adjustments should be versioned
+ok 217 - Table geodetic_antarctic_vertical_marks should be versioned
+ok 218 - Table geodetic_antarctic_marks should be versioned
+ok 219 - Table geodetic_marks should be versioned
+ok 220 - Table geodetic_network_marks should be versioned
+ok 221 - Table geodetic_vertical_marks should be versioned
+ok 222 - Table hydro_parcels should be versioned
+ok 223 - Table land_districts should be versioned
+ok 224 - Table land_parcels should be versioned
+ok 225 - Table mesh_blocks should be versioned
+ok 226 - Table non_primary_linear_parcels should be versioned
+ok 227 - Table non_primary_parcels should be versioned
+ok 228 - Table parcel_stat_actions should be versioned
+ok 229 - Table parcel_vectors should be versioned
+ok 230 - Table primary_parcels should be versioned
+ok 231 - Table railway_centre_line should be versioned
+ok 232 - Table road_centre_line should be versioned
+ok 233 - Table road_centre_line_subsection should be versioned
+ok 234 - Table road_parcels should be versioned
+ok 235 - Table spi_adjustments should be versioned
+ok 236 - Table strata_parcels should be versioned
+ok 237 - Table street_address should be versioned
+ok 238 - Table street_address2 should be versioned
+ok 239 - Table survey_arc_observations should be versioned
+ok 240 - Table survey_bdy_marks should be versioned
+ok 241 - Table survey_network_marks should be versioned
+ok 242 - Table survey_non_bdy_marks should be versioned
+ok 243 - Table survey_observations should be versioned
+ok 244 - Table survey_plans should be versioned
+ok 245 - Table survey_protected_marks should be versioned
+ok 246 - Table title_estates should be versioned
+ok 247 - Table title_memorial_additional_text should be versioned
+ok 248 - Table title_memorials should be versioned
+ok 249 - Table title_owners should be versioned
+ok 250 - Table title_owners_aspatial should be versioned
+ok 251 - Table title_parcel_associations should be versioned
+ok 252 - Table titles should be versioned
+ok 253 - Table titles_aspatial should be versioned
+ok 254 - Table titles_plus should be versioned
+ok 255 - Table waca_adjustments should be versioned
+ok 256 - lds_deg_dms behaves as expected
+1..256
