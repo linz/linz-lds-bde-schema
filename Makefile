@@ -19,10 +19,10 @@ PG_REGRESS := $(dir $(PGXS))../../src/test/regress/pg_regress
 SQLSCRIPTS = \
   sql/01-lds_layer_tables.sql \
   sql/02-lds_bde_schema_index.sql \
-  sql/03-lds_version.sql \
   sql/04-lds_layer_functions.sql \
   sql/05-bde_ext_schema.sql \
   sql/06-bde_ext_functions.sql \
+  sql/07-lds_version.sql \
   sql/99-patches.sql \
   sql/versioning/01-version_tables.sql
   $(END)
@@ -32,9 +32,9 @@ SCRIPTS = \
     $(END)
 
 EXTRA_CLEAN = \
-    sql/03-lds_version.sql \
     sql/04-lds_layer_functions.sql \
     sql/06-bde_ext_functions.sql \
+    sql/07-lds_version.sql \
     $(END)
 
 .dummy:
