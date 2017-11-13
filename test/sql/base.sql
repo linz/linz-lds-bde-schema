@@ -730,6 +730,7 @@ SELECT has_function('lds'::name, 'lds_maintainsimplifiedsurveylayers'::name);
 SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
 SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
 SELECT has_function('lds'::name, 'lds_updatesimplifiedtable'::name);
+SELECT has_function('lds'::name, 'lds_version'::name);
 
 -- }
 
