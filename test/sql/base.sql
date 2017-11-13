@@ -30,10 +30,10 @@ CREATE EXTENSION dbpatch SCHEMA _patches;
 
 \i sql/01-lds_layer_tables.sql
 \i sql/02-lds_bde_schema_index.sql
-\i sql/03-lds_version.sql
 \i sql/04-lds_layer_functions.sql
 \i sql/05-bde_ext_schema.sql
 \i sql/06-bde_ext_functions.sql
+\i sql/07-lds_version.sql
 \i sql/99-patches.sql
 
 BEGIN;
