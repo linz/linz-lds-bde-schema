@@ -31,7 +31,7 @@ while test -n "$1"; do
 done
 
 if test -z "$DB_NAME"; then
-    echo "Usage: $0 [--revision] [--noextension] <database>" >&2
+    echo "Usage: $0 [--noextension] <database>" >&2
     exit 1
 fi
 

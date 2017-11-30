@@ -26,17 +26,10 @@ Then you can load the schema into a target database
 linz-lds-bde-schema-load $DB_NAME
 ```
 
-If you would like to revision the table, add `--revision`
-to the `linz-lds-bde-schema-load` invocation:
-
-```shell
-linz-lds-bde-schema-load --revision $DB_NAME
-
 NOTE: the loader script will expect to find SQL scripts
       under `/usr/share/linz-lds-bde-schema/sql`, if you want
       them found in a different directory you can set the
       ``LDSBDESCHEMA_SQLDIR`` environment variable.
-```
 
 Upgrade
 -------
