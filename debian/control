@@ -12,7 +12,7 @@ Vcs-Browser: https://github.com/linz/linz-lds-bde-schema.git
 Package: linz-lds-bde-schema
 Architecture: all
 Depends: ${misc:Depends},
-         postgresql-9.3-tableversion (>= 1.4.0),
-         linz-bde-schema
+         postgresql-9.3-tableversion (>= 1.4.0)
+Recommends: linz-bde-schema
 Description: Provides the schemas and functions to generate the Landonline
  layers and tables that are available on the LDS.
