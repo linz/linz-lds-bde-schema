@@ -13,7 +13,6 @@ Package: linz-lds-bde-schema
 Architecture: all
 Depends: ${misc:Depends},
          postgresql-9.3-tableversion (>= 1.4.0),
-         linz-postgresql-9.3-functions,
          linz-bde-schema
 Description: Provides the schemas and functions to generate the Landonline
  layers and tables that are available on the LDS.
