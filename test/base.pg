@@ -726,7 +726,6 @@ SELECT has_function('lds'::name, 'lds_getprotectedtext'::name);
 SELECT has_function('lds'::name, 'lds_gettablecontrainstsandindexes'::name);
 SELECT has_function('lds'::name, 'lds_gettable'::name);
 SELECT has_function('lds'::name, 'lds_istablesufiunique'::name);
-SELECT has_function('lds'::name, 'lds_maintainsimplifiedelectorallayers'::name);
 SELECT has_function('lds'::name, 'lds_maintainsimplifiedgeodeticlayers'::name);
 SELECT has_function('lds'::name, 'lds_maintainsimplifiedlayers'::name);
 SELECT has_function('lds'::name, 'lds_maintainsimplifiedparcellayers'::name);
