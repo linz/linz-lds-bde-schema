@@ -612,7 +612,7 @@ BEGIN
 		FROM
 			crs_title TTL
 		WHERE
-			TTL.status = 'PEND'
+			TTL.status IN ( 'PEND', 'PREA' )
 	UNION
 	SELECT
 			title_no
