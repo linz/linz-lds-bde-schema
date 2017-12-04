@@ -25,6 +25,8 @@ BEGIN
         SELECT v_schema || '.' || proname || '(' || pg_get_function_identity_arguments(oid) || ')'
         FROM pg_proc
         WHERE pronamespace=(SELECT oid FROM pg_namespace WHERE nspname = v_schema)
+        -- LDS_GetProtectedText is expected to be optionally provided
+        -- by the user
         AND  proname <> 'lds_getprotectedtext'
     LOOP
         EXECUTE 'DROP FUNCTION ' || v_pcid;
@@ -410,6 +412,9 @@ ALTER FUNCTION LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME) OWNE
 DO $$
 BEGIN
 
+-- LDS_GetProtectedText is expected to be optionally provided by the
+-- user, so we do not override it if existing.
+-- See https://github.com/linz/linz-lds-bde-schema/issues/34
 IF NOT EXISTS(SELECT * from pg_proc where proname = 'lds_getprotectedtext') THEN
 
 EXECUTE '
