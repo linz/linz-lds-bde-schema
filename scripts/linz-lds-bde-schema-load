@@ -36,7 +36,15 @@ if test -z "$DB_NAME"; then
 fi
 
 # Always enable table_version (is required!)
-LOADER=`pg_config --bindir`/table_version-loader
+PGBIN=`pg_config --bindir`
+test -n "$PGBIN" && PATH=$PATH:$PGBIN
+LOADER=table_version-loader
+which $LOADER > /dev/null || {
+    echo "$0 depends on $LOADER, which cannot be found in current PATH." >&2
+    echo "Did you install table_version ? (1.4.0 or later needed)" >&2
+    exit 1
+}
+
 OPTS=
 if test "${EXTENSION_MODE}" = "off"; then
     OPTS="--no-extension"
