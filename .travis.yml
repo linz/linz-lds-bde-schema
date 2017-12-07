@@ -25,7 +25,6 @@ matrix:
         - postgresql-9.4-pgtap
         - postgresql-server-dev-9.4
         - postgresql-9.4-postgis-2.3
-        - pgxnclient
 
   - env: PG=9.5/2.3
     addons:
@@ -36,7 +35,6 @@ matrix:
         - postgresql-9.5-pgtap
         - postgresql-server-dev-9.5
         - postgresql-9.5-postgis-2.3
-        - pgxnclient
 
   - env: PG=9.6/2.3
     addons:
@@ -47,12 +45,11 @@ matrix:
         - postgresql-9.6-pgtap
         - postgresql-server-dev-9.6
         - postgresql-9.6-postgis-2.3
-        - pgxnclient
 
 before_install:
   # Install common packages
   - sudo apt-get -qq update
-  - sudo apt-get install -y pgtap
+  - sudo apt-get install -y pgtap pgxnclient
   # Check pgxnclient version
   - pgxn --version
   # Install dbpatch
