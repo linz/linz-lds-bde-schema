@@ -37,7 +37,17 @@ fi
 
 # Always enable table_version (is required!)
 PGBIN=`pg_config --bindir`
-test -n "$PGBIN" && PATH=$PATH:$PGBIN
+if test -n "$PGBIN"; then
+    PATH=$PATH:$PGBIN
+else
+    # Wild guess where table_version-loader and dbpatch-loader
+    # will be found (as of versions 1.4.0 and 1.2.0 they were
+    # installed in PostgreSQL bin dir)
+    for f in /usr/lib/postgresql/*/bin/; do
+      PATH="$PATH:$f";
+    done
+fi
+
 LOADER=table_version-loader
 which $LOADER > /dev/null || {
     echo "$0 depends on $LOADER, which cannot be found in current PATH." >&2
