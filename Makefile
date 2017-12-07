@@ -27,11 +27,12 @@ SQLSCRIPTS = \
   sql/versioning/01-version_tables.sql
   $(END)
 
-SCRIPTS = \
+SCRIPTS_built = \
     scripts/linz-lds-bde-schema-load \
     $(END)
 
 EXTRA_CLEAN = \
+    $(SCRIPTS_built) \
     sql/04-lds_layer_functions.sql \
     sql/06-bde_ext_functions.sql \
     sql/07-lds_version.sql \
@@ -39,18 +40,22 @@ EXTRA_CLEAN = \
 
 .dummy:
 
-all: $(SQLSCRIPTS)
+all: $(SQLSCRIPTS) $(SCRIPTS_built)
 
 %.sql: %.sql.in
 	$(SED) -e 's/@@VERSION@@/$(VERSION)/;s/@@REVISION@@/$(REVISION)/' $< > $@
 
-install: $(SQLSCRIPTS) $(SCRIPTS)
+scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.in
+	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)|' $< > $@
+	chmod +x $@
+
+install: $(SQLSCRIPTS) $(SCRIPTS_built)
 	mkdir -p ${datadir}/sql
 	cp sql/*.sql ${datadir}/sql
 	mkdir -p ${datadir}/sql/versioning
 	cp sql/versioning/*.sql ${datadir}/sql/versioning
 	mkdir -p ${bindir}
-	cp $(SCRIPTS) ${bindir}
+	cp $(SCRIPTS_built) ${bindir}
 
 uninstall:
 	rm -rf ${datadir}

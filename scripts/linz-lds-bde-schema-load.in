@@ -6,6 +6,8 @@ export EXTENSION_MODE=on
 export PSQL=psql
 export SCRIPTSDIR=/usr/share/linz-lds-bde-schema/sql/
 
+SQLSCRIPTS="@@SQLSCRIPTS@@"
+
 if test -n "${LDSBDESCHEMA_SQLDIR}"; then
     SCRIPTSDIR=${LDSBDESCHEMA_SQLDIR}
 fi
@@ -67,11 +69,24 @@ cat << EOF
 CREATE EXTENSION IF NOT EXISTS unaccent;
 EOF
 
-for file in ${SCRIPTSDIR}/*.sql; do
+for file in $SQLSCRIPTS; do
+    if test `dirname $file` = 'sql/versioning'; then
+        continue
+    fi
+    #echo "DOING $file" >&2
+    file=${SCRIPTSDIR}/`echo $file | sed 's|sql/||'`
     cat ${file}
 done
 
 if test "${ADD_REVISIONS}" = "yes"; then
+    for file in $SQLSCRIPTS; do
+        if test `dirname $file` = 'sql/versioning'; then
+            #echo "DOING (versioning) $file" >&2
+            file=${SCRIPTSDIR}/`echo $file | sed 's|sql/||'`
+            cat ${file}
+        fi
+    done
+
     file=${SCRIPTSDIR}/versioning/01-version_tables.sql
     cat ${file} || exit 1
 fi
