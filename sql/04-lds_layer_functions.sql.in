@@ -1849,9 +1849,8 @@ BEGIN
 
     CREATE TEMP TABLE tmp_parcels AS
     SELECT
-        DISTINCT ON (PAR.id)
         PAR.id,
-        bde_get_app_specific(APP, 'N') AS appellation,
+        bde_get_combined_appellation(PAR.id, 'N') AS appellation,
         string_agg(
             DISTINCT
                 SUR.survey_reference,
@@ -1875,7 +1874,6 @@ BEGIN
     FROM
         tmp_world_regions WDR,
         crs_parcel PAR
-        LEFT JOIN crs_appellation APP ON PAR.id = APP.par_id AND APP.status = 'CURR'
         JOIN tmp_parcel_geoms GEOM ON PAR.id = GEOM.par_id
         JOIN crs_locality LOC ON PAR.ldt_loc_id = LOC.id
         LEFT JOIN tmp_title_parcel_associations TTL ON PAR.id = TTL.par_id
@@ -1886,9 +1884,9 @@ BEGIN
         PAR.status IN ('CURR', 'HIST', 'APPR', 'SHST', 'PEND') AND
         (ST_Contains(WDR.shape, PAR.shape) OR PAR.shape IS NULL)
     GROUP BY
-        1, 2, 4, 5, 6, 7, 8, 10, 11, 12, APP.survey, APP.title
+        1, 2, 4, 5, 6, 7, 8, 10, 11, 12
     ORDER BY
-        PAR.id, APP.survey, APP.title;
+        PAR.id;
 
     RAISE INFO 'Finished creating temp table tmp_parcels';
 
