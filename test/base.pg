@@ -18,6 +18,10 @@
 
 SET client_min_messages TO WARNING;
 
+CREATE EXTENSION postgis;
+CREATE EXTENSION unaccent;
+CREATE EXTENSION table_version;
+
 CREATE SCHEMA _patches;
 CREATE EXTENSION dbpatch SCHEMA _patches;
 

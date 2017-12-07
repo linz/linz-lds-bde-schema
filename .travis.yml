@@ -49,8 +49,10 @@ matrix:
         - postgresql-9.6-postgis-2.3
         - pgxnclient
 
-
 before_install:
+  # Install common packages
+  - sudo apt-get -qq update
+  - sudo apt-get install -y pgtap
   # Check pgxnclient version
   - pgxn --version
   # Install dbpatch
