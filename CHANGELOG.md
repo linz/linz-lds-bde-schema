@@ -3,6 +3,8 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.2.0dev - YYYY-MM-DD
+
 ## 1.1.0 - 2017-12-11
 ### Changed
 - Remove pre-allocated titles from full Landonline title table (#15)
