@@ -41,8 +41,11 @@ all: $(SQLSCRIPTS) $(SCRIPTS_built)
 %.sql: %.sql.in
 	$(SED) -e 's/@@VERSION@@/$(VERSION)/;s/@@REVISION@@/$(REVISION)/' $< > $@
 
-scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.in
-	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)|' $< > $@
+scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.in Makefile
+	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)|' \
+	       -e 's|@@VERSION@@|$(VERSION)|g' \
+           -e 's|@@REVISION@@|$(REVISION)|g' \
+           $< > $@
 	chmod +x $@
 
 install: $(SQLSCRIPTS) $(SCRIPTS_built)

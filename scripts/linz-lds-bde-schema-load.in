@@ -24,6 +24,9 @@ while test -n "$1"; do
     if test $1 = "--noindexes"; then
         SKIP_INDEXES=yes
         shift; continue
+    elif test "$1" = "--version"; then
+        echo "@@VERSION@@ @@REVISION@@"
+        exit 0
     elif test $1 = "--noextension"; then
         EXTENSION_MODE=off
         shift; continue
@@ -34,6 +37,7 @@ done
 
 if test -z "$DB_NAME"; then
     echo "Usage: $0 [--noextension] <database>" >&2
+    echo "       $0 --version" >&2
     exit 1
 fi
 
