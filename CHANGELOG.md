@@ -3,14 +3,15 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.1.0dev - 2017-09-DD
-### Added
-- Review immutable/stable/volatile flag on all defined functions
-- Embed revision info in all functions
-- New `linz-lds-bde-schema-load` script for easier install/upgrade
-- Allow using more functions without `bde` in `search_path`
+## 1.1.0 - 2017-12-11
 ### Changed
 - Remove pre-allocated titles from full Landonline title table (#15)
+### Added
+- New `linz-lds-bde-schema-load` script for easier install/upgrade
+### Enhanced
+- Review immutable/stable/volatile flag on all defined functions
+- Embed revision info in all functions
+- Allow using more functions without `bde` in `search_path`
 
 ## 1.0.2 - 2016-09-13
 ### Fixed
