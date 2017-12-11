@@ -9,6 +9,8 @@ this file.
 - Embed revision info in all functions
 - New `linz-lds-bde-schema-load` script for easier install/upgrade
 - Allow using more functions without `bde` in `search_path`
+### Changed
+- Remove pre-allocated titles from full Landonline title table (#15)
 
 ## 1.0.2 - 2016-09-13
 ### Fixed
