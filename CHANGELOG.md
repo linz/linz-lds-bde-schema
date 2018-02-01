@@ -4,12 +4,13 @@ All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
 ## 1.2.0dev - YYYY-MM-DD
+### Changed
+- Stop producing simplified electoral layers, dropping dependency
+  on territorial admin boundary data (#4)
 
 ## 1.1.0 - 2017-12-11
 ### Changed
 - Remove pre-allocated titles from full Landonline title table (#15)
-- Stop producing simplified electoral layers, dropping dependency
-  on territorial admin boundary data (#4)
 ### Added
 - New `linz-lds-bde-schema-load` script for easier install/upgrade
 ### Enhanced
