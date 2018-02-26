@@ -123,7 +123,7 @@ BEGIN
                     'crs_transact_type',
                     'crs_ttl_enc',
                     'crs_ttl_hierarchy',
-                    'crs_ttl_inst',
+                    'crs_ttl_inst_full',
                     'crs_ttl_inst_title',
                     'crs_user',
                     'crs_vector',
@@ -175,7 +175,7 @@ BEGIN
         AND LDS.LDS_TableHasData('bde_ext', 'transact_type')
         AND LDS.LDS_TableHasData('bde_ext', 'ttl_enc')
         AND LDS.LDS_TableHasData('bde_ext', 'ttl_hierarchy')
-        AND LDS.LDS_TableHasData('bde_ext', 'ttl_inst')
+        AND LDS.LDS_TableHasData('bde_ext', 'ttl_inst_full')
         AND LDS.LDS_TableHasData('bde_ext', 'ttl_inst_title')
         AND LDS.LDS_TableHasData('bde_ext', 'user')
         AND LDS.LDS_TableHasData('bde_ext', 'vector_pt')
@@ -1988,9 +1988,9 @@ BEGIN
     );
 
     ----------------------------------------------------------------------------
-    -- ttl inst layer (2)
+    -- ttl inst full layer (2)
     ----------------------------------------------------------------------------
-    v_table := LDS.LDS_GetTable('bde_ext', 'ttl_inst');
+    v_table := LDS.LDS_GetTable('bde_ext', 'ttl_inst_full');
 
 
     v_data_insert_sql := $sql$
@@ -2005,7 +2005,8 @@ BEGIN
                 trt_grp,
                 trt_type,
                 audit_id,
-                tin_id_parent
+                tin_id_parent,
+                completion_date
         )
         SELECT
                 TIN.id,
@@ -2018,7 +2019,8 @@ BEGIN
                 TIN.trt_grp,
                 TIN.trt_type,
                 TIN.audit_id,
-                TIN.tin_id_parent
+                TIN.tin_id_parent,
+                TIN.completion_date
         FROM crs_ttl_inst TIN
         INNER JOIN (
                 SELECT tin_id FROM crs_action

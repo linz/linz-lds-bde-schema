@@ -854,10 +854,10 @@ GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ttl_hierarchy TO bde_admin;
 GRANT SELECT ON TABLE ttl_hierarchy TO bde_user;
 
 -- =============================================================================
--- T T L   I N S T
+-- T T L   I N S T   FULL
 -- =============================================================================
-DROP TABLE IF EXISTS ttl_inst CASCADE;
-CREATE TABLE ttl_inst
+DROP TABLE IF EXISTS ttl_inst_full CASCADE;
+CREATE TABLE ttl_inst_full
 (
   id INTEGER NOT NULL,
   inst_no VARCHAR(30) NOT NULL,
@@ -870,13 +870,39 @@ CREATE TABLE ttl_inst
   priority_no INTEGER,
   tin_id_parent INTEGER,
   audit_id INTEGER NOT NULL,
-  CONSTRAINT pkey_ttl_inst PRIMARY KEY (id)
+  completion_date DATE,
+  CONSTRAINT pkey_ttl_inst_full PRIMARY KEY (id)
 );
 
-ALTER TABLE ttl_inst OWNER TO bde_dba;
-REVOKE ALL ON TABLE ttl_inst FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ttl_inst TO bde_admin;
-GRANT SELECT ON TABLE ttl_inst TO bde_user;
+ALTER TABLE ttl_inst_full OWNER TO bde_dba;
+REVOKE ALL ON TABLE ttl_inst_full FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ttl_inst_full TO bde_admin;
+GRANT SELECT ON TABLE ttl_inst_full TO bde_user;
+
+-- =============================================================================
+-- T T L   I N S T
+-- =============================================================================
+DROP TABLE IF EXISTS ttl_inst CASCADE; -- used to a table before 1.2.0
+DROP VIEW IF EXISTS ttl_inst CASCADE;
+CREATE VIEW ttl_inst AS
+SELECT
+  id,
+  inst_no,
+  trt_grp,
+  trt_type,
+  ldt_loc_id,
+  status,
+  lodged_datetime,
+  dlg_id,
+  priority_no,
+  tin_id_parent,
+  audit_id
+FROM bde_ext.ttl_inst_full;
+
+ALTER VIEW ttl_inst OWNER TO bde_dba;
+REVOKE ALL ON ttl_inst FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON ttl_inst TO bde_admin;
+GRANT SELECT ON ttl_inst TO bde_user;
 
 -- =============================================================================
 -- T T L   I N S T   T I T L E
