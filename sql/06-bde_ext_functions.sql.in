@@ -2,7 +2,7 @@
 --
 -- linz-lds-bde-schema - LINZ LDS BDE simplified schema
 --
--- Copyright 2016 Crown copyright (c)
+-- Copyright 2016-2018 Crown copyright (c)
 -- Land Information New Zealand and the New Zealand Government.
 -- All rights reserved
 --
@@ -2026,6 +2026,56 @@ BEGIN
                 SELECT tin_id FROM crs_ttl_inst_title
             ) TIN_IDS
             ON TIN_IDS.tin_id = TIN.id
+        ORDER BY id;
+        $sql$;
+
+    RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
+    PERFORM LDS.LDS_UpdateSimplifiedTable(
+        p_upload,
+        v_table,
+        v_data_insert_sql,
+        v_data_insert_sql
+    );
+
+    ----------------------------------------------------------------------------
+    -- ttl inst cmplte layer
+    ----------------------------------------------------------------------------
+    v_table := LDS.LDS_GetTable('bde_ext', 'ttl_inst_cmplte');
+
+    v_data_insert_sql := $sql$
+        INSERT INTO %1% (
+                id,
+                dlg_id,
+                inst_no,
+                priority_no,
+                ldt_loc_id,
+                lodged_datetime,
+                status,
+                trt_grp,
+                trt_type,
+                audit_id,
+                tin_id_parent,
+                completion_date
+        )
+        SELECT
+                TIN.id,
+                TIN.dlg_id,
+                TIN.inst_no,
+                TIN.priority_no,
+                TIN.ldt_loc_id,
+                TIN.lodged_datetime,
+                TIN.status,
+                TIN.trt_grp,
+                TIN.trt_type,
+                TIN.audit_id,
+                TIN.tin_id_parent,
+                TIN.completion_date
+        FROM crs_ttl_inst TIN
+        INNER JOIN bde_ext.ttl_inst TIN_IDS
+            ON TIN_IDS.id = TIN.id
+        WHERE TIN.id > 12035000
+          AND (TIN.completion_date >= '1 January 2014')
+          AND TIN.status='REGD' AND TIN.trt_grp='TINT'
         ORDER BY id;
         $sql$;
 

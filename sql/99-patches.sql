@@ -2,7 +2,7 @@
 --
 -- linz-lds-bde-schema
 --
--- Copyright 2016 Crown copyright (c)
+-- Copyright 2016-2018 Crown copyright (c)
 -- Land Information New Zealand and the New Zealand Government.
 -- All rights reserved
 --
@@ -75,6 +75,45 @@ END IF;
 END;
 $$
 '
+);
+
+-------------------------------------------------------------------------------
+-- 1.2.0 Add completion-date equipped Title Instrument table
+-------------------------------------------------------------------------------
+PERFORM _patches.apply_patch(
+    'lds_bde - 1.2.0: Create completion-date equipped Title Instrument table',
+$PATCH$
+DO $$
+BEGIN
+SET search_path = bde_ext, lds, bde, public;
+-- =============================================================================
+-- T T L   I N S T   C M P L T E
+-- =============================================================================
+DROP TABLE IF EXISTS ttl_inst_cmplte CASCADE;
+CREATE TABLE ttl_inst_cmplte
+(
+  id INTEGER NOT NULL, -- REFERENCES bde_ext.ttl_inst(id)
+  status VARCHAR(4) NOT NULL,
+  ttl_title_no_prior VARCHAR(20),
+  ttl_title_no_flw VARCHAR(20) NOT NULL,
+  tdr_id INTEGER,
+  act_tin_id_crt INTEGER,
+  act_id_crt INTEGER,
+  completion_date DATE,
+  CONSTRAINT pkey_ttl_inst_cmplte PRIMARY KEY (id)
+);
+
+ALTER TABLE ttl_inst_cmplte OWNER TO bde_dba;
+REVOKE ALL ON TABLE ttl_inst_cmplte FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ttl_inst_cmplte TO bde_admin;
+GRANT SELECT ON TABLE ttl_inst_cmplte TO bde_user;
+-- only enable versioning if we already have versioned tables
+IF table_version.ver_is_table_versioned('lds', 'survey_plans') THEN
+    PERFORM table_version.ver_enable_versioning('bde_ext', 'ttl_inst_cmplte');
+END IF;
+END;
+$$
+$PATCH$
 );
 
 END;
