@@ -2,7 +2,7 @@
 --
 -- linz-lds-bde-schema - LINZ LDS BDE simplified schema
 --
--- Copyright 2016 Crown copyright (c)
+-- Copyright 2016-2018 Crown copyright (c)
 -- Land Information New Zealand and the New Zealand Government.
 -- All rights reserved
 --
