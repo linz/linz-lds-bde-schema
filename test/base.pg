@@ -46,9 +46,11 @@ CREATE EXTENSION pgtap;
 
 SELECT * FROM no_plan();
 
-SELECT has_schema('lds'::name);
-
 -- Test tables existance and their composition {
+
+-- Test lds schema {
+
+SELECT has_schema('lds'::name);
 
 SELECT has_table('lds'::name, 'affected_parcel_surveys'::name);
 SELECT columns_are('lds'::name, 'affected_parcel_surveys'::name,
@@ -708,7 +710,675 @@ SELECT columns_are('lds'::name, 'waca_adjustments'::name,
   'id'
   ]);
 
--- }
+-- Test bde_ext schema {
+
+SELECT has_schema('bde_ext'::name);
+
+SELECT has_table('bde_ext'::name, 'adjustment_run'::name);
+SELECT columns_are('bde_ext'::name, 'adjustment_run'::name,
+  ARRAY[
+    'id',
+    'adm_id',
+    'cos_id',
+    'status',
+    'usr_id_exec',
+    'adjust_datetime',
+    'description',
+    'sum_sqrd_residuals',
+    'redundancy',
+    'wrk_id',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'alias'::name);
+SELECT columns_are('bde_ext'::name, 'alias'::name,
+  ARRAY[
+    'id',
+    'prp_id',
+    'surname',
+    'other_names'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'coordinate'::name);
+SELECT columns_are('bde_ext'::name, 'coordinate'::name,
+  ARRAY[
+    'id',
+    'cos_id',
+    'nod_id',
+    'ort_type_1',
+    'ort_type_2',
+    'ort_type_3',
+    'status',
+    'sdc_status',
+    'source',
+    'value1',
+    'value2',
+    'value3',
+    'wrk_id_created',
+    'cor_id',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'enc_share'::name);
+SELECT columns_are('bde_ext'::name, 'enc_share'::name,
+  ARRAY[
+    'id',
+    'enc_id',
+    'status',
+    'act_tin_id_crt',
+    'act_id_crt',
+    'act_id_ext',
+    'act_tin_id_ext',
+    'system_crt',
+    'system_ext'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'encumbrance'::name);
+SELECT columns_are('bde_ext'::name, 'encumbrance'::name,
+  ARRAY[
+    'id',
+    'status',
+    'act_tin_id_orig',
+    'act_tin_id_crt',
+    'act_id_crt',
+    'act_id_orig',
+    'term'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'encumbrancee'::name);
+SELECT columns_are('bde_ext'::name, 'encumbrancee'::name,
+  ARRAY[
+    'id',
+    'ens_id',
+    'status',
+    'name'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'estate_share'::name);
+SELECT columns_are('bde_ext'::name, 'estate_share'::name,
+  ARRAY[
+    'id',
+    'ett_id',
+    'share',
+    'status',
+    'share_memorial',
+    'act_tin_id_crt',
+    'act_id_crt',
+    'executorship',
+    'original_flag',
+    'system_crt'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'feature_name_poly'::name);
+SELECT columns_are('bde_ext'::name, 'feature_name_poly'::name,
+  ARRAY[
+    'id',
+    'type',
+    'name',
+    'status',
+    'other_details',
+    'audit_id',
+    'se_row_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'feature_name_pt'::name);
+SELECT columns_are('bde_ext'::name, 'feature_name_pt'::name,
+  ARRAY[
+    'id',
+    'type',
+    'name',
+    'status',
+    'other_details',
+    'audit_id',
+    'se_row_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'legal_desc'::name);
+SELECT columns_are('bde_ext'::name, 'legal_desc'::name,
+  ARRAY[
+    'id',
+    'type',
+    'status',
+    'total_area',
+    'ttl_title_no',
+    'legal_desc_text',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'line'::name);
+SELECT columns_are('bde_ext'::name, 'line'::name,
+  ARRAY[
+    'boundary',
+    'type',
+    'description',
+    'nod_id_end',
+    'nod_id_start',
+    'arc_radius',
+    'arc_direction',
+    'arc_length',
+    'pnx_id_created',
+    'dcdb_feature',
+    'id',
+    'audit_id',
+    'se_row_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'maintenance'::name);
+SELECT columns_are('bde_ext'::name, 'maintenance'::name,
+  ARRAY[
+    'mrk_id',
+    'type',
+    'status',
+    'desc',
+    'complete_date',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'mark'::name);
+SELECT columns_are('bde_ext'::name, 'mark'::name,
+  ARRAY[
+    'id',
+    'nod_id',
+    'status',
+    'type',
+    'desc',
+    'category',
+    'country',
+    'beacon_type',
+    'protection_type',
+    'maintenance_level',
+    'mrk_id_dist',
+    'disturbed',
+    'disturbed_date',
+    'mrk_id_repl',
+    'wrk_id_created',
+    'replaced',
+    'replaced_date',
+    'mark_annotation',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'mark_name'::name);
+SELECT columns_are('bde_ext'::name, 'mark_name'::name,
+  ARRAY[
+    'mrk_id',
+    'type',
+    'name',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'mark_phys_state'::name);
+SELECT columns_are('bde_ext'::name, 'mark_phys_state'::name,
+  ARRAY[
+    'mrk_id',
+    'wrk_id',
+    'type',
+    'condition',
+    'existing_mark',
+    'status',
+    'ref_datetime',
+    'pend_mark_status',
+    'pend_replaced',
+    'pend_disturbed',
+    'mrk_id_pend_rep',
+    'mrk_id_pend_dist',
+    'pend_dist_date',
+    'pend_repl_date',
+    'pend_mark_name',
+    'pend_mark_type',
+    'pend_mark_ann',
+    'description',
+    'latest_condition',
+    'latest_cond_date',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'node'::name);
+SELECT columns_are('bde_ext'::name, 'node'::name,
+  ARRAY[
+    'id',
+    'cos_id_official',
+    'type',
+    'status',
+    'order_group_off',
+    'sit_id',
+    'alt_id',
+    'wrk_id_created',
+    'audit_id',
+    'se_row_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'node_prp_order'::name);
+SELECT columns_are('bde_ext'::name, 'node_prp_order'::name,
+  ARRAY[
+    'dtm_id',
+    'nod_id',
+    'cor_id',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'nominal_index'::name);
+SELECT columns_are('bde_ext'::name, 'nominal_index'::name,
+  ARRAY[
+    'id',
+    'ttl_title_no',
+    'status',
+    'name_type',
+    'corporate_name',
+    'surname',
+    'other_names',
+    'prp_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'office'::name);
+SELECT columns_are('bde_ext'::name, 'office'::name,
+  ARRAY[
+    'code',
+    'name',
+    'rcs_name',
+    'cis_name',
+    'alloc_source_table',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'parcel'::name);
+SELECT columns_are('bde_ext'::name, 'parcel'::name,
+  ARRAY[
+    'id',
+    'ldt_loc_id',
+    'img_id',
+    'fen_id',
+    'toc_code',
+    'alt_id',
+    'area',
+    'nonsurvey_def',
+    'appellation_date',
+    'parcel_intent',
+    'status',
+    'total_area',
+    'calculated_area',
+    'audit_id',
+    'se_row_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'parcel_dimen'::name);
+SELECT columns_are('bde_ext'::name, 'parcel_dimen'::name,
+  ARRAY[
+    'obn_id',
+    'par_id',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'parcel_label'::name);
+SELECT columns_are('bde_ext'::name, 'parcel_label'::name,
+  ARRAY[
+    'id',
+    'par_id',
+    'se_row_id',
+    'audit_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'parcel_ls'::name);
+SELECT columns_are('bde_ext'::name, 'parcel_ls'::name,
+  ARRAY[
+    'id',
+    'ldt_loc_id',
+    'img_id',
+    'fen_id',
+    'toc_code',
+    'alt_id',
+    'area',
+    'nonsurvey_def',
+    'appellation_date',
+    'parcel_intent',
+    'status',
+    'total_area',
+    'calculated_area',
+    'audit_id',
+    'se_row_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'parcel_ring'::name);
+SELECT columns_are('bde_ext'::name, 'parcel_ring'::name,
+  ARRAY[
+    'id',
+    'par_id',
+    'pri_id_parent_ring',
+    'is_ring',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'proprietor'::name);
+SELECT columns_are('bde_ext'::name, 'proprietor'::name,
+  ARRAY[
+    'id',
+    'ets_id',
+    'status',
+    'type',
+    'corporate_name',
+    'prime_surname',
+    'prime_other_names',
+    'name_suffix',
+    'original_flag'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'stat_version'::name);
+SELECT columns_are('bde_ext'::name, 'stat_version'::name,
+  ARRAY[
+    'version',
+    'area_class',
+    'desc',
+    'statute_action',
+    'start_date',
+    'end_date',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'statist_area'::name);
+SELECT columns_are('bde_ext'::name, 'statist_area'::name,
+  ARRAY[
+    'id',
+    'name',
+    'name_abrev',
+    'code',
+    'status',
+    'sav_version',
+    'sav_area_class',
+    'alt_id',
+    'se_row_id',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'street_address_ext'::name);
+SELECT columns_are('bde_ext'::name, 'street_address_ext'::name,
+  ARRAY[
+    'house_number',
+    'range_low',
+    'range_high',
+    'status',
+    'unofficial_flag',
+    'rcl_id',
+    'rna_id',
+    'alt_id',
+    'id',
+    'sufi',
+    'audit_id',
+    'se_row_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'survey'::name);
+SELECT columns_are('bde_ext'::name, 'survey'::name,
+  ARRAY[
+    'wrk_id',
+    'ldt_loc_id',
+    'dataset_series',
+    'dataset_id',
+    'type_of_dataset',
+    'data_source',
+    'lodge_order',
+    'dataset_suffix',
+    'surveyor_data_ref',
+    'survey_class',
+    'description',
+    'usr_id_sol',
+    'survey_date',
+    'certified_date',
+    'registered_date',
+    'chf_sur_amnd_date',
+    'dlr_amnd_date',
+    'cadastral_surv_acc',
+    'prior_wrk_id',
+    'abey_prior_status',
+    'fhr_id',
+    'pnx_id_submitted',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'survey_plan_image_revision'::name);
+SELECT columns_are('bde_ext'::name, 'survey_plan_image_revision'::name,
+  ARRAY[
+    'id',
+    'sur_wrk_id',
+    'survey_reference',
+    'land_district',
+    'plan_type',
+    'pages',
+    'last_updated'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'title'::name);
+SELECT columns_are('bde_ext'::name, 'title'::name,
+  ARRAY[
+    'title_no',
+    'ldt_loc_id',
+    'register_type',
+    'ste_id',
+    'issue_date',
+    'guarantee_status',
+    'status',
+    'type',
+    'provisional',
+    'sur_wrk_id',
+    'ttl_title_no_srs',
+    'ttl_title_no_head_srs',
+    'maori_land',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'title_action'::name);
+SELECT columns_are('bde_ext'::name, 'title_action'::name,
+  ARRAY[
+    'ttl_title_no',
+    'act_tin_id',
+    'act_id',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'title_doc_ref'::name);
+SELECT columns_are('bde_ext'::name, 'title_doc_ref'::name,
+  ARRAY[
+    'id',
+    'type',
+    'tin_id',
+    'reference_no'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'title_estate'::name);
+SELECT columns_are('bde_ext'::name, 'title_estate'::name,
+  ARRAY[
+    'id',
+    'ttl_title_no',
+    'type',
+    'status',
+    'lgd_id',
+    'share',
+    'timeshare_week_no',
+    'purpose',
+    'act_tin_id_crt',
+    'act_id_crt',
+    'original_flag',
+    'term',
+    'tin_id_orig'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'title_mem_text'::name);
+SELECT columns_are('bde_ext'::name, 'title_mem_text'::name,
+  ARRAY[
+    'ttm_id',
+    'sequence_no',
+    'curr_hist_flag',
+    'std_text',
+    'col_1_text',
+    'col_2_text',
+    'col_3_text',
+    'col_4_text',
+    'col_5_text',
+    'col_6_text',
+    'col_7_text',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'title_memorial'::name);
+SELECT columns_are('bde_ext'::name, 'title_memorial'::name,
+  ARRAY[
+    'id',
+    'ttl_title_no',
+    'mmt_code',
+    'act_id_orig',
+    'act_tin_id_orig',
+    'act_id_crt',
+    'act_tin_id_crt',
+    'status',
+    'user_changed',
+    'text_type',
+    'register_only_mem',
+    'prev_further_reg',
+    'curr_hist_flag',
+    'default',
+    'number_of_cols',
+    'col_1_size',
+    'col_2_size',
+    'col_3_size',
+    'col_4_size',
+    'col_5_size',
+    'col_6_size',
+    'col_7_size',
+    'act_id_ext',
+    'act_tin_id_ext'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'title_parcel_association'::name);
+SELECT columns_are('bde_ext'::name, 'title_parcel_association'::name,
+  ARRAY[
+    'id',
+    'ttl_title_no',
+    'par_id',
+    'source'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'transact_type'::name);
+SELECT columns_are('bde_ext'::name, 'transact_type'::name,
+  ARRAY[
+    'grp',
+    'type',
+    'description',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'ttl_enc'::name);
+SELECT columns_are('bde_ext'::name, 'ttl_enc'::name,
+  ARRAY[
+    'id',
+    'ttl_title_no',
+    'enc_id',
+    'status',
+    'act_tin_id_crt',
+    'act_id_crt'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'ttl_hierarchy'::name);
+SELECT columns_are('bde_ext'::name, 'ttl_hierarchy'::name,
+  ARRAY[
+    'id',
+    'status',
+    'ttl_title_no_prior',
+    'ttl_title_no_flw',
+    'tdr_id',
+    'act_tin_id_crt',
+    'act_id_crt'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'ttl_inst_title'::name);
+SELECT columns_are('bde_ext'::name, 'ttl_inst_title'::name,
+  ARRAY[
+    'tin_id',
+    'ttl_title_no',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'user'::name);
+SELECT columns_are('bde_ext'::name, 'user'::name,
+  ARRAY[
+    'id',
+    'type',
+    'status',
+    'title',
+    'given_names',
+    'surname',
+    'corporate_name',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'vector_ls'::name);
+SELECT columns_are('bde_ext'::name, 'vector_ls'::name,
+  ARRAY[
+    'type',
+    'nod_id_start',
+    'nod_id_end',
+    'length',
+    'source',
+    'id',
+    'audit_id',
+    'se_row_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'vector_pt'::name);
+SELECT columns_are('bde_ext'::name, 'vector_pt'::name,
+  ARRAY[
+    'type',
+    'nod_id_start',
+    'nod_id_end',
+    'length',
+    'source',
+    'id',
+    'audit_id',
+    'se_row_id',
+    'shape'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'work'::name);
+SELECT columns_are('bde_ext'::name, 'work'::name,
+  ARRAY[
+    'id',
+    'trt_grp',
+    'trt_type',
+    'status',
+    'con_id',
+    'pro_id',
+    'usr_id_firm',
+    'usr_id_principal',
+    'cel_id',
+    'project_name',
+    'invoice',
+    'external_work_id',
+    'view_txn',
+    'restricted',
+    'lodged_date',
+    'authorised_date',
+    'usr_id_authorised',
+    'validated_date',
+    'usr_id_validated',
+    'cos_id',
+    'data_loaded',
+    'run_auto_rules',
+    'alt_id',
+    'audit_id',
+    'usr_id_prin_firm'
+  ]);
+
+
+-- } -- bde_ext schema
+
+-- } -- tables existance and their composition
 
 -- Test functions existance {
 
