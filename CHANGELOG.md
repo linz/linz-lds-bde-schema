@@ -7,6 +7,7 @@ this file.
 ### Changed
 - Stop producing simplified electoral layers, dropping dependency
   on territorial admin boundary data (#4)
+- Add `ttl_inst_cmplte` table in `bde_ext` schema (#74)
 
 ## 1.1.0 - 2017-12-11
 ### Changed
