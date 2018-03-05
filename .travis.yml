@@ -68,6 +68,12 @@ before_install:
   # Install postgresql-tableversion
   - sudo env "PATH=$PATH" pgxn install
     https://github.com/linz/postgresql-tableversion/archive/1.4.0.tar.gz
+  # Install linz-bde-uploader
+  - wget https://github.com/linz/linz_bde_uploader/archive/2.4.0.tar.gz
+  - tar xzf 2.4.0.tar.gz && cd linz_bde_uploader-2.4.0
+  - ./configure && make
+  - sudo env "PATH=$PATH" make install
+  - cd .. && rm -rf 2.4.0.tar.gz linz_bde_uploader-2.4.0
 script:
   - make
   - make check || { cat regression.diffs; false; }
