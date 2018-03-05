@@ -58,7 +58,8 @@ Dependencies
 ------------
 
 Requires [linz-bde-schema](https://github.com/linz/linz-bde-schema) (v1.1.0+),
-[table_version](https://github.com/linz/postgresql-tableversion) (v1.4.0+) and
+[table_version](https://github.com/linz/postgresql-tableversion) (v1.4.0+),
+[dbpatch](https://github.com/linz/postgresql-dbpatch) (v1.2.0+) and
 [linz_bde_uploader](https://github.com/linz/linz_bde_uploader) (v2.4.0+)
 packages.
 
