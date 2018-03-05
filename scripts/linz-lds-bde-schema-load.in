@@ -54,16 +54,16 @@ else
     done
 fi
 
-LOADER=table_version-loader
+LOADER=linz-bde-uploader-schema-load
 which $LOADER > /dev/null || {
     echo "$0 depends on $LOADER, which cannot be found in current PATH." >&2
-    echo "Did you install table_version ? (1.4.0 or later needed)" >&2
+    echo "Did you install linz-bde-uploader ? (2.4.0 or later needed)" >&2
     exit 1
 }
 
 OPTS=
 if test "${EXTENSION_MODE}" = "off"; then
-    OPTS="--no-extension"
+    OPTS="--noextension"
 fi
 ${LOADER} ${OPTS} $DB_NAME || exit 1
 
