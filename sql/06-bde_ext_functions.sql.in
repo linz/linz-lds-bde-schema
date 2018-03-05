@@ -2073,9 +2073,6 @@ BEGIN
         FROM crs_ttl_inst TIN
         INNER JOIN bde_ext.ttl_inst TIN_IDS
             ON TIN_IDS.id = TIN.id
-        WHERE TIN.id > 12035000
-          AND (TIN.completion_date >= '1 January 2014')
-          AND TIN.status='REGD' AND TIN.trt_grp='TINT'
         ORDER BY id;
         $sql$;
 
