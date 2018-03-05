@@ -93,13 +93,16 @@ DROP TABLE IF EXISTS ttl_inst_cmplte CASCADE;
 CREATE TABLE ttl_inst_cmplte
 (
   id INTEGER NOT NULL, -- REFERENCES bde_ext.ttl_inst(id)
+  dlg_id INTEGER,
+  inst_no VARCHAR(30) NOT NULL,
+  priority_no INTEGER,
+  ldt_loc_id INTEGER NOT NULL,
+  lodged_datetime TIMESTAMP NOT NULL,
   status VARCHAR(4) NOT NULL,
-  ttl_title_no_prior VARCHAR(20),
-  ttl_title_no_flw VARCHAR(20) NOT NULL,
-  tdr_id INTEGER,
-  act_tin_id_crt INTEGER,
-  act_id_crt INTEGER,
-  completion_date DATE,
+  trt_grp VARCHAR(4) NOT NULL,
+  trt_type VARCHAR(4) NOT NULL,
+  audit_id INTEGER NOT NULL,
+  tin_id_parent INTEGER,
   CONSTRAINT pkey_ttl_inst_cmplte PRIMARY KEY (id)
 );
 
