@@ -60,7 +60,7 @@ ${LOADER} ${OPTS} $DB_NAME || exit 1
 export PGDATABASE=$DB_NAME
 (
 cat << EOF
-CREATE EXTENSION IF NOT EXISTS unaccent;
+CREATE EXTENSION IF NOT EXISTS unaccent SCHEMA public;
 EOF
 
 for file in $SQLSCRIPTS; do
