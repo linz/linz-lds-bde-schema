@@ -25,13 +25,13 @@ SQLSCRIPTS = \
 
 SCRIPTS_built = \
     scripts/linz-lds-bde-schema-load \
+    sql/04-lds_layer_functions.sql \
+    sql/06-bde_ext_functions.sql \
+    sql/07-lds_version.sql \
     $(END)
 
 EXTRA_CLEAN = \
     $(SCRIPTS_built) \
-    sql/04-lds_layer_functions.sql \
-    sql/06-bde_ext_functions.sql \
-    sql/07-lds_version.sql \
     $(END)
 
 .dummy:
