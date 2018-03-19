@@ -103,6 +103,7 @@ CREATE TABLE ttl_inst_cmplte
   trt_type VARCHAR(4) NOT NULL,
   audit_id INTEGER NOT NULL,
   tin_id_parent INTEGER,
+  completion_date DATE,
   CONSTRAINT pkey_ttl_inst_cmplte PRIMARY KEY (id)
 );
 
