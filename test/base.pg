@@ -1296,6 +1296,39 @@ SELECT columns_are('bde_ext'::name, 'ttl_hierarchy'::name,
     'act_id_crt'
   ]);
 
+SELECT has_table('bde_ext'::name, 'ttl_inst'::name);
+SELECT columns_are('bde_ext'::name, 'ttl_inst'::name,
+  ARRAY[
+    'id',
+    'inst_no',
+    'trt_grp',
+    'trt_type',
+    'ldt_loc_id',
+    'status',
+    'lodged_datetime',
+    'dlg_id',
+    'priority_no',
+    'tin_id_parent',
+    'audit_id'
+  ]);
+
+SELECT has_table('bde_ext'::name, 'ttl_inst_cmplte'::name);
+SELECT columns_are('bde_ext'::name, 'ttl_inst_cmplte'::name,
+  ARRAY[
+    'id',
+    'dlg_id',
+    'inst_no',
+    'priority_no',
+    'ldt_loc_id',
+    'lodged_datetime',
+    'status',
+    'trt_grp',
+    'trt_type',
+    'audit_id',
+    'tin_id_parent',
+    'completion_date'
+  ]);
+
 SELECT has_table('bde_ext'::name, 'ttl_inst_title'::name);
 SELECT columns_are('bde_ext'::name, 'ttl_inst_title'::name,
   ARRAY[
