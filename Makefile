@@ -23,15 +23,17 @@ SQLSCRIPTS = \
   sql/versioning/01-version_tables.sql
   $(END)
 
-SCRIPTS_built = \
-    scripts/linz-lds-bde-schema-load \
+SQLSCRIPTS_built = \
     sql/04-lds_layer_functions.sql \
     sql/06-bde_ext_functions.sql \
     sql/07-lds_version.sql \
     $(END)
 
+SCRIPTS_built = \
+    scripts/linz-lds-bde-schema-load \
+
 EXTRA_CLEAN = \
-    $(SCRIPTS_built) \
+    $(SQLSCRIPTS_built) \
     $(END)
 
 .dummy:
@@ -42,13 +44,13 @@ all: $(SQLSCRIPTS) $(SCRIPTS_built)
 	$(SED) -e 's/@@VERSION@@/$(VERSION)/;s|@@REVISION@@|$(REVISION)|' $< > $@
 
 scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.in Makefile
-	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)|' \
+	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS) $(SQLSCRIPTS_built)|' \
 	       -e 's|@@VERSION@@|$(VERSION)|g' \
            -e 's|@@REVISION@@|$(REVISION)|g' \
            $< > $@
 	chmod +x $@
 
-install: $(SQLSCRIPTS) $(SCRIPTS_built)
+install: $(SQLSCRIPTS) $(SQLSCRIPTS_built) $(SCRIPTS_built)
 	mkdir -p ${datadir}/sql
 	cp sql/*.sql ${datadir}/sql
 	mkdir -p ${datadir}/sql/versioning
@@ -59,7 +61,7 @@ install: $(SQLSCRIPTS) $(SCRIPTS_built)
 uninstall:
 	rm -rf ${datadir}
 
-check test: $(SQLSCRIPTS)
+check test: $(SQLSCRIPTS) $(SQLSCRIPTS_built)
 	export PGDATABASE=regress_linz_lds_bde_schema; \
 	dropdb --if-exists $$PGDATABASE; \
 	createdb $$PGDATABASE; \
