@@ -3,11 +3,15 @@
 LINZ LDS BDE Schemas
 =================================
 
-Provides the schemas and functions to generate the layers and tables that are available on the LDS:
+Provides the schemas and functions to generate the layers and tables
+that are available on the LDS:
 
-* Simplified Property Ownership and Boundaries (lds.*): https://data.linz.govt.nz/data/category/property-ownership-boundaries/
-* Simplified Geodetic (lds.geodetic_*): https://data.linz.govt.nz/data/category/geodetic/
-* Full Landonline Dataset (aka bde_ext): https://data.linz.govt.nz/data/category/full-landonline-dataset/
+* Simplified Property Ownership and Boundaries (`lds.*`):
+  https://data.linz.govt.nz/data/category/property-ownership-boundaries/
+* Simplified Geodetic (`lds.geodetic_*`):
+  https://data.linz.govt.nz/data/category/geodetic/
+* Full Landonline Dataset (aka `bde_ext`):
+  https://data.linz.govt.nz/data/category/full-landonline-dataset/
 
 Installation
 ------------
@@ -53,23 +57,36 @@ Build the debian packages using the following command:
 
     dpkg-buildpackage -us -uc
 
+Building Documentation
+----------------------
+
+PDF documentation can be built using:
+
+    make docs
+
+NOTE: if you get an error about connecting to X it is due to `wkhtmltopdf`
+having a dependency on a running X server.  You can work around that by
+installing `xvfb` and using:
+
+    xvfb-run make docs
 
 Dependencies
 ------------
 
-Usage requires [linz-bde-schema](https://github.com/linz/linz-bde-schema) (v1.1.0+),
-[table_version](https://github.com/linz/postgresql-tableversion) (v1.4.0+),
-[dbpatch](https://github.com/linz/postgresql-dbpatch) (v1.2.0+) and
-[linz_bde_uploader](https://github.com/linz/linz_bde_uploader)
-(v2.4.0+) packages.
+Usage requires:
+ - [`linz-bde-schema`](https://github.com/linz/linz-bde-schema) (v1.1.0+)
+ - [`table_version`](https://github.com/linz/postgresql-tableversion) (v1.4.0+)
+ - [`dbpatch`](https://github.com/linz/postgresql-dbpatch) (v1.2.0+)
+ - [`linz_bde_uploader`](https://github.com/linz/linz_bde_uploader) (v2.4.0+)
 
-Documentation building requires: [python](https://www.python.org/),
-[pandoc](https://github.com/jgm/pandoc) (v1.18+) and
-[wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf) (v0.12.1+)
-packages.
+Documentation building requires:
+ - [python](https://www.python.org/)
+ - [pandoc](https://github.com/jgm/pandoc) (v1.18+)
+ - [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf) (v0.12.1+)
 
-Testing requires: [pgtap](http://pgtap.org/) and a ability to create a
-PostgreSQL databases.
+Testing requires:
+ - [pgtap](http://pgtap.org/)
+ - ability to create a PostgreSQL databases
 
 License
 ---------------------
