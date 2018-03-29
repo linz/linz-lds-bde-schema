@@ -79,3 +79,11 @@ script:
   - make check || { cat regression.diffs; false; }
   - sudo env "PATH=$PATH" make install
   - make installcheck
+  # Build docs
+  ## Install docs generation dependencies
+  - sudo apt-get install -y wkhtmltopdf xvfb
+  - wget https://github.com/jgm/pandoc/releases/download/2.1.1/pandoc-2.1.1-1-amd64.deb
+  - sudo dpkg -i pandoc-2.1.1-1-amd64.deb
+  ## Build the docs
+  - xvfb-run make docs
+  ## TODO: check docs quality ?
