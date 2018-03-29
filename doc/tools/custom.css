@@ -1,0 +1,107 @@
+/* Set table borders, page-breaks, font. */
+table {
+    border-width: 1px;
+    border-color: black;
+    border-collapse: collapse;
+    font-family: Sans-serif;
+    font-size: 80%;
+}
+table th, table td {
+    border-width: 1px;
+    padding: 8px;
+    border-style: solid;
+    border-color: black;
+}
+table td {background-color: white;}
+table th {background-color: whitesmoke;}
+
+/* Set font. */
+p{
+    font-family: Sans-serif;
+}
+
+/* Set header text colour, logo and fonts. */
+header {
+    page-break-after: always;
+    color: #00abcd;
+    background: url( '../models/LINZ_logo.png' ) no-repeat;
+    background-size: 300px 100px;
+    background-position: right top ;
+    font-family: Sans-serif;
+    font-weight: normal;
+    counter-reset: h1;
+}
+
+/* Set list fonts. */
+li {
+    font-family: Sans-serif;
+}
+
+/* Set header title font, size and position. */
+.title{
+    font-size: 45px;
+    position: relative;
+    top: 450px;
+    font-weight: normal;
+    page-break-before: avoid;
+}
+
+/* Set header subtitle font, size and position. */
+.subtitle{
+    font-size: 30px;
+    position: relative;
+    top: 530px;
+}
+
+/* Set header date font, size and position. */
+.date{
+    font-size: 20px;
+    position: relative;
+    top: 700px;
+}
+
+/* Set new page level 1 headers, and font. */
+h1 {
+    page-break-before: always;
+    font-family: Sans-serif;
+}
+
+/* Set new page level 2 headers, and font. */
+h2{
+    font-family: Sans-serif;
+    page-break-before: always;
+}
+
+/* Set level three header font. */
+h3{
+    font-family: Sans-serif;
+}
+
+/* Set Table of Contents heading, size and font. */
+nav:before{
+    font-family: Sans-serif;
+    font-size: 30px;
+    font-weight: bold;
+    content: "Contents";
+}
+
+/* Remove bullets from Table of Contents. */
+nav ul{   
+    list-style: none; 
+}
+
+/* Remove decimal headings from level three headings. */
+h3 span.header-section-number{
+   display:none;
+}
+
+/* Set image settings to fit correctly. */
+img{
+    margin-bottom:0px;
+    margin-top:0px;
+    max-width:100%;
+    height:auto;
+}
+
+
+

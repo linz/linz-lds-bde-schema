@@ -15,42 +15,66 @@ bindir=${DESTDIR}/usr/bin
 SQLSCRIPTS = \
   sql/01-lds_layer_tables.sql \
   sql/02-lds_bde_schema_index.sql \
-  sql/04-lds_layer_functions.sql \
   sql/05-bde_ext_schema.sql \
-  sql/06-bde_ext_functions.sql \
-  sql/07-lds_version.sql \
   sql/99-patches.sql \
-  sql/versioning/01-version_tables.sql
+  sql/versioning/01-version_tables.sql \
   $(END)
 
 SQLSCRIPTS_built = \
     sql/04-lds_layer_functions.sql \
     sql/06-bde_ext_functions.sql \
     sql/07-lds_version.sql \
+    sql/08-lds_comments.sql \
     $(END)
 
 SCRIPTS_built = \
     scripts/linz-lds-bde-schema-load \
+    $(END)
+
 
 EXTRA_CLEAN = \
+    $(SCRIPTS_built) \
     $(SQLSCRIPTS_built) \
+    $(DOCS_built) \
     $(END)
+
+DOCS_built = \
+    doc/lds-full-landonline-data-dictionary-and-models.pdf \
+    doc/lds-full-landonline-data-dictionary-and-models-rtd.md \
+    doc/property-and-ownership-simplified-tables-data-dictionary.pdf \
+    doc/property-and-ownership-simplified-tables-data-dictionary-rtd.md \
+    $(END)
+
+PANDOC_VERSION:= $(shell pandoc --version 2> /dev/null | sed -n '1 p' | sed 's/.* //' )
+MAJOR := $(shell echo $(PANDOC_VERSION) | cut -f1 -d.)
+MINOR := $(shell echo $(PANDOC_VERSION) | cut -f2 -d.)
+ifdef PANDOC_VERSION
+	PANDOC_1_18 := $(shell [ $(MAJOR) -gt 1 -o \( $(MAJOR) -eq 1 -a $(MINOR) -ge 18 \) ] && echo "true" || echo "false") 
+endif
 
 .dummy:
 
-all: $(SQLSCRIPTS) $(SCRIPTS_built)
+
+all: $(SQLSCRIPTS) $(SQLSCRIPTS_built) $(SCRIPTS_built)
 
 %.sql: %.sql.in
 	$(SED) -e 's/@@VERSION@@/$(VERSION)/;s|@@REVISION@@|$(REVISION)|' $< > $@
 
 scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.in Makefile
-	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS) $(SQLSCRIPTS_built)|' \
+	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)$(SQLSCRIPTS_built)|' \
 	       -e 's|@@VERSION@@|$(VERSION)|g' \
            -e 's|@@REVISION@@|$(REVISION)|g' \
            $< > $@
 	chmod +x $@
 
-install: $(SQLSCRIPTS) $(SQLSCRIPTS_built) $(SCRIPTS_built)
+sql/08-lds_comments.sql: doc/tools/comment-extraction.py \
+		      doc/lds-full-landonline-data-dictionary-and-models.md \
+		      doc/property-and-ownership-simplified-tables-data-dictionary.md
+	rm -f sql/08-lds_comments.sql
+	python $< doc/lds-full-landonline-data-dictionary-and-models.md > $@
+	python $< doc/property-and-ownership-simplified-tables-data-dictionary.md >> $@
+
+install: $(SQLSCRIPTS) $(SCRIPTS_built)
 	mkdir -p ${datadir}/sql
 	cp sql/*.sql ${datadir}/sql
 	mkdir -p ${datadir}/sql/versioning
@@ -61,7 +85,7 @@ install: $(SQLSCRIPTS) $(SQLSCRIPTS_built) $(SCRIPTS_built)
 uninstall:
 	rm -rf ${datadir}
 
-check test: $(SQLSCRIPTS) $(SQLSCRIPTS_built)
+check test: $(SQLSCRIPTS) check-docs
 	export PGDATABASE=regress_linz_lds_bde_schema; \
 	dropdb --if-exists $$PGDATABASE; \
 	createdb $$PGDATABASE; \
@@ -96,3 +120,56 @@ installcheck:
 	V=`linz-lds-bde-schema-load --version` && \
 	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
 	dropdb linz-lds-bde-schema-test-db
+
+create-docs: $(DOCS_built)
+
+check-docs: doc/tools/markdown-validation.py
+	python $< doc/lds-full-landonline-data-dictionary-and-models.md
+	python $< doc/property-and-ownership-simplified-tables-data-dictionary.md
+
+install-docs: $(DOCS_built)
+	var=$(shell echo $(PANDOC_1_18));\
+	if [ "$$var" = "true" ]; then \
+		mkdir -p ${datadir}/docs; \
+		cp $(DOCS_built) ${datadir}/docs; \
+	fi
+
+doc/lds-full-landonline-data-dictionary-and-models.pdf: \
+    doc/tools/markdown-to-pdf-conversion.sh \
+    doc/lds-full-landonline-data-dictionary-and-models.md
+	@var=$(shell echo $(PANDOC_1_18));\
+	if [ "$$var" = "true" ]; then \
+		bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@; \
+	else \
+		echo "WARNING Pandoc is unable to create PDF. Pandoc 1.18+ is required to create PDF!"; \
+	fi
+
+doc/property-and-ownership-simplified-tables-data-dictionary.pdf: \
+    doc/tools/markdown-to-pdf-conversion.sh \
+    doc/property-and-ownership-simplified-tables-data-dictionary.md
+	@var=$(shell echo $(PANDOC_1_18));\
+	if [ "$$var" = "true" ]; then \
+		bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@; \
+	else \
+		echo "WARNING Pandoc is unable to create PDF. Pandoc 1.18+ is required to create PDF!"; \
+	fi
+
+doc/lds-full-landonline-data-dictionary-and-models-rtd.md: \
+    doc/tools/markdown-to-commonmark-conversion.sh \
+    doc/lds-full-landonline-data-dictionary-and-models.md
+	@var=$(shell echo $(PANDOC_1_18));\
+	if [ "$$var" = "true" ]; then \
+		bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@; \
+	else \
+		echo "WARNING Pandoc is unable to perform commonmark conversion. Pandoc 1.18+ is required to create PDF!"; \
+	fi
+
+doc/property-and-ownership-simplified-tables-data-dictionary-rtd.md: \
+    doc/tools/markdown-to-commonmark-conversion.sh \
+    doc/property-and-ownership-simplified-tables-data-dictionary.md
+	@var=$(shell echo $(PANDOC_1_18));\
+	if [ "$$var" = "true" ]; then \
+		bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@; \
+	else \
+		echo "WARNING Pandoc is unable to perform commonmark conversion. Pandoc 1.18+ is required to create PDF!"; \
+	fi
