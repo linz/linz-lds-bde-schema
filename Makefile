@@ -49,7 +49,7 @@ PANDOC_VERSION:= $(shell pandoc --version 2> /dev/null | sed -n '1 p' | sed 's/.
 MAJOR := $(shell echo $(PANDOC_VERSION) | cut -f1 -d.)
 MINOR := $(shell echo $(PANDOC_VERSION) | cut -f2 -d.)
 ifdef PANDOC_VERSION
-	PANDOC_1_18 := $(shell [ $(MAJOR) -gt 1 -o \( $(MAJOR) -eq 1 -a $(MINOR) -ge 18 \) ] && echo "true" || echo "false") 
+	PANDOC_1_18 := $(shell [ $(MAJOR) -gt 1 -o \( $(MAJOR) -eq 1 -a $(MINOR) -ge 18 \) ] && echo "true" || echo "false")
 endif
 
 .dummy:
@@ -121,7 +121,7 @@ installcheck:
 	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
 	dropdb linz-lds-bde-schema-test-db
 
-create-docs: $(DOCS_built)
+docs: $(DOCS_built)
 
 check-docs: doc/tools/markdown-validation.py
 	python $< doc/lds-full-landonline-data-dictionary-and-models.md
