@@ -4,6 +4,8 @@ All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
 ## 1.2.0dev - YYYY-MM-DD
+### Added
+- Table comments (#57)
 ### Changed
 - Stop producing simplified electoral layers, dropping dependency
   on territorial admin boundary data (#4)
