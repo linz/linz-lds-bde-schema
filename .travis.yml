@@ -52,13 +52,12 @@ before_install:
   - sudo apt-get install -y pgtap pgxnclient
   # Check pgxnclient version
   - pgxn --version
+  # Enable fetching packages from packagecloud
+  # test and production repositories
+  - curl -s https://packagecloud.io/install/repositories/linz/test/script.deb.sh | sudo bash
+  - curl -s https://packagecloud.io/install/repositories/linz/prod/script.deb.sh | sudo bash
   # Install dbpatch
-  - wget https://github.com/linz/postgresql-dbpatch/archive/1.2.0.tar.gz
-  - tar xzf 1.2.0.tar.gz
-  - cd postgresql-dbpatch-1.2.0
-  - make
-  - sudo env "PATH=$PATH" make install
-  - cd .. && rm -f 1.2.0.tar.gz
+  - sudo apt-get install postgresql-`echo $PG | cut -d/ -f1`-dbpatch
   # Install linz-bde-schema
   - wget https://github.com/linz/linz-bde-schema/archive/master.tar.gz
   - tar xzf master.tar.gz && cd linz-bde-schema-master
