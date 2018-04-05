@@ -14,7 +14,6 @@ matrix:
         - postgresql-9.3-pgtap
         - postgresql-server-dev-9.3
         - postgresql-9.3-postgis-2.3
-        - pgxnclient
 
   - env: PG=9.4/2.3
     addons:
@@ -49,9 +48,7 @@ matrix:
 before_install:
   # Install common packages
   - sudo apt-get -qq update
-  - sudo apt-get install -y pgtap pgxnclient
-  # Check pgxnclient version
-  - pgxn --version
+  - sudo apt-get install -y pgtap
   # Enable fetching packages from packagecloud
   # test and production repositories
   - curl -s https://packagecloud.io/install/repositories/linz/test/script.deb.sh | sudo bash
@@ -63,8 +60,7 @@ before_install:
   # Install linz-bde-uploader
   - sudo apt-get install linz-bde-uploader
   # Install postgresql-tableversion
-  - sudo env "PATH=$PATH" pgxn install
-    https://github.com/linz/postgresql-tableversion/archive/1.4.0.tar.gz
+  - sudo apt-get install postgresql-`echo $PG | cut -d/ -f1`-tableversion
 script:
   - make
   - make check || { cat regression.diffs; false; }
