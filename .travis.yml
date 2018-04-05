@@ -59,11 +59,7 @@ before_install:
   # Install dbpatch
   - sudo apt-get install postgresql-`echo $PG | cut -d/ -f1`-dbpatch
   # Install linz-bde-schema
-  - wget https://github.com/linz/linz-bde-schema/archive/master.tar.gz
-  - tar xzf master.tar.gz && cd linz-bde-schema-master
-  - make
-  - sudo env "PATH=$PATH" make install
-  - cd .. && rm -f master.tar.gz
+  - sudo apt-get install linz-bde-schema
   # Install postgresql-tableversion
   - sudo env "PATH=$PATH" pgxn install
     https://github.com/linz/postgresql-tableversion/archive/1.4.0.tar.gz
