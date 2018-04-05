@@ -49,6 +49,7 @@ before_install:
   # Install common packages
   - sudo apt-get -qq update
   - sudo apt-get install -y pgtap
+    debhelper fakeroot
   # Enable fetching packages from packagecloud
   # test and production repositories
   - curl -s https://packagecloud.io/install/repositories/linz/test/script.deb.sh | sudo bash
