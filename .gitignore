@@ -7,6 +7,10 @@ sql/04-lds_layer_functions.sql
 sql/06-bde_ext_functions.sql
 sql/07-lds_version.sql
 sql/08-lds_comments.sql
+debian/linz-lds-bde-schema.*
+debian/linz-lds-bde-schema/
+debian/files
+debian/.debhelper/
 doc/lds-full-landonline-data-dictionary-and-models-rtd.md
 doc/lds-full-landonline-data-dictionary-and-models.pdf
 doc/property-and-ownership-simplified-tables-data-dictionary-rtd.md
