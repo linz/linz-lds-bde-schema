@@ -55,7 +55,7 @@ Building Debian packaging
 
 Build the debian packages using the following command:
 
-    dpkg-buildpackage -us -uc
+    make deb
 
 Building Documentation
 ----------------------

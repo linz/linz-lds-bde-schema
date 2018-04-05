@@ -173,3 +173,6 @@ doc/property-and-ownership-simplified-tables-data-dictionary-rtd.md: \
 	else \
 		echo "WARNING Pandoc is unable to perform commonmark conversion. Pandoc 1.18+ is required to create PDF!"; \
 	fi
+
+deb:
+	dpkg-buildpackage -b -us -uc
