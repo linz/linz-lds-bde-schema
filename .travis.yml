@@ -74,3 +74,6 @@ script:
   ## Build the docs
   - xvfb-run make docs
   ## TODO: check docs quality ?
+  # Test build and installation of debian package
+  - make deb
+  - sudo dpkg -i ../linz-lds-bde-schema*.deb
