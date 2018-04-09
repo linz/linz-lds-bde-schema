@@ -89,6 +89,7 @@ check test: $(SQLSCRIPTS) check-docs
 	export PGDATABASE=regress_linz_lds_bde_schema; \
 	dropdb --if-exists $$PGDATABASE; \
 	createdb $$PGDATABASE; \
+	linz-bde-uploader-schema-load $$PGDATABASE; \
 	pg_prove test/
 
 clean:

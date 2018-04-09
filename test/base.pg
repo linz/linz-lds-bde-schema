@@ -20,10 +20,6 @@ SET client_min_messages TO WARNING;
 
 CREATE EXTENSION postgis;
 CREATE EXTENSION unaccent;
-CREATE EXTENSION table_version;
-
-CREATE SCHEMA _patches;
-CREATE EXTENSION dbpatch SCHEMA _patches;
 
 \i /usr/share/linz-bde-schema/sql/01-bde_roles.sql
 \i /usr/share/linz-bde-schema/sql/02-bde_schema.sql
@@ -42,7 +38,7 @@ CREATE EXTENSION dbpatch SCHEMA _patches;
 
 BEGIN;
 
-CREATE EXTENSION pgtap;
+CREATE EXTENSION pgtap SCHEMA public;
 
 SELECT * FROM no_plan();
 
@@ -1581,6 +1577,56 @@ $$, $$ VALUES
     ('3°00''00.00" b'),('-3°00''00.00" a'),
     ('180°00''00.00" b'),('-180°00''00.00" a')
 $$, 'lds_deg_dms behaves as expected');
+
+-- }
+
+-- Test lds.LDS_MaintainSimplifiedLayers {
+
+-- Pretend an upload run 1234 is in progress
+CREATE SCHEMA bde_upload_1234;
+CREATE TABLE bde_upload_1234._options
+    ( option name primary key, value text );
+
+GRANT USAGE on SCHEMA bde_upload_1234 TO bde_dba;
+GRANT SELECT on TABLE bde_upload_1234._options TO bde_dba;
+
+INSERT INTO bde_upload_1234._options VALUES
+    ('_dataset', 'testsuite1');
+
+-- Pretend every table was always affected
+CREATE OR REPLACE FUNCTION bde_control.bde_TablesAffected(int, text[], text)
+  RETURNS bool AS 'SELECT true' LANGUAGE 'sql';
+--CREATE OR REPLACE FUNCTION LDS.LDS_TableHasData(text, text)
+--  RETURNS bool AS 'SELECT true' LANGUAGE 'sql';
+
+-- TODO: add some actual record in the source tables
+--       for simplified tables to be non-empty or
+--       operations will be skiped
+
+-- Switch to unprivileged role
+-- See https://github.com/linz/linz-lds-bde-schema/issues/64
+DO $$
+BEGIN
+    IF NOT EXISTS (SELECT * FROM pg_roles
+                   WHERE rolname = 'linz_lds_bde_schema_test_role')
+    THEN
+        CREATE ROLE linz_lds_bde_schema_test_role
+            NOSUPERUSER CREATEDB CREATEROLE;
+		GRANT USAGE ON SCHEMA lds TO linz_lds_bde_schema_test_role;
+		GRANT USAGE ON SCHEMA bde_ext TO linz_lds_bde_schema_test_role;
+    END IF;
+
+    SET session_authorization TO linz_lds_bde_schema_test_role;
+END $$;
+
+SELECT is(lds.LDS_MaintainSimplifiedLayers(1234), 1,
+	'LDS_MaintainSimplifiedLayers(1234) succeeds');
+
+SELECT is(bde_ext.LDS_MaintainAllFBDELayers(1234), 1,
+	'LDS_MaintainAllFBDELayers (1234) succeeds');
+
+-- Switch back
+RESET SESSION AUTHORIZATION;
 
 -- }
 
