@@ -14,8 +14,6 @@
 --------------------------------------------------------------------------------
 BEGIN;
 
-SET SEARCH_PATH = lds, bde, bde_control, public;
-
 DO $$
 DECLARE
    v_pcid    TEXT;
@@ -35,7 +33,7 @@ END;
 $$;
 
 
-CREATE OR REPLACE FUNCTION LDS_deg_dms(
+CREATE OR REPLACE FUNCTION lds.LDS_deg_dms(
     p_value DOUBLE PRECISION,
     p_decimal_places INTEGER DEFAULT 5,
     p_hemi_code CHAR(2) DEFAULT NULL
@@ -77,10 +75,10 @@ END;
 $$
     LANGUAGE plpgsql IMMUTABLE;
 
-ALTER FUNCTION LDS_deg_dms(DOUBLE PRECISION, INTEGER, CHAR(2)) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_deg_dms(DOUBLE PRECISION, INTEGER, CHAR(2)) OWNER TO bde_dba;
 
 
-CREATE OR REPLACE FUNCTION LDS_MaintainSimplifiedLayers(
+CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedLayers(
     p_upload_id INTEGER
 )
 RETURNS
@@ -105,11 +103,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE STRICT SECURITY DEFINER;
 
-ALTER FUNCTION LDS_MaintainSimplifiedLayers(integer) SET search_path=lds, bde, bde_control, public;
+ALTER FUNCTION lds.LDS_MaintainSimplifiedLayers(integer) SET search_path=lds, bde, bde_control, public;
 
-ALTER FUNCTION LDS_MaintainSimplifiedLayers(integer) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_MaintainSimplifiedLayers(integer) OWNER TO bde_dba;
 
-CREATE OR REPLACE FUNCTION LDS_GetTable(
+CREATE OR REPLACE FUNCTION lds.LDS_GetTable(
     p_schema NAME,
     p_table_name NAME
 )
@@ -128,10 +126,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION LDS_GetTable(NAME, NAME) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_GetTable(NAME, NAME) OWNER TO bde_dba;
 
 
-CREATE OR REPLACE FUNCTION LDS_UpdateSimplifiedTable(
+CREATE OR REPLACE FUNCTION lds.LDS_UpdateSimplifiedTable(
     p_upload            INTEGER,
     p_table             REGCLASS,
     p_data_diff_tmpl    TEXT,
@@ -200,10 +198,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_UpdateSimplifiedTable(INTEGER, REGCLASS, TEXT, TEXT) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_UpdateSimplifiedTable(INTEGER, REGCLASS, TEXT, TEXT) OWNER TO bde_dba;
 
 
-CREATE OR REPLACE FUNCTION LDS_TableHasData(
+CREATE OR REPLACE FUNCTION lds.LDS_TableHasData(
     p_table REGCLASS
 )
 RETURNS
@@ -218,9 +216,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION LDS_TableHasData(REGCLASS) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_TableHasData(REGCLASS) OWNER TO bde_dba;
 
-CREATE OR REPLACE FUNCTION LDS_TableHasData(
+CREATE OR REPLACE FUNCTION lds.LDS_TableHasData(
     p_schema NAME,
     p_table_name NAME
 )
@@ -229,9 +227,9 @@ RETURNS
     SELECT LDS.LDS_TableHasData(LDS.LDS_GetTable($1, $2));
 $$ LANGUAGE sql STABLE;
 
-ALTER FUNCTION LDS_TableHasData(NAME, NAME) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_TableHasData(NAME, NAME) OWNER TO bde_dba;
 
-CREATE OR REPLACE FUNCTION LDS_CreateTempCopy(
+CREATE OR REPLACE FUNCTION lds.LDS_CreateTempCopy(
     p_table REGCLASS
 )
 RETURNS
@@ -264,10 +262,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_CreateTempCopy(REGCLASS) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_CreateTempCopy(REGCLASS) OWNER TO bde_dba;
 
 
-CREATE OR REPLACE FUNCTION LDS_ApplyPrimaryKeyFrom(
+CREATE OR REPLACE FUNCTION lds.LDS_ApplyPrimaryKeyFrom(
     p_table_from REGCLASS,
     p_table_dest REGCLASS
 )
@@ -309,10 +307,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_ApplyPrimaryKeyFrom(REGCLASS, REGCLASS) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_ApplyPrimaryKeyFrom(REGCLASS, REGCLASS) OWNER TO bde_dba;
 
 
-CREATE OR REPLACE FUNCTION LDS_GetTableContrainstsAndIndexes(p_table REGCLASS) RETURNS TEXT[] AS $$
+CREATE OR REPLACE FUNCTION lds.LDS_GetTableContrainstsAndIndexes(p_table REGCLASS) RETURNS TEXT[] AS $$
 DECLARE
     v_objects TEXT[] = '{}';
     v_sql     TEXT;
@@ -340,10 +338,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_GetTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_GetTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
 
 
-CREATE OR REPLACE FUNCTION LDS_DropTableContrainstsAndIndexes(p_table REGCLASS) RETURNS BOOLEAN AS $$
+CREATE OR REPLACE FUNCTION lds.LDS_DropTableContrainstsAndIndexes(p_table REGCLASS) RETURNS BOOLEAN AS $$
 DECLARE
     v_sql     TEXT;
     v_name    TEXT;
@@ -370,10 +368,10 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_DropTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_DropTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
 
 
-CREATE OR REPLACE FUNCTION LDS_ApplyTableDifferences(
+CREATE OR REPLACE FUNCTION lds.LDS_ApplyTableDifferences(
     p_upload     INTEGER,
     p_table      REGCLASS,
     p_temp_copy  REGCLASS,
@@ -406,7 +404,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME) OWNER TO bde_dba;
 
 DO $$
 BEGIN
@@ -417,7 +415,7 @@ BEGIN
 IF NOT EXISTS(SELECT * from pg_proc where proname = 'lds_getprotectedtext') THEN
 
 EXECUTE '
-CREATE FUNCTION LDS_GetProtectedText(
+CREATE FUNCTION lds.LDS_GetProtectedText(
     p_text VARCHAR(20)
 )
 RETURNS
@@ -427,22 +425,22 @@ $FUNC$
 $FUNC$ LANGUAGE sql IMMUTABLE;
 ';
 
-ALTER FUNCTION LDS_GetProtectedText(VARCHAR(20)) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_GetProtectedText(VARCHAR(20)) OWNER TO bde_dba;
 
 END IF;
 END;
 $$;
 
 -- Should this be District ? (missing `r')
-CREATE OR REPLACE FUNCTION LDS_GetLandDistict(p_shape GEOMETRY)
+CREATE OR REPLACE FUNCTION lds.LDS_GetLandDistict(p_shape GEOMETRY)
 RETURNS
     TEXT
 AS $$
     SELECT
         LOC.name
     FROM
-        crs_land_district LDT,
-        crs_locality LOC
+        bde.crs_land_district LDT,
+        bde.crs_locality LOC
     WHERE
         LDT.loc_id = LOC.id AND
         LDT.shape && $1
@@ -450,9 +448,9 @@ AS $$
         ST_Distance(LDT.shape, $1) ASC
 $$ LANGUAGE sql STABLE;
 
-ALTER FUNCTION LDS_GetLandDistict(GEOMETRY) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_GetLandDistict(GEOMETRY) OWNER TO bde_dba;
 
-CREATE OR REPLACE FUNCTION LDS_CreateSurveyPlansTable(
+CREATE OR REPLACE FUNCTION lds.LDS_CreateSurveyPlansTable(
     p_upload INTEGER
 )
 RETURNS
@@ -485,9 +483,9 @@ BEGIN
         SUR.survey_date,
         LOC.name AS land_district
     FROM
-        crs_survey SUR,
-        crs_work   WRK,
-        crs_locality LOC
+        bde.crs_survey SUR,
+        bde.crs_work   WRK,
+        bde.crs_locality LOC
     WHERE
         WRK.id = SUR.wrk_id AND
         SUR.ldt_loc_id = LOC.id AND
@@ -500,9 +498,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_CreateSurveyPlansTable(INTEGER) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_CreateSurveyPlansTable(INTEGER) OWNER TO bde_dba;
 
-CREATE OR REPLACE FUNCTION LDS_DropSurveyPlansTable(
+CREATE OR REPLACE FUNCTION lds.LDS_DropSurveyPlansTable(
     p_upload INTEGER
 )
 RETURNS
@@ -518,9 +516,9 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_DropSurveyPlansTable(INTEGER) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_DropSurveyPlansTable(INTEGER) OWNER TO bde_dba;
 
-CREATE OR REPLACE FUNCTION LDS_IsTableSufiUnique(p_upload INTEGER, p_table REGCLASS)
+CREATE OR REPLACE FUNCTION lds.LDS_IsTableSufiUnique(p_upload INTEGER, p_table REGCLASS)
   RETURNS BOOLEAN AS
 $$
 DECLARE
@@ -563,9 +561,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION LDS_IsTableSufiUnique(INTEGER, REGCLASS) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_IsTableSufiUnique(INTEGER, REGCLASS) OWNER TO bde_dba;
 
-CREATE OR REPLACE FUNCTION LDS_CreateTitleExclusionTables(
+CREATE OR REPLACE FUNCTION lds.LDS_CreateTitleExclusionTables(
 	p_upload INTEGER
 )
 RETURNS
@@ -593,7 +591,7 @@ BEGIN
 	SELECT
 		DISTINCT TTL.title_no
 	FROM
-		crs_title TTL
+		bde.crs_title TTL
 	WHERE
 	(
 		title_no LIKE 'WNTRAIN%' OR
@@ -609,7 +607,7 @@ BEGIN
 	SELECT
 			TTL.title_no
 		FROM
-			crs_title TTL
+			bde.crs_title TTL
 		WHERE
 			TTL.status IN ( 'PEND', 'PREA' )
 	UNION
@@ -627,7 +625,7 @@ BEGIN
 	SELECT
 		TTL.title_no
 	FROM
-		crs_title TTL
+		bde.crs_title TTL
 	LEFT JOIN tmp_excluded_titles EXL ON TTL.title_no = EXL.title_no
 	WHERE
 	(
@@ -652,9 +650,9 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_CreateTitleExclusionTables(INTEGER) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_CreateTitleExclusionTables(INTEGER) OWNER TO bde_dba;
 
-CREATE OR REPLACE FUNCTION LDS_DropTitleExclusionTables(
+CREATE OR REPLACE FUNCTION lds.LDS_DropTitleExclusionTables(
 	p_upload INTEGER
 )
 RETURNS
@@ -672,9 +670,9 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_DropTitleExclusionTables(INTEGER) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_DropTitleExclusionTables(INTEGER) OWNER TO bde_dba;
 
-CREATE OR REPLACE FUNCTION LDS_MaintainSimplifiedGeodeticLayers(
+CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(
     p_upload INTEGER
 )
 RETURNS
@@ -694,22 +692,22 @@ BEGIN
             SELECT bde_control.bde_TablesAffected(
                 p_upload,
                 ARRAY[
-                    'crs_node',
-                    'crs_node_works',
-                    'crs_mark',
-                    'crs_mark_name',
-                    'crs_coordinate',
-                    'crs_cord_order',
-                    'crs_coordinate_tpe',
-                    'crs_coordinate_sys',
-                    'crs_geodetic_network',
-                    'crs_geodetic_node_network',
-                    'crs_site_locality',
-                    'crs_locality',
-                    'crs_mrk_phys_state',
-                    'crs_sys_code',
-                    'crs_survey',
-                    'crs_work'
+                    'bde.crs_node',
+                    'bde.crs_node_works',
+                    'bde.crs_mark',
+                    'bde.crs_mark_name',
+                    'bde.crs_coordinate',
+                    'bde.crs_cord_order',
+                    'bde.crs_coordinate_tpe',
+                    'bde.crs_coordinate_sys',
+                    'bde.crs_geodetic_network',
+                    'bde.crs_geodetic_node_network',
+                    'bde.crs_site_locality',
+                    'bde.crs_locality',
+                    'bde.crs_mrk_phys_state',
+                    'bde.crs_sys_code',
+                    'bde.crs_survey',
+                    'bde.crs_work'
                 ],
                 'any affected'
             )
@@ -728,14 +726,14 @@ BEGIN
     END IF;
 
     -- Upper is used on the mark type to
-    -- force the planner to do a seq scan on crs_mark_name.
+    -- force the planner to do a seq scan on bde.crs_mark_name.
     CREATE TEMP TABLE tmp_geo_nodes AS
     SELECT DISTINCT
         MRK.nod_id,
         MKN.name AS geodetic_code
     FROM
-        crs_mark MRK,
-        crs_mark_name MKN
+        bde.crs_mark MRK,
+        bde.crs_mark_name MKN
     WHERE
         MRK.id = MKN.mrk_id AND
         UPPER(MKN.type) = 'CODE';
@@ -808,18 +806,18 @@ BEGIN
         END AS shape
     FROM
         tmp_geo_nodes GEO
-        JOIN crs_node NOD ON NOD.id = GEO.NOD_ID
-        JOIN crs_mark MRK ON MRK.nod_id = NOD.id AND MRK.status <> 'PEND'
-        LEFT JOIN crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
-        LEFT JOIN crs_site_locality SLO ON SLO.sit_id = NOD.sit_id
-        LEFT JOIN crs_locality LOC ON LOC.id = SLO.loc_id AND LOC.type = 'LDST'
-        JOIN crs_coordinate COO ON NOD.cos_id_official = COO.cos_id AND NOD.id = COO.nod_id AND COO.status = 'AUTH'
-        JOIN crs_cord_order COR ON COO.cor_id = COR.id
-        LEFT JOIN crs_mrk_phys_state MPSM ON MPSM.mrk_id = MRK.id AND MPSM.type = 'MARK' AND MPSM.status = 'CURR'
-        LEFT JOIN crs_mrk_phys_state MPSB ON MPSB.mrk_id = MRK.id and MPSB.type = 'BCON' and MPSB.status = 'CURR'
-        LEFT JOIN crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
-        LEFT JOIN crs_sys_code SCOC ON MPSM.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
-        LEFT JOIN crs_sys_code SCOB ON MRK.beacon_type = SCOB.code AND SCOB.scg_code = 'MRKE'
+        JOIN bde.crs_node NOD ON NOD.id = GEO.NOD_ID
+        JOIN bde.crs_mark MRK ON MRK.nod_id = NOD.id AND MRK.status <> 'PEND'
+        LEFT JOIN bde.crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
+        LEFT JOIN bde.crs_site_locality SLO ON SLO.sit_id = NOD.sit_id
+        LEFT JOIN bde.crs_locality LOC ON LOC.id = SLO.loc_id AND LOC.type = 'LDST'
+        JOIN bde.crs_coordinate COO ON NOD.cos_id_official = COO.cos_id AND NOD.id = COO.nod_id AND COO.status = 'AUTH'
+        JOIN bde.crs_cord_order COR ON COO.cor_id = COR.id
+        LEFT JOIN bde.crs_mrk_phys_state MPSM ON MPSM.mrk_id = MRK.id AND MPSM.type = 'MARK' AND MPSM.status = 'CURR'
+        LEFT JOIN bde.crs_mrk_phys_state MPSB ON MPSB.mrk_id = MRK.id and MPSB.type = 'BCON' and MPSB.status = 'CURR'
+        LEFT JOIN bde.crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
+        LEFT JOIN bde.crs_sys_code SCOC ON MPSM.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
+        LEFT JOIN bde.crs_sys_code SCOB ON MRK.beacon_type = SCOB.code AND SCOB.scg_code = 'MRKE'
     WHERE
         NOD.status = 'AUTH' AND
         NOD.cos_id_official IN (109, 142);
@@ -962,21 +960,21 @@ BEGIN
         END AS shape
     FROM
         tmp_geo_nodes GEO
-        JOIN crs_node NOD ON NOD.id = GEO.NOD_ID
-        JOIN crs_mark MRK ON MRK.nod_id = NOD.id
-        LEFT JOIN crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
-        LEFT JOIN crs_site_locality SLO ON SLO.sit_id = NOD.sit_id
-        LEFT JOIN crs_locality LOC ON LOC.id = SLO.loc_id AND LOC.type = 'LDST'
-        LEFT JOIN crs_coordinate ANT_COO ON ANT_COO.nod_id = NOD.id AND ANT_COO.status = 'AUTH' AND ANT_COO.cos_id = 142
-        JOIN crs_coordinate COO ON COO.nod_id = NOD.id AND COO.status = 'AUTH'
-        JOIN crs_coordinate_sys COS ON COO.cos_id = COS.id
-        JOIN crs_coordinate_tpe COT ON COT.id = COS.cot_id
-        JOIN crs_cord_order COR ON COO.cor_id = COR.id
-        LEFT JOIN crs_mrk_phys_state MPSM ON MPSM.mrk_id = MRK.id AND MPSM.type = 'MARK' AND MPSM.status = 'CURR'
-        LEFT JOIN crs_mrk_phys_state MPSB ON MPSB.mrk_id = MRK.id and MPSB.type = 'BCON' and MPSB.status = 'CURR'
-        LEFT JOIN crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
-        LEFT JOIN crs_sys_code SCOC ON MPSM.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
-        LEFT JOIN crs_sys_code SCOB ON MRK.beacon_type = SCOB.code AND SCOB.scg_code = 'MRKE'
+        JOIN bde.crs_node NOD ON NOD.id = GEO.NOD_ID
+        JOIN bde.crs_mark MRK ON MRK.nod_id = NOD.id
+        LEFT JOIN bde.crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
+        LEFT JOIN bde.crs_site_locality SLO ON SLO.sit_id = NOD.sit_id
+        LEFT JOIN bde.crs_locality LOC ON LOC.id = SLO.loc_id AND LOC.type = 'LDST'
+        LEFT JOIN bde.crs_coordinate ANT_COO ON ANT_COO.nod_id = NOD.id AND ANT_COO.status = 'AUTH' AND ANT_COO.cos_id = 142
+        JOIN bde.crs_coordinate COO ON COO.nod_id = NOD.id AND COO.status = 'AUTH'
+        JOIN bde.crs_coordinate_sys COS ON COO.cos_id = COS.id
+        JOIN bde.crs_coordinate_tpe COT ON COT.id = COS.cot_id
+        JOIN bde.crs_cord_order COR ON COO.cor_id = COR.id
+        LEFT JOIN bde.crs_mrk_phys_state MPSM ON MPSM.mrk_id = MRK.id AND MPSM.type = 'MARK' AND MPSM.status = 'CURR'
+        LEFT JOIN bde.crs_mrk_phys_state MPSB ON MPSB.mrk_id = MRK.id and MPSB.type = 'BCON' and MPSB.status = 'CURR'
+        LEFT JOIN bde.crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
+        LEFT JOIN bde.crs_sys_code SCOC ON MPSM.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
+        LEFT JOIN bde.crs_sys_code SCOB ON MRK.beacon_type = SCOB.code AND SCOB.scg_code = 'MRKE'
     WHERE
         COT.dimension = 'HEGT' AND
         NOD.status = 'AUTH' AND
@@ -1170,10 +1168,10 @@ BEGIN
 
     -- Create the geodetic network marks layer.
     --
-    -- In principle this is base on the crs_geodetic_node_network table, but in
+    -- In principle this is base on the bde.crs_geodetic_node_network table, but in
     -- practice this is not properly maintained in Landonline (as at 3/11/2015),
     -- as there are many processes that can change coordinate orders which do
-    -- not result in corresponding updates to crs_geodetic_node_network.  Similarly
+    -- not result in corresponding updates to bde.crs_geodetic_node_network.  Similarly
     -- adding or removing geodetic codes from marks may not result in updates.
     --
     -- To bypass this issue the query below automatically builds the CHN, CVN,
@@ -1187,8 +1185,8 @@ BEGIN
 	   nod_id,
 	   gdn_id
 	FROM
-	   crs_geodetic_node_network gnn
-	   JOIN crs_geodetic_network gdn ON gdn.id = gnn.gdn_id
+	   bde.crs_geodetic_node_network gnn
+	   JOIN bde.crs_geodetic_network gdn ON gdn.id = gnn.gdn_id
 	WHERE
 	   gdn.code NOT IN ('CHN','CVN','NHN')
 	-- CHN and CVN networks contain all 5th and better order geodetic marks
@@ -1198,10 +1196,10 @@ BEGIN
 	  gdn.id AS gdn_id
 	FROM
 	  tmp_geo_nodes tgn
-	  JOIN crs_node nod ON nod.id=tgn.nod_id
-	  JOIN crs_coordinate coo ON coo.cos_id=nod.cos_id_official AND coo.nod_id=nod.id AND coo.status='AUTH'
-	  JOIN crs_cord_order cor ON cor.id=coo.cor_id,
-	  crs_geodetic_network gdn
+	  JOIN bde.crs_node nod ON nod.id=tgn.nod_id
+	  JOIN bde.crs_coordinate coo ON coo.cos_id=nod.cos_id_official AND coo.nod_id=nod.id AND coo.status='AUTH'
+	  JOIN bde.crs_cord_order cor ON cor.id=coo.cor_id,
+	  bde.crs_geodetic_network gdn
 	WHERE
 	  coo.cos_id IN (109,142) AND
 	  cor.display IN ('0','1','2','3','4','5')  AND
@@ -1210,22 +1208,22 @@ BEGIN
        UNION
 	SELECT
 	  tgn.nod_id,
-	  (SELECT id FROM crs_geodetic_network WHERE code='CVN') AS gdn_id
+	  (SELECT id FROM bde.crs_geodetic_network WHERE code='CVN') AS gdn_id
 	FROM
 	  tmp_geo_nodes tgn
-	  JOIN crs_coordinate coo ON coo.ort_type_3='HGHT' AND coo.nod_id=tgn.nod_id AND coo.status='AUTH'
-	  JOIN crs_cord_order cor ON cor.id=coo.cor_id
+	  JOIN bde.crs_coordinate coo ON coo.ort_type_3='HGHT' AND coo.nod_id=tgn.nod_id AND coo.status='AUTH'
+	  JOIN bde.crs_cord_order cor ON cor.id=coo.cor_id
 	WHERE
 	  cor.display IN ('1V','2V','3V')
 	-- NHN contains any marks with 1V heights
         UNION
 	SELECT
 	  tgn.nod_id,
-	  (SELECT id FROM crs_geodetic_network WHERE code='NHN') AS gdn_id
+	  (SELECT id FROM bde.crs_geodetic_network WHERE code='NHN') AS gdn_id
 	FROM
 	  tmp_geo_nodes tgn
-	  JOIN crs_coordinate coo ON coo.ort_type_3='HGHT' AND coo.nod_id=tgn.nod_id AND coo.status='AUTH'
-	  JOIN crs_cord_order cor ON cor.id=coo.cor_id
+	  JOIN bde.crs_coordinate coo ON coo.ort_type_3='HGHT' AND coo.nod_id=tgn.nod_id AND coo.status='AUTH'
+	  JOIN bde.crs_cord_order cor ON cor.id=coo.cor_id
 	WHERE
 	  cor.display = '1V'
     )
@@ -1257,19 +1255,19 @@ BEGIN
     FROM
         tmp_geo_nodes GEO
         JOIN fixed_gnn GNN ON (GEO.nod_id = GNN.nod_id)
-        JOIN crs_geodetic_network GDN ON (GNN.gdn_id = GDN.id)
-        JOIN crs_node NOD ON NOD.id = GEO.NOD_ID
-        JOIN crs_mark MRK ON MRK.nod_id = NOD.id AND MRK.status <> 'PEND'
-        LEFT JOIN crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
-        LEFT JOIN crs_site_locality SLO ON SLO.sit_id = NOD.sit_id
-        LEFT JOIN crs_locality LOC ON LOC.id = SLO.loc_id AND LOC.type = 'LDST'
-        JOIN crs_coordinate COO ON NOD.cos_id_official = COO.cos_id AND NOD.id = COO.nod_id AND COO.status = 'AUTH'
-        JOIN crs_cord_order COR ON COO.cor_id = COR.id
-        LEFT JOIN crs_mrk_phys_state MPSM ON MPSM.mrk_id = MRK.id AND MPSM.type = 'MARK' AND MPSM.status = 'CURR'
-        LEFT JOIN crs_mrk_phys_state MPSB ON MPSB.mrk_id = MRK.id and MPSB.type = 'BCON' and MPSB.status = 'CURR'
-        LEFT JOIN crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
-        LEFT JOIN crs_sys_code SCOC ON MPSM.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
-        LEFT JOIN crs_sys_code SCOB ON MRK.beacon_type = SCOB.code AND SCOB.scg_code = 'MRKE'
+        JOIN bde.crs_geodetic_network GDN ON (GNN.gdn_id = GDN.id)
+        JOIN bde.crs_node NOD ON NOD.id = GEO.NOD_ID
+        JOIN bde.crs_mark MRK ON MRK.nod_id = NOD.id AND MRK.status <> 'PEND'
+        LEFT JOIN bde.crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
+        LEFT JOIN bde.crs_site_locality SLO ON SLO.sit_id = NOD.sit_id
+        LEFT JOIN bde.crs_locality LOC ON LOC.id = SLO.loc_id AND LOC.type = 'LDST'
+        JOIN bde.crs_coordinate COO ON NOD.cos_id_official = COO.cos_id AND NOD.id = COO.nod_id AND COO.status = 'AUTH'
+        JOIN bde.crs_cord_order COR ON COO.cor_id = COR.id
+        LEFT JOIN bde.crs_mrk_phys_state MPSM ON MPSM.mrk_id = MRK.id AND MPSM.type = 'MARK' AND MPSM.status = 'CURR'
+        LEFT JOIN bde.crs_mrk_phys_state MPSB ON MPSB.mrk_id = MRK.id and MPSB.type = 'BCON' and MPSB.status = 'CURR'
+        LEFT JOIN bde.crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
+        LEFT JOIN bde.crs_sys_code SCOC ON MPSM.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
+        LEFT JOIN bde.crs_sys_code SCOB ON MRK.beacon_type = SCOB.code AND SCOB.scg_code = 'MRKE'
     WHERE
         NOD.status = 'AUTH' AND
         NOD.cos_id_official IN (109, 142);
@@ -1386,7 +1384,7 @@ BEGIN
     SELECT
         GEO.nod_id as id
     FROM
-        crs_coordinate COO
+        bde.crs_coordinate COO
         JOIN tmp_geo_nodes GEO ON COO.nod_id = GEO.nod_id
     WHERE
         COO.cor_id < 1908 AND
@@ -1396,16 +1394,16 @@ BEGIN
     SELECT
         COO.nod_id as id
     FROM
-        crs_coordinate COO
-        JOIN crs_node NOD ON COO.nod_id = NOD.id
+        bde.crs_coordinate COO
+        JOIN bde.crs_node NOD ON COO.nod_id = NOD.id
     WHERE
         COO.cor_id IN (
             SELECT
                 COR.id
             FROM
-                crs_coordinate_tpe COT
-                JOIN crs_coordinate_sys COS ON COT.id = COS.cot_id
-                JOIN crs_cord_order COR ON COS.dtm_id = COR.dtm_id
+                bde.crs_coordinate_tpe COT
+                JOIN bde.crs_coordinate_sys COS ON COT.id = COS.cot_id
+                JOIN bde.crs_cord_order COR ON COS.dtm_id = COR.dtm_id
             WHERE
                 COT.dimension = 'HEGT' AND
                 COR.display= '1V'
@@ -1417,12 +1415,12 @@ BEGIN
     SELECT
         NOD.id
     FROM
-        crs_node NOD
+        bde.crs_node NOD
     WHERE
         NOD.status = 'AUTH' AND
         NOD.cos_id_official = 109 AND
         NOD.id IN (
-            SELECT nod_id FROM crs_node_works WHERE purpose IN ('PRMA', 'PRBD')
+            SELECT nod_id FROM bde.crs_node_works WHERE purpose IN ('PRMA', 'PRBD')
         );
 
     ALTER TABLE tmp_protect_nodes ADD PRIMARY KEY (id);
@@ -1468,16 +1466,16 @@ BEGIN
                 NOD.shape
             FROM
                 tmp_protect_nodes PRO
-                JOIN crs_node NOD ON PRO.id = NOD.id
-                JOIN crs_coordinate COO ON NOD.cos_id_official = COO.cos_id AND NOD.id = COO.nod_id AND COO.status = 'AUTH'
-                JOIN crs_cord_order COR ON COO.cor_id = COR.id
-                JOIN crs_mark MRK ON MRK.nod_id = NOD.id
-                LEFT JOIN crs_mrk_phys_state MPS ON MPS.mrk_id = MRK.id AND MPS.type = 'MARK' AND MPS.status = 'CURR'
-                LEFT JOIN crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
-                LEFT JOIN crs_mark_name GEO ON MRK.id = GEO.mrk_id AND GEO.type = 'CODE'
+                JOIN bde.crs_node NOD ON PRO.id = NOD.id
+                JOIN bde.crs_coordinate COO ON NOD.cos_id_official = COO.cos_id AND NOD.id = COO.nod_id AND COO.status = 'AUTH'
+                JOIN bde.crs_cord_order COR ON COO.cor_id = COR.id
+                JOIN bde.crs_mark MRK ON MRK.nod_id = NOD.id
+                LEFT JOIN bde.crs_mrk_phys_state MPS ON MPS.mrk_id = MRK.id AND MPS.type = 'MARK' AND MPS.status = 'CURR'
+                LEFT JOIN bde.crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
+                LEFT JOIN bde.crs_mark_name GEO ON MRK.id = GEO.mrk_id AND GEO.type = 'CODE'
                 LEFT JOIN tmp_survey_plans SUR ON MPS.wrk_id = SUR.wrk_id
-                LEFT JOIN crs_sys_code SCOC ON MPS.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
-                LEFT JOIN crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
+                LEFT JOIN bde.crs_sys_code SCOC ON MPS.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
+                LEFT JOIN bde.crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
             WHERE
                 MRK.status <> 'PEND' AND
                 MRK.disturbed = 'N' AND
@@ -1534,12 +1532,12 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_MaintainSimplifiedGeodeticLayers(INTEGER) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER) OWNER TO bde_dba;
 
-ALTER FUNCTION LDS_MaintainSimplifiedGeodeticLayers(INTEGER) SET search_path=bde, bde_control, public;
+ALTER FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER) SET search_path=bde, bde_control, public;
 
 
-CREATE OR REPLACE FUNCTION LDS_MaintainSimplifiedParcelLayers(
+CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedParcelLayers(
     p_upload INTEGER
 )
 RETURNS
@@ -1557,24 +1555,24 @@ BEGIN
             SELECT bde_control.bde_TablesAffected(
                 p_upload,
                 ARRAY[
-                    'crs_affected_parcl',
-                    'crs_appellation',
-                    'crs_estate_share',
-                    'crs_legal_desc',
-                    'crs_legal_desc_prl',
-                    'crs_locality',
-                    'crs_parcel',
-                    'crs_proprietor',
-                    'crs_stat_act_parcl',
-                    'crs_statute',
-                    'crs_statute_action',
-                    'crs_survey',
-                    'crs_sys_code',
-                    'crs_title',
-                    'crs_title_estate',
-                    'crs_ttl_hierarchy',
-                    'crs_topology_class',
-                    'crs_work',
+                    'bde.crs_affected_parcl',
+                    'bde.crs_appellation',
+                    'bde.crs_estate_share',
+                    'bde.crs_legal_desc',
+                    'bde.crs_legal_desc_prl',
+                    'bde.crs_locality',
+                    'bde.crs_parcel',
+                    'bde.crs_proprietor',
+                    'bde.crs_stat_act_parcl',
+                    'bde.crs_statute',
+                    'bde.crs_statute_action',
+                    'bde.crs_survey',
+                    'bde.crs_sys_code',
+                    'bde.crs_title',
+                    'bde.crs_title_estate',
+                    'bde.crs_ttl_hierarchy',
+                    'bde.crs_topology_class',
+                    'bde.crs_work',
                     'cbe_title_parcel_association'
                 ],
                 'any affected'
@@ -1669,9 +1667,9 @@ BEGIN
         SAPA.char_value AS action,
         bde_get_par_stat_act(SAP.sta_id, SAP.par_id) as statutory_action
     FROM
-        crs_stat_act_parcl SAP
-        LEFT JOIN  crs_sys_code SAPA ON SAPA.scg_code ='SAPA' AND SAP.action = SAPA.code
-        LEFT JOIN  crs_sys_code SAPS ON SAPS.scg_code ='SAPS' AND SAP.status = SAPS.code
+        bde.crs_stat_act_parcl SAP
+        LEFT JOIN  bde.crs_sys_code SAPA ON SAPA.scg_code ='SAPA' AND SAP.action = SAPA.code
+        LEFT JOIN  bde.crs_sys_code SAPS ON SAPS.scg_code ='SAPS' AND SAP.status = SAPS.code
     ORDER BY SAP.par_id;
 
     ANALYSE tmp_par_stat_action;
@@ -1737,10 +1735,10 @@ BEGIN
         AFPT.char_value AS action,
         PAR.status as par_status
     FROM
-        crs_parcel PAR
-        JOIN crs_affected_parcl AFP ON PAR.id = AFP.par_id
+        bde.crs_parcel PAR
+        JOIN bde.crs_affected_parcl AFP ON PAR.id = AFP.par_id
         LEFT JOIN tmp_survey_plans SUR ON AFP.sur_wrk_id = SUR.wrk_id
-        LEFT JOIN crs_sys_code AFPT ON AFPT.scg_code = 'AFPT' AND AFPT.code = AFP.action;
+        LEFT JOIN bde.crs_sys_code AFPT ON AFPT.scg_code = 'AFPT' AND AFPT.code = AFP.action;
 
     ANALYSE tmp_affected_parcel_surveys;
     ----------------------------------------------------------------------------
@@ -1839,7 +1837,7 @@ BEGIN
             ST_Buffer(PAR.shape, 0)
         END AS shape
     FROM
-        crs_parcel PAR;
+        bde.crs_parcel PAR;
 
     ALTER TABLE tmp_parcel_geoms ADD PRIMARY KEY(par_id);
     ANALYSE tmp_parcel_geoms;
@@ -1872,12 +1870,12 @@ BEGIN
         GEOM.shape
     FROM
         tmp_world_regions WDR,
-        crs_parcel PAR
+        bde.crs_parcel PAR
         JOIN tmp_parcel_geoms GEOM ON PAR.id = GEOM.par_id
-        JOIN crs_locality LOC ON PAR.ldt_loc_id = LOC.id
+        JOIN bde.crs_locality LOC ON PAR.ldt_loc_id = LOC.id
         LEFT JOIN tmp_title_parcel_associations TTL ON PAR.id = TTL.par_id
         LEFT JOIN tmp_par_stat_action_agg PSA ON PAR.id = PSA.par_id
-        LEFT JOIN crs_affected_parcl AFP ON PAR.id = AFP.par_id
+        LEFT JOIN bde.crs_affected_parcl AFP ON PAR.id = AFP.par_id
         LEFT JOIN tmp_survey_plans SUR ON AFP.sur_wrk_id = SUR.wrk_id
     WHERE
         PAR.status IN ('CURR', 'HIST', 'APPR', 'SHST', 'PEND') AND
@@ -1926,9 +1924,9 @@ BEGIN
         PAR.shape
     FROM
         tmp_parcels PAR
-        JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-        LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
-        LEFT JOIN crs_sys_code SYSS ON PAR.status = SYSS.code AND SYSS.scg_code = 'PARS'
+        JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+        LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+        LEFT JOIN bde.crs_sys_code SYSS ON PAR.status = SYSS.code AND SYSS.scg_code = 'PARS'
     WHERE
         PAR.status <> 'PEND' AND
         ( ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon') OR shape IS NULL );
@@ -1976,9 +1974,9 @@ BEGIN
         PAR.shape
     FROM
         tmp_parcels PAR
-        JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-        LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
-        LEFT JOIN crs_sys_code SYSS ON PAR.status = SYSS.code AND SYSS.scg_code = 'PARS'
+        JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+        LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+        LEFT JOIN bde.crs_sys_code SYSS ON PAR.status = SYSS.code AND SYSS.scg_code = 'PARS'
     WHERE
         PAR.status = 'PEND' AND
         ( ST_GeometryType(PAR.shape) IN ('ST_MultiPolygon', 'ST_Polygon') OR shape IS NULL );
@@ -2026,9 +2024,9 @@ BEGIN
         PAR.shape
     FROM
         tmp_parcels PAR
-        JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-        LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
-        LEFT JOIN crs_sys_code SYSS ON PAR.status = SYSS.code AND SYSS.scg_code = 'PARS'
+        JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+        LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+        LEFT JOIN bde.crs_sys_code SYSS ON PAR.status = SYSS.code AND SYSS.scg_code = 'PARS'
     WHERE
         PAR.status <> 'PEND' AND
         ST_GeometryType(PAR.shape) IN ('ST_LineString', 'ST_MultiLineString');
@@ -2074,8 +2072,8 @@ BEGIN
         PAR.shape
     FROM
         tmp_parcels PAR
-        JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-        LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+        JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+        LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
     WHERE
         PAR.status = 'CURR' AND
         PAR.toc_code =  'PRIM' AND
@@ -2122,8 +2120,8 @@ BEGIN
             PAR.shape
         FROM
             tmp_parcels PAR
-            JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-            LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+            JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+            LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
             PAR.status = 'CURR' AND
             PAR.toc_code =  'PRIM' AND
@@ -2171,8 +2169,8 @@ BEGIN
             PAR.shape
         FROM
             tmp_parcels PAR
-            JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-            LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+            JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+            LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
             PAR.status = 'CURR' AND
             PAR.toc_code =  'PRIM' AND
@@ -2220,8 +2218,8 @@ BEGIN
             PAR.shape
         FROM
             tmp_parcels PAR
-            JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-            LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+            JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+            LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
             PAR.status = 'CURR' AND
             PAR.toc_code =  'PRIM' AND
@@ -2269,8 +2267,8 @@ BEGIN
             PAR.shape
         FROM
             tmp_parcels PAR
-            JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-            LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+            JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+            LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
             PAR.status = 'CURR' AND
             PAR.toc_code IN ('SECO', 'TERT', 'STRA') AND
@@ -2317,8 +2315,8 @@ BEGIN
             PAR.shape
         FROM
             tmp_parcels PAR
-            JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-            LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+            JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+            LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
             PAR.status = 'CURR' AND
             PAR.toc_code IN ('SECL', 'TECL') AND
@@ -2365,8 +2363,8 @@ BEGIN
             PAR.shape
         FROM
             tmp_parcels PAR
-            JOIN crs_topology_class TOC ON PAR.toc_code = TOC.code
-            LEFT JOIN crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
+            JOIN bde.crs_topology_class TOC ON PAR.toc_code = TOC.code
+            LEFT JOIN bde.crs_sys_code SYSP ON PAR.parcel_intent = SYSP.code AND SYSP.scg_code = 'PARI'
         WHERE
             PAR.status = 'CURR' AND
             PAR.toc_code IN ('STRA') AND
@@ -2404,12 +2402,12 @@ BEGIN
         LGD.legal_desc_text AS legal_description,
         ROUND(LGD.total_area, 0) AS area
     FROM
-        crs_title TTL
-        JOIN crs_title_estate ETT ON TTL.title_no = ETT.ttl_title_no AND ETT.status = 'REGD'
-        JOIN crs_locality LOC ON TTL.ldt_loc_id = LOC.id
-        LEFT JOIN crs_legal_desc LGD ON ETT.lgd_id = LGD.id AND LGD.type = 'ETT' AND LGD.status = 'REGD'
-        LEFT JOIN crs_sys_code ETTT ON ETT.type = ETTT.code AND ETTT.scg_code = 'ETTT'
-        LEFT JOIN crs_sys_code TSDS ON ETT.status = TSDS.code AND TSDS.scg_code = 'TSDS'
+        bde.crs_title TTL
+        JOIN bde.crs_title_estate ETT ON TTL.title_no = ETT.ttl_title_no AND ETT.status = 'REGD'
+        JOIN bde.crs_locality LOC ON TTL.ldt_loc_id = LOC.id
+        LEFT JOIN bde.crs_legal_desc LGD ON ETT.lgd_id = LGD.id AND LGD.type = 'ETT' AND LGD.status = 'REGD'
+        LEFT JOIN bde.crs_sys_code ETTT ON ETT.type = ETTT.code AND ETTT.scg_code = 'ETTT'
+        LEFT JOIN bde.crs_sys_code TSDS ON ETT.status = TSDS.code AND TSDS.scg_code = 'TSDS'
      WHERE
         TTL.status IN ('LIVE', 'PRTC') AND
         TTL.title_no NOT IN (SELECT title_no FROM tmp_excluded_titles);
@@ -2478,12 +2476,12 @@ BEGIN
         NMSF.char_value::VARCHAR(6) AS name_suffix
     FROM
         tmp_title_estates TTS
-        JOIN crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
-        JOIN crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
+        JOIN bde.crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
+        JOIN bde.crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
         LEFT JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no
-        LEFT JOIN crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
-        LEFT JOIN crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
-        LEFT JOIN crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
+        LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
+        LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
+        LEFT JOIN bde.crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
     WHERE
         PRO.title_no IS NULL;
 
@@ -2511,12 +2509,12 @@ BEGIN
         LDS_GetProtectedText(PRO.title_no)
     FROM
         tmp_title_estates TTS
-        JOIN crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
-        JOIN crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
+        JOIN bde.crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
+        JOIN bde.crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
         LEFT JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no
-        LEFT JOIN crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
-        LEFT JOIN crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
-        LEFT JOIN crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
+        LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
+        LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
+        LEFT JOIN bde.crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
     WHERE
         PRO.title_no IS NOT NULL;
 
@@ -2661,16 +2659,16 @@ BEGIN
         TTP.spatial_extents_shared,
         TTP.shape
     FROM
-        crs_title TTL
+        bde.crs_title TTL
         LEFT JOIN tmp_title_owner_concat TOC ON TTL.title_no = TOC.title_no
         LEFT JOIN tmp_title_estates TTE ON TTL.title_no = TTE.title_no
         LEFT JOIN tmp_title_polygon TTP ON TTL.title_no = TTP.title_no
         LEFT JOIN tmp_survey_plans SUR ON TTL.sur_wrk_id = SUR.wrk_id
-        JOIN crs_locality LOC ON TTL.ldt_loc_id = LOC.id
-        LEFT JOIN crs_sys_code TTLG ON TTL.guarantee_status = TTLG.code AND TTLG.scg_code = 'TTLG'
-        LEFT JOIN crs_sys_code TTLT ON TTL.type = TTLT.code AND TTLT.scg_code = 'TTLT'
-        LEFT JOIN crs_sys_code TTLS ON TTLS.scg_code = 'TTLS' AND TTLS.code = TTL.status
-        LEFT JOIN crs_sys_code TTLR ON TTLR.scg_code = 'TTLR' AND TTLR.code = TTL.register_type
+        JOIN bde.crs_locality LOC ON TTL.ldt_loc_id = LOC.id
+        LEFT JOIN bde.crs_sys_code TTLG ON TTL.guarantee_status = TTLG.code AND TTLG.scg_code = 'TTLG'
+        LEFT JOIN bde.crs_sys_code TTLT ON TTL.type = TTLT.code AND TTLT.scg_code = 'TTLT'
+        LEFT JOIN bde.crs_sys_code TTLS ON TTLS.scg_code = 'TTLS' AND TTLS.code = TTL.status
+        LEFT JOIN bde.crs_sys_code TTLR ON TTLR.scg_code = 'TTLR' AND TTLR.code = TTL.register_type
     WHERE
         TTL.status IN ('LIVE', 'PRTC') AND
         TTL.title_no NOT IN (SELECT title_no FROM tmp_excluded_titles)
@@ -3015,15 +3013,15 @@ BEGIN
                     ELSE NULL
                 END               AS encumbrancees
             FROM
-                crs_title_memorial TTM
-                LEFT JOIN crs_title_mem_text TMT ON TTM.id = TMT.ttm_id
-                LEFT JOIN crs_ttl_inst TIN ON TTM.act_tin_id_crt = TIN.id
-                LEFT JOIN crs_transact_type TRT ON (TRT.grp = TIN.trt_grp AND TRT.type = TIN.trt_type)
-                LEFT JOIN crs_encumbrance ENC ON TIN.id = ENC.act_tin_id_crt
-                LEFT JOIN crs_enc_share ENS ON ENC.id = ENS.enc_id
-                LEFT JOIN crs_encumbrancee ENE ON ENS.id = ENE.ens_id
-                LEFT JOIN crs_title TTL ON TTM.ttl_title_no = TTL.title_no
-                LEFT JOIN crs_locality LOC ON TTL.ldt_loc_id = LOC.id
+                bde.crs_title_memorial TTM
+                LEFT JOIN bde.crs_title_mem_text TMT ON TTM.id = TMT.ttm_id
+                LEFT JOIN bde.crs_ttl_inst TIN ON TTM.act_tin_id_crt = TIN.id
+                LEFT JOIN bde.crs_transact_type TRT ON (TRT.grp = TIN.trt_grp AND TRT.type = TIN.trt_type)
+                LEFT JOIN bde.crs_encumbrance ENC ON TIN.id = ENC.act_tin_id_crt
+                LEFT JOIN bde.crs_enc_share ENS ON ENC.id = ENS.enc_id
+                LEFT JOIN bde.crs_encumbrancee ENE ON ENS.id = ENE.ens_id
+                LEFT JOIN bde.crs_title TTL ON TTM.ttl_title_no = TTL.title_no
+                LEFT JOIN bde.crs_locality LOC ON TTL.ldt_loc_id = LOC.id
                 LEFT JOIN tmp_protected_titles PRO ON TTM.ttl_title_no = PRO.title_no
                 LEFT JOIN tmp_excluded_titles EXL ON TTM.ttl_title_no = EXL.title_no
             WHERE
@@ -3167,8 +3165,8 @@ BEGIN
                 NULL AS assessory_unit,
                 NULL AS title_issued
             FROM
-                crs_title_mem_text T1
-                JOIN crs_title_mem_text T2 ON T1.ttm_id = T2.ttm_id
+                bde.crs_title_mem_text T1
+                JOIN bde.crs_title_mem_text T2 ON T1.ttm_id = T2.ttm_id
                 AND T2.sequence_no != 2
                 AND T1.col_1_text = 'Type'
             WHERE
@@ -3199,8 +3197,8 @@ BEGIN
                     WHEN T1.col_4_text = 'CT Issued' THEN T2.col_4_text
                 END AS ct_issued
             FROM
-                crs_title_mem_text T1
-                JOIN crs_title_mem_text T2 ON T1.ttm_id = T2.ttm_id AND
+                bde.crs_title_mem_text T1
+                JOIN bde.crs_title_mem_text T2 ON T1.ttm_id = T2.ttm_id AND
                 T2.sequence_no != 2 AND
                 T1.col_1_text = 'Principal Unit'
             WHERE
@@ -3222,9 +3220,9 @@ BEGIN
                 NULL,
                 NULL
             FROM
-                crs_title_mem_text T1
+                bde.crs_title_mem_text T1
             JOIN
-                crs_title_mem_text T2 ON T1.ttm_id = T2.ttm_id AND
+                bde.crs_title_mem_text T2 ON T1.ttm_id = T2.ttm_id AND
                 T2.sequence_no != 2 AND
                 T1.col_1_text = 'Legal Description'
             WHERE
@@ -3297,11 +3295,11 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_MaintainSimplifiedParcelLayers(INTEGER) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_MaintainSimplifiedParcelLayers(INTEGER) OWNER TO bde_dba;
 
-ALTER FUNCTION LDS_MaintainSimplifiedParcelLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
+ALTER FUNCTION lds.LDS_MaintainSimplifiedParcelLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
 
-CREATE OR REPLACE FUNCTION LDS_MaintainSimplifiedSurveyLayers(
+CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedSurveyLayers(
     p_upload INTEGER
 )
 RETURNS
@@ -3318,33 +3316,33 @@ BEGIN
             SELECT bde_control.bde_TablesAffected(
                 p_upload,
                 ARRAY[
-                    'crs_adjust_method',
-                    'crs_adjustment_run',
-                    'crs_coordinate',
-                    'crs_coordinate_sys',
-                    'crs_cord_order',
-                    'crs_land_district',
-                    'crs_line',
-                    'crs_locality',
-                    'crs_mark',
-                    'crs_mark_name',
-                    'crs_mrk_phys_state',
-                    'crs_node',
-                    'crs_obs_elem_type',
-                    'crs_observation',
-                    'crs_obs_accuracy',
-                    'crs_ordinate_adj',
-                    'crs_parcel',
-                    'crs_parcel_bndry',
-                    'crs_parcel_dimen',
-                    'crs_parcel_ring',
-                    'crs_setup',
-                    'crs_sur_plan_ref',
-                    'crs_survey',
-                    'crs_sys_code',
-                    'crs_transact_type',
-                    'crs_vector',
-                    'crs_work'
+                    'bde.crs_adjust_method',
+                    'bde.crs_adjustment_run',
+                    'bde.crs_coordinate',
+                    'bde.crs_coordinate_sys',
+                    'bde.crs_cord_order',
+                    'bde.crs_land_district',
+                    'bde.crs_line',
+                    'bde.crs_locality',
+                    'bde.crs_mark',
+                    'bde.crs_mark_name',
+                    'bde.crs_mrk_phys_state',
+                    'bde.crs_node',
+                    'bde.crs_obs_elem_type',
+                    'bde.crs_observation',
+                    'bde.crs_obs_accuracy',
+                    'bde.crs_ordinate_adj',
+                    'bde.crs_parcel',
+                    'bde.crs_parcel_bndry',
+                    'bde.crs_parcel_dimen',
+                    'bde.crs_parcel_ring',
+                    'bde.crs_setup',
+                    'bde.crs_sur_plan_ref',
+                    'bde.crs_survey',
+                    'bde.crs_sys_code',
+                    'bde.crs_transact_type',
+                    'bde.crs_vector',
+                    'bde.crs_work'
                 ],
                 'any affected'
             )
@@ -3383,8 +3381,8 @@ BEGIN
             LOC.name,
             LDT.shape
         FROM
-            crs_locality LOC
-            JOIN crs_land_district LDT ON LOC.id = LDT.loc_id;
+            bde.crs_locality LOC
+            JOIN bde.crs_land_district LDT ON LOC.id = LDT.loc_id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -3402,19 +3400,19 @@ BEGIN
     CREATE TEMP TABLE tmp_proxy_datum AS
     SELECT id AS cos_id,
            'NZGD2000'::VARCHAR(10) AS name
-    FROM   crs_coordinate_sys
+    FROM   bde.crs_coordinate_sys
     WHERE  dtm_id = 19;
 
     INSERT INTO tmp_proxy_datum
     SELECT id AS cos_id,
            'NZGD1949'::VARCHAR(10) AS name
-    FROM   crs_coordinate_sys
+    FROM   bde.crs_coordinate_sys
     WHERE  dtm_id = 18;
 
     INSERT INTO tmp_proxy_datum
     SELECT id AS cos_id,
            'OCD'::VARCHAR(10) AS name
-    FROM   crs_coordinate_sys
+    FROM   bde.crs_coordinate_sys
     WHERE  cot_id = 65
     AND    dtm_id <> 10;
 
@@ -3461,14 +3459,14 @@ BEGIN
             COALESCE(DTM.name, 'UNKNOWN') AS datum,
             ST_Collect(SPF.shape ORDER BY SPF.shape ASC) AS shape
         FROM
-            crs_survey SUR,
-            crs_work WRK
+            bde.crs_survey SUR,
+            bde.crs_work WRK
                 LEFT JOIN tmp_proxy_datum DTM ON (WRK.cos_id = DTM.cos_id),
-            crs_sur_plan_ref SPF,
-            crs_transact_type TRT,
-            crs_sys_code SCO1,
-            crs_sys_code SCO2,
-            crs_locality LOC
+            bde.crs_sur_plan_ref SPF,
+            bde.crs_transact_type TRT,
+            bde.crs_sys_code SCO1,
+            bde.crs_sys_code SCO2,
+            bde.crs_locality LOC
         WHERE
             WRK.id = SUR.wrk_id AND
             SUR.wrk_id = SPF.wrk_id AND
@@ -3520,12 +3518,12 @@ BEGIN
                 St_ConvexHull(ST_Collect(NOD.shape ORDER BY NOD.shape ASC))
             END  AS shape
         FROM
-            crs_adjustment_run ADJ
-            JOIN crs_adjust_method ADM ON ADJ.adm_id = ADM.id
+            bde.crs_adjustment_run ADJ
+            JOIN bde.crs_adjust_method ADM ON ADJ.adm_id = ADM.id
             LEFT JOIN tmp_survey_plans SUR ON ADJ.wrk_id = SUR.wrk_id
-            JOIN crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
-            JOIN crs_coordinate COO ON ORJ.coo_id_output = COO.id
-            JOIN crs_node NOD ON COO.nod_id = NOD.id
+            JOIN bde.crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
+            JOIN bde.crs_coordinate COO ON ORJ.coo_id_output = COO.id
+            JOIN bde.crs_node NOD ON COO.nod_id = NOD.id
         WHERE
             ADJ.status = 'AUTH' AND
             ADM.software_used = 'LNZC' AND
@@ -3569,12 +3567,12 @@ BEGIN
                 St_ConvexHull(ST_Collect(NOD.shape ORDER BY NOD.shape ASC))
             END  AS shape
         FROM
-            crs_adjustment_run ADJ
-            JOIN crs_adjust_method ADM ON ADJ.adm_id = ADM.id
+            bde.crs_adjustment_run ADJ
+            JOIN bde.crs_adjust_method ADM ON ADJ.adm_id = ADM.id
             LEFT JOIN tmp_survey_plans SUR ON ADJ.wrk_id = SUR.wrk_id
-            JOIN crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
-            JOIN crs_coordinate COO ON ORJ.coo_id_output = COO.id
-            JOIN crs_node NOD ON COO.nod_id = NOD.id
+            JOIN bde.crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
+            JOIN bde.crs_coordinate COO ON ORJ.coo_id_output = COO.id
+            JOIN bde.crs_node NOD ON COO.nod_id = NOD.id
         WHERE
             ADJ.status = 'AUTH' AND
             ADM.software_used = 'LNZC' AND
@@ -3619,12 +3617,12 @@ BEGIN
                 St_ConvexHull(ST_Collect(NOD.shape ORDER BY NOD.shape ASC))
             END  AS shape
         FROM
-            crs_adjustment_run ADJ
-            JOIN crs_adjust_method ADM ON ADJ.adm_id = ADM.id
+            bde.crs_adjustment_run ADJ
+            JOIN bde.crs_adjust_method ADM ON ADJ.adm_id = ADM.id
             LEFT JOIN tmp_survey_plans SUR ON ADJ.wrk_id = SUR.wrk_id
-            JOIN crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
-            JOIN crs_coordinate COO ON ORJ.coo_id_output = COO.id
-            JOIN crs_node NOD ON COO.nod_id = NOD.id
+            JOIN bde.crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
+            JOIN bde.crs_coordinate COO ON ORJ.coo_id_output = COO.id
+            JOIN bde.crs_node NOD ON COO.nod_id = NOD.id
         WHERE
             ADJ.status = 'AUTH' AND
             ADM.software_used = 'LNZC' AND
@@ -3656,11 +3654,11 @@ BEGIN
     SELECT
         OBN.vct_id
     FROM
-        crs_observation OBN
-        JOIN crs_setup STP ON OBN.stp_id_local = STP.id
-        JOIN crs_vector VCT ON VCT.id = OBN.vct_id
-        LEFT JOIN crs_parcel_dimen PDI ON OBN.id = PDI.obn_id
-        LEFT JOIN crs_parcel PAR ON PDI.par_id = PAR.id AND PAR.status = 'CURR' AND PAR.toc_code = 'PRIM'
+        bde.crs_observation OBN
+        JOIN bde.crs_setup STP ON OBN.stp_id_local = STP.id
+        JOIN bde.crs_vector VCT ON VCT.id = OBN.vct_id
+        LEFT JOIN bde.crs_parcel_dimen PDI ON OBN.id = PDI.obn_id
+        LEFT JOIN bde.crs_parcel PAR ON PDI.par_id = PAR.id AND PAR.status = 'CURR' AND PAR.toc_code = 'PRIM'
     WHERE
         OBN.rdn_id IS NULL AND
         OBN.obt_type = 'REDC' AND
@@ -3689,8 +3687,8 @@ BEGIN
             VCT.shape
         FROM
             tmp_parcel_vectors TPV
-            JOIN crs_vector VCT ON TPV.vct_id = VCT.id
-            JOIN crs_observation OBN ON TPV.vct_id = OBN.vct_id
+            JOIN bde.crs_vector VCT ON TPV.vct_id = VCT.id
+            JOIN bde.crs_observation OBN ON TPV.vct_id = OBN.vct_id
         WHERE
             OBN.rdn_id IS NULL AND
             OBN.obt_type = 'REDC' AND
@@ -3732,14 +3730,14 @@ BEGIN
             VCT.shape
         FROM
             tmp_parcel_vectors TPV
-            JOIN crs_vector VCT ON TPV.vct_id = VCT.id
-            LEFT JOIN crs_observation OBN_B ON TPV.vct_id = OBN_B.vct_id AND
+            JOIN bde.crs_vector VCT ON TPV.vct_id = VCT.id
+            LEFT JOIN bde.crs_observation OBN_B ON TPV.vct_id = OBN_B.vct_id AND
                 OBN_B.rdn_id IS NULL AND
                 OBN_B.obt_type = 'REDC' AND
                 OBN_B.obt_sub_type = 'BEAR' AND
                 OBN_B.status = 'AUTH' AND
                 OBN_B.surveyed_class IN ('ADPT', 'CALC', 'MEAS')
-            LEFT JOIN crs_observation OBN_D ON TPV.vct_id = OBN_D.vct_id AND
+            LEFT JOIN bde.crs_observation OBN_D ON TPV.vct_id = OBN_D.vct_id AND
                 OBN_D.rdn_id IS NULL AND
                 OBN_D.obt_type = 'REDC' AND
                 OBN_D.obt_sub_type = 'SLDI' AND
@@ -3800,7 +3798,7 @@ BEGIN
     ----------------------------------------------------------------------------
 
     -- create temp table to hold NZGD2000 nominal accuracy error values,
-    -- because the error values in crs_cord_order do not match up with the
+    -- because the error values in bde.crs_cord_order do not match up with the
     -- standard
     CREATE TEMP TABLE tmp_cord_nominal_error (
         cor_id INTEGER NOT NULL PRIMARY KEY,
@@ -3865,17 +3863,17 @@ BEGIN
                 SUR.survey_reference as last_survey,
                 NOD.shape
             FROM
-                crs_node NOD
-                JOIN crs_coordinate COO ON NOD.cos_id_official = COO.cos_id AND NOD.id = COO.nod_id AND COO.status = 'AUTH'
-                JOIN crs_cord_order COR ON COO.cor_id = COR.id
+                bde.crs_node NOD
+                JOIN bde.crs_coordinate COO ON NOD.cos_id_official = COO.cos_id AND NOD.id = COO.nod_id AND COO.status = 'AUTH'
+                JOIN bde.crs_cord_order COR ON COO.cor_id = COR.id
                 LEFT JOIN tmp_cord_nominal_error CNE ON COR.id = CNE.cor_id
-                LEFT JOIN crs_mark MRK ON MRK.nod_id = NOD.id AND MRK.status <> 'PEND'
-                LEFT JOIN crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
-                LEFT JOIN crs_mark_name GEO ON MRK.id = GEO.mrk_id AND GEO.type = 'CODE'
-                LEFT JOIN crs_mrk_phys_state MPS ON MPS.mrk_id = MRK.id AND MPS.type = 'MARK' AND MPS.status = 'CURR'
+                LEFT JOIN bde.crs_mark MRK ON MRK.nod_id = NOD.id AND MRK.status <> 'PEND'
+                LEFT JOIN bde.crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
+                LEFT JOIN bde.crs_mark_name GEO ON MRK.id = GEO.mrk_id AND GEO.type = 'CODE'
+                LEFT JOIN bde.crs_mrk_phys_state MPS ON MPS.mrk_id = MRK.id AND MPS.type = 'MARK' AND MPS.status = 'CURR'
                 LEFT JOIN tmp_survey_plans SUR ON MPS.wrk_id = SUR.wrk_id
-                LEFT JOIN crs_sys_code SCOC ON MPS.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
-                LEFT JOIN crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
+                LEFT JOIN bde.crs_sys_code SCOC ON MPS.condition = SCOC.code AND SCOC.scg_code = 'MPSC'
+                LEFT JOIN bde.crs_sys_code SCOM ON RTRIM(mrk.type) = SCOM.code AND SCOM.scg_code = 'MRKT'
             WHERE
                 COO.cor_id < 1908 AND
                 NOD.cos_id_official = 109 AND
@@ -3917,10 +3915,10 @@ BEGIN
             LIN.nod_id_start,
             LIN.nod_id_end
         FROM
-            crs_parcel PAR,
-            crs_parcel_ring PRI,
-            crs_parcel_bndry PBD,
-            crs_line LIN
+            bde.crs_parcel PAR,
+            bde.crs_parcel_ring PRI,
+            bde.crs_parcel_bndry PBD,
+            bde.crs_line LIN
         WHERE
             PAR.id = PRI.par_id AND
             PRI.id = PBD.pri_id AND
@@ -3944,10 +3942,10 @@ BEGIN
         NOD.id AS nod_id,
         MAX(ADJ.adjust_datetime) AS last_adjusted
     FROM
-        crs_node NOD
-        JOIN crs_coordinate COO ON NOD.id = COO.nod_id AND COO.cos_id = NOD.cos_id_official AND COO.status = 'AUTH'
-        LEFT JOIN crs_ordinate_adj ORJ ON COO.id = ORJ.coo_id_output
-        LEFT JOIN crs_adjustment_run ADJ ON ORJ.adj_id = ADJ.id
+        bde.crs_node NOD
+        JOIN bde.crs_coordinate COO ON NOD.id = COO.nod_id AND COO.cos_id = NOD.cos_id_official AND COO.status = 'AUTH'
+        LEFT JOIN bde.crs_ordinate_adj ORJ ON COO.id = ORJ.coo_id_output
+        LEFT JOIN bde.crs_adjustment_run ADJ ON ORJ.adj_id = ADJ.id
     WHERE
         NOD.status = 'AUTH' AND
         NOD.cos_id_official = 109 AND
@@ -3982,14 +3980,14 @@ BEGIN
             END AS is_bdy,
             NOD.shape
         FROM
-            crs_node NOD
-            JOIN crs_coordinate COO ON NOD.id = COO.nod_id AND COO.cos_id = NOD.cos_id_official AND COO.status = 'AUTH'
-            JOIN crs_cord_order COR ON COO.cor_id = COR.id
+            bde.crs_node NOD
+            JOIN bde.crs_coordinate COO ON NOD.id = COO.nod_id AND COO.cos_id = NOD.cos_id_official AND COO.status = 'AUTH'
+            JOIN bde.crs_cord_order COR ON COO.cor_id = COR.id
             LEFT JOIN tmp_cord_nominal_error CNE ON COR.id = CNE.cor_id
             LEFT JOIN tmp_node_last_adjusted NAJ ON NOD.id = NAJ.nod_id
             LEFT JOIN tmp_bdy_nodes BDY ON NOD.id = BDY.nod_id
-            LEFT JOIN crs_mark MRK ON NOD.id = MRK.nod_id AND MRK.status <> 'PEND'
-            LEFT JOIN crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
+            LEFT JOIN bde.crs_mark MRK ON NOD.id = MRK.nod_id AND MRK.status <> 'PEND'
+            LEFT JOIN bde.crs_mark_name MKN ON MRK.id = MKN.mrk_id AND MKN.type = 'CURR'
         WHERE
             NOD.status = 'AUTH' AND
             NOD.cos_id_official = 109
@@ -4133,15 +4131,15 @@ BEGIN
             SUR.survey_reference,
             ST_SetSrid(ST_MakeLine(MRKL.shape, MRKR.shape), 4167) AS shape
         FROM
-            crs_observation OBN
-            JOIN crs_obs_elem_type OET ON OBN.obt_sub_type = OET.type
-            JOIN crs_setup STPL ON OBN.stp_id_local = STPL.id
-            JOIN crs_setup STPR ON OBN.stp_id_remote = STPR.id
+            bde.crs_observation OBN
+            JOIN bde.crs_obs_elem_type OET ON OBN.obt_sub_type = OET.type
+            JOIN bde.crs_setup STPL ON OBN.stp_id_local = STPL.id
+            JOIN bde.crs_setup STPR ON OBN.stp_id_remote = STPR.id
             JOIN tmp_cadastral_marks MRKL ON MRKL.id = STPL.nod_id
             JOIN tmp_cadastral_marks MRKR ON MRKR.id = STPR.nod_id
-            JOIN crs_coordinate_sys COS ON OBN.cos_id = COS.id
-            LEFT JOIN crs_obs_accuracy OBA ON OBN.id = OBA.obn_id1
-            LEFT JOIN crs_sys_code SCO ON OBN.surveyed_class = SCO.code AND SCO.scg_code = 'OBEC'
+            JOIN bde.crs_coordinate_sys COS ON OBN.cos_id = COS.id
+            LEFT JOIN bde.crs_obs_accuracy OBA ON OBN.id = OBA.obn_id1
+            LEFT JOIN bde.crs_sys_code SCO ON OBN.surveyed_class = SCO.code AND SCO.scg_code = 'OBEC'
             LEFT JOIN tmp_survey_plans SUR ON STPL.wrk_id = SUR.wrk_id
         WHERE
             OBN.rdn_id IS NULL AND
@@ -4214,14 +4212,14 @@ BEGIN
         to_char(OBN.arc_radius, 'FM9999999990D00') AS arc_radius_label,
         ST_SetSrid(ST_MakeLine(MRKL.shape, MRKR.shape), 4167) AS shape
     FROM
-        crs_observation OBN
-        JOIN crs_setup STPL ON OBN.stp_id_local = STPL.id
-        JOIN crs_setup STPR ON OBN.stp_id_remote = STPR.id
+        bde.crs_observation OBN
+        JOIN bde.crs_setup STPL ON OBN.stp_id_local = STPL.id
+        JOIN bde.crs_setup STPR ON OBN.stp_id_remote = STPR.id
         JOIN tmp_cadastral_marks MRKL ON MRKL.id = STPL.nod_id
         JOIN tmp_cadastral_marks MRKR ON MRKR.id = STPR.nod_id
-        JOIN crs_coordinate_sys COS ON OBN.cos_id = COS.id
-        LEFT JOIN crs_obs_accuracy OBA ON OBN.id = OBA.obn_id1
-        LEFT JOIN crs_sys_code SCO ON OBN.surveyed_class = SCO.code AND SCO.scg_code = 'OBEC'
+        JOIN bde.crs_coordinate_sys COS ON OBN.cos_id = COS.id
+        LEFT JOIN bde.crs_obs_accuracy OBA ON OBN.id = OBA.obn_id1
+        LEFT JOIN bde.crs_sys_code SCO ON OBN.surveyed_class = SCO.code AND SCO.scg_code = 'OBEC'
         LEFT JOIN tmp_survey_plans SUR ON STPL.wrk_id = SUR.wrk_id
     WHERE
         OBN.rdn_id IS NULL AND
@@ -4253,9 +4251,9 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION LDS_MaintainSimplifiedSurveyLayers(INTEGER) OWNER TO bde_dba;
+ALTER FUNCTION lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER) OWNER TO bde_dba;
 
-ALTER FUNCTION LDS_MaintainSimplifiedSurveyLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
+ALTER FUNCTION lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
 
 DO $$
 DECLARE

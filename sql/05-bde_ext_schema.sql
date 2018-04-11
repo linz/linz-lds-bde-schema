@@ -27,14 +27,14 @@ GRANT USAGE ON SCHEMA bde_ext TO bde_user;
 
 COMMENT ON SCHEMA bde_ext IS 'Schema for LDS full Landonline layers that require public filtering';
 
-SET search_path = bde_ext, public;
+--SET search_path = bde_ext, public;
 
 -- =============================================================================
 -- A D J U S T M E N T   R U N
 -- =============================================================================
 
-DROP TABLE IF EXISTS adjustment_run CASCADE;
-CREATE TABLE adjustment_run
+DROP TABLE IF EXISTS bde_ext.adjustment_run CASCADE;
+CREATE TABLE bde_ext.adjustment_run
 (
   id INTEGER NOT NULL,
   adm_id INTEGER NOT NULL,
@@ -50,16 +50,16 @@ CREATE TABLE adjustment_run
   CONSTRAINT pkey_adjustment_run PRIMARY KEY (id)
 );
 
-ALTER TABLE adjustment_run OWNER TO bde_dba;
-REVOKE ALL ON TABLE adjustment_run FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE adjustment_run TO bde_admin;
-GRANT SELECT ON TABLE adjustment_run TO bde_user;
+ALTER TABLE bde_ext.adjustment_run OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.adjustment_run FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.adjustment_run TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.adjustment_run TO bde_user;
 
 -- =============================================================================
 -- P R O P R I E T O R
 -- =============================================================================
-DROP TABLE IF EXISTS proprietor CASCADE;
-CREATE TABLE proprietor
+DROP TABLE IF EXISTS bde_ext.proprietor CASCADE;
+CREATE TABLE bde_ext.proprietor
 (
   id INTEGER NOT NULL,
   ets_id INTEGER NOT NULL,
@@ -73,16 +73,16 @@ CREATE TABLE proprietor
   CONSTRAINT pkey_proprietor PRIMARY KEY (id)
 );
 
-ALTER TABLE proprietor OWNER TO bde_dba;
-REVOKE ALL ON TABLE proprietor FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE proprietor TO bde_admin;
-GRANT SELECT ON TABLE proprietor TO bde_user;
+ALTER TABLE bde_ext.proprietor OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.proprietor FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.proprietor TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.proprietor TO bde_user;
 
 -- =============================================================================
 -- E N C U M B R A N C E E
 -- =============================================================================
-DROP TABLE IF EXISTS encumbrancee CASCADE;
-CREATE TABLE encumbrancee
+DROP TABLE IF EXISTS bde_ext.encumbrancee CASCADE;
+CREATE TABLE bde_ext.encumbrancee
 (
   id INTEGER NOT NULL,
   ens_id INTEGER,
@@ -91,16 +91,16 @@ CREATE TABLE encumbrancee
   CONSTRAINT pkey_encumbrancee PRIMARY KEY (id)
 );
 
-ALTER TABLE encumbrancee OWNER TO bde_dba;
-REVOKE ALL ON TABLE encumbrancee FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE encumbrancee TO bde_admin;
-GRANT SELECT ON TABLE encumbrancee TO bde_user;
+ALTER TABLE bde_ext.encumbrancee OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.encumbrancee FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.encumbrancee TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.encumbrancee TO bde_user;
 
 -- =============================================================================
 -- N O M I N A L   I N D E X
 -- =============================================================================
-DROP TABLE IF EXISTS nominal_index CASCADE;
-CREATE TABLE nominal_index
+DROP TABLE IF EXISTS bde_ext.nominal_index CASCADE;
+CREATE TABLE bde_ext.nominal_index
 (
   id INTEGER NOT NULL,
   ttl_title_no VARCHAR(20) NOT NULL,
@@ -113,16 +113,16 @@ CREATE TABLE nominal_index
   CONSTRAINT pkey_nominal_index PRIMARY KEY (id)
 );
 
-ALTER TABLE nominal_index OWNER TO bde_dba;
-REVOKE ALL ON TABLE nominal_index FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE nominal_index TO bde_admin;
-GRANT SELECT ON TABLE nominal_index TO bde_user;
+ALTER TABLE bde_ext.nominal_index OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.nominal_index FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.nominal_index TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.nominal_index TO bde_user;
 
 -- =============================================================================
 -- A L I A S
 -- =============================================================================
-DROP TABLE IF EXISTS alias CASCADE;
-CREATE TABLE alias
+DROP TABLE IF EXISTS bde_ext.alias CASCADE;
+CREATE TABLE bde_ext.alias
 (
   id INTEGER NOT NULL,
   prp_id INTEGER NOT NULL,
@@ -131,16 +131,16 @@ CREATE TABLE alias
   CONSTRAINT pkey_alias PRIMARY KEY (id )
 );
 
-ALTER TABLE alias OWNER TO bde_dba;
-REVOKE ALL ON TABLE alias FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE alias TO bde_admin;
-GRANT SELECT ON TABLE alias TO bde_user;
+ALTER TABLE bde_ext.alias OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.alias FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.alias TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.alias TO bde_user;
 
 -- =============================================================================
 -- E N C   S H A R E
 -- =============================================================================
-DROP TABLE IF EXISTS enc_share CASCADE;
-CREATE TABLE enc_share
+DROP TABLE IF EXISTS bde_ext.enc_share CASCADE;
+CREATE TABLE bde_ext.enc_share
 (
   id INTEGER NOT NULL,
   enc_id INTEGER,
@@ -154,16 +154,16 @@ CREATE TABLE enc_share
   CONSTRAINT pkey_enc_share PRIMARY KEY (id )
 );
 
-ALTER TABLE enc_share OWNER TO bde_dba;
-REVOKE ALL ON TABLE enc_share FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE enc_share TO bde_admin;
-GRANT SELECT ON TABLE enc_share TO bde_user;
+ALTER TABLE bde_ext.enc_share OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.enc_share FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.enc_share TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.enc_share TO bde_user;
 
 -- =============================================================================
 -- E N C U M B R A N C E
 -- =============================================================================
-DROP TABLE IF EXISTS encumbrance CASCADE;
-CREATE TABLE encumbrance
+DROP TABLE IF EXISTS bde_ext.encumbrance CASCADE;
+CREATE TABLE bde_ext.encumbrance
 (
   id INTEGER NOT NULL,
   status VARCHAR(4),
@@ -175,16 +175,16 @@ CREATE TABLE encumbrance
   CONSTRAINT pkey_encumbrance PRIMARY KEY (id)
 );
 
-ALTER TABLE encumbrance OWNER TO bde_dba;
-REVOKE ALL ON TABLE encumbrance FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE encumbrance TO bde_admin;
-GRANT SELECT ON TABLE encumbrance TO bde_user;
+ALTER TABLE bde_ext.encumbrance OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.encumbrance FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.encumbrance TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.encumbrance TO bde_user;
 
 -- =============================================================================
 -- E S T A T E   S H A R E
 -- =============================================================================
-DROP TABLE IF EXISTS estate_share CASCADE;
-CREATE TABLE estate_share
+DROP TABLE IF EXISTS bde_ext.estate_share CASCADE;
+CREATE TABLE bde_ext.estate_share
 (
   id INTEGER NOT NULL,
   ett_id INTEGER NOT NULL,
@@ -199,16 +199,16 @@ CREATE TABLE estate_share
   CONSTRAINT pkey_estate_share PRIMARY KEY (id )
 );
 
-ALTER TABLE estate_share OWNER TO bde_dba;
-REVOKE ALL ON TABLE estate_share FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE estate_share TO bde_admin;
-GRANT SELECT ON TABLE estate_share TO bde_user;
+ALTER TABLE bde_ext.estate_share OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.estate_share FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.estate_share TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.estate_share TO bde_user;
 
 -- =============================================================================
 -- L E G A L   D E S C
 -- =============================================================================
-DROP TABLE IF EXISTS legal_desc CASCADE;
-CREATE TABLE legal_desc
+DROP TABLE IF EXISTS bde_ext.legal_desc CASCADE;
+CREATE TABLE bde_ext.legal_desc
 (
   id INTEGER NOT NULL,
   type VARCHAR(4) NOT NULL,
@@ -220,16 +220,16 @@ CREATE TABLE legal_desc
   CONSTRAINT pkey_legal_desc PRIMARY KEY (id)
 );
 
-ALTER TABLE legal_desc OWNER TO bde_dba;
-REVOKE ALL ON TABLE legal_desc FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE legal_desc TO bde_admin;
-GRANT SELECT ON TABLE legal_desc TO bde_user;
+ALTER TABLE bde_ext.legal_desc OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.legal_desc FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.legal_desc TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.legal_desc TO bde_user;
 
 -- =============================================================================
 -- L I N E
 -- =============================================================================
-DROP TABLE IF EXISTS line CASCADE;
-CREATE TABLE line
+DROP TABLE IF EXISTS bde_ext.line CASCADE;
+CREATE TABLE bde_ext.line
 (
   boundary CHAR(1) NOT NULL,
   type VARCHAR(4) NOT NULL,
@@ -247,20 +247,20 @@ CREATE TABLE line
   CONSTRAINT pkey_line PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('line', 'shape', 4167, 'LINESTRING', 2);
-CREATE INDEX shx_line_shape ON line USING gist (shape);
+PERFORM AddGeometryColumn('bde_ext', 'line', 'shape', 4167, 'LINESTRING', 2);
+CREATE INDEX shx_line_shape ON bde_ext.line USING gist (shape);
 
-ALTER TABLE line OWNER TO bde_dba;
-REVOKE ALL ON TABLE line FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE line TO bde_admin;
-GRANT SELECT ON TABLE line TO bde_user;
+ALTER TABLE bde_ext.line OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.line FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.line TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.line TO bde_user;
 
 
 -- =============================================================================
 -- M A I N T E N A N C E
 -- =============================================================================
-DROP TABLE IF EXISTS maintenance CASCADE;
-CREATE TABLE maintenance
+DROP TABLE IF EXISTS bde_ext.maintenance CASCADE;
+CREATE TABLE bde_ext.maintenance
 (
   mrk_id INTEGER NOT NULL,
   type VARCHAR(4) NOT NULL,
@@ -272,16 +272,16 @@ CREATE TABLE maintenance
   CONSTRAINT maintenance_mrk_id_type_key UNIQUE (mrk_id , type)
 );
 
-ALTER TABLE maintenance OWNER TO bde_dba;
-REVOKE ALL ON TABLE maintenance FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE maintenance TO bde_admin;
-GRANT SELECT ON TABLE maintenance TO bde_user;
+ALTER TABLE bde_ext.maintenance OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.maintenance FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.maintenance TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.maintenance TO bde_user;
 
 -- =============================================================================
 -- M A R K
 -- =============================================================================
-DROP TABLE IF EXISTS mark CASCADE;
-CREATE TABLE mark
+DROP TABLE IF EXISTS bde_ext.mark CASCADE;
+CREATE TABLE bde_ext.mark
 (
   id INTEGER NOT NULL,
   nod_id INTEGER NOT NULL,
@@ -305,16 +305,16 @@ CREATE TABLE mark
   CONSTRAINT pkey_mark PRIMARY KEY (id )
 );
 
-ALTER TABLE mark OWNER TO bde_dba;
-REVOKE ALL ON TABLE mark FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE mark TO bde_admin;
-GRANT SELECT ON TABLE mark TO bde_user;
+ALTER TABLE bde_ext.mark OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.mark FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.mark TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.mark TO bde_user;
 
 -- =============================================================================
 -- M A R K  N A M E
 -- =============================================================================
-DROP TABLE IF EXISTS mark_name CASCADE;
-CREATE TABLE mark_name
+DROP TABLE IF EXISTS bde_ext.mark_name CASCADE;
+CREATE TABLE bde_ext.mark_name
 (
   mrk_id INTEGER NOT NULL,
   type VARCHAR(4) NOT NULL,
@@ -324,16 +324,16 @@ CREATE TABLE mark_name
   CONSTRAINT mark_name_mrk_id_type_key UNIQUE (mrk_id , type )
 );
 
-ALTER TABLE mark_name OWNER TO bde_dba;
-REVOKE ALL ON TABLE mark_name FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE mark_name TO bde_admin;
-GRANT SELECT ON TABLE mark_name TO bde_user;
+ALTER TABLE bde_ext.mark_name OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.mark_name FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.mark_name TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.mark_name TO bde_user;
 
 -- =============================================================================
 -- M A R K   P H Y S   S T A T E
 -- =============================================================================
-DROP TABLE IF EXISTS mark_phys_state CASCADE;
-CREATE TABLE mark_phys_state
+DROP TABLE IF EXISTS bde_ext.mark_phys_state CASCADE;
+CREATE TABLE bde_ext.mark_phys_state
 (
   mrk_id INTEGER NOT NULL,
   wrk_id INTEGER NOT NULL,
@@ -360,16 +360,16 @@ CREATE TABLE mark_phys_state
   CONSTRAINT mark_phys_state_mrk_id_type_wrk_id_key UNIQUE (mrk_id ,type ,wrk_id)
 );
 
-ALTER TABLE mark_phys_state OWNER TO bde_dba;
-REVOKE ALL ON TABLE mark_phys_state FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE mark_phys_state TO bde_admin;
-GRANT SELECT ON TABLE mark_phys_state TO bde_user;
+ALTER TABLE bde_ext.mark_phys_state OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.mark_phys_state FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.mark_phys_state TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.mark_phys_state TO bde_user;
 
 -- =============================================================================
 -- N O D E
 -- =============================================================================
-DROP TABLE IF EXISTS node CASCADE;
-CREATE TABLE node
+DROP TABLE IF EXISTS bde_ext.node CASCADE;
+CREATE TABLE bde_ext.node
 (
   id INTEGER NOT NULL,
   cos_id_official INTEGER NOT NULL,
@@ -384,19 +384,19 @@ CREATE TABLE node
   CONSTRAINT pkey_node PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('node', 'shape', 4167, 'POINT', 2);
-CREATE INDEX shx_node_shape ON node USING gist (shape);
+PERFORM AddGeometryColumn('bde_ext', 'node', 'shape', 4167, 'POINT', 2);
+CREATE INDEX shx_node_shape ON bde_ext.node USING gist (shape);
 
-ALTER TABLE node OWNER TO bde_dba;
-REVOKE ALL ON TABLE node FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE node TO bde_admin;
-GRANT SELECT ON TABLE node TO bde_user;
+ALTER TABLE bde_ext.node OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.node FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.node TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.node TO bde_user;
 
 -- =============================================================================
 -- N O D E  P R P  O R D E R
 -- =============================================================================
-DROP TABLE IF EXISTS node_prp_order CASCADE;
-CREATE TABLE node_prp_order
+DROP TABLE IF EXISTS bde_ext.node_prp_order CASCADE;
+CREATE TABLE bde_ext.node_prp_order
 (
   dtm_id INTEGER NOT NULL,
   nod_id INTEGER NOT NULL,
@@ -406,16 +406,16 @@ CREATE TABLE node_prp_order
   CONSTRAINT node_prp_order_dtm_id_nod_id_key UNIQUE (dtm_id , nod_id)
 );
 
-ALTER TABLE node_prp_order OWNER TO bde_dba;
-REVOKE ALL ON TABLE node_prp_order FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE node_prp_order TO bde_admin;
-GRANT SELECT ON TABLE node_prp_order TO bde_user;
+ALTER TABLE bde_ext.node_prp_order OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.node_prp_order FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.node_prp_order TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.node_prp_order TO bde_user;
 
 -- =============================================================================
 -- P A R C E L
 -- =============================================================================
-DROP TABLE IF EXISTS parcel CASCADE;
-CREATE TABLE parcel
+DROP TABLE IF EXISTS bde_ext.parcel CASCADE;
+CREATE TABLE bde_ext.parcel
 (
   id INTEGER NOT NULL,
   ldt_loc_id INTEGER NOT NULL,
@@ -435,19 +435,19 @@ CREATE TABLE parcel
   CONSTRAINT parcel_pkey PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('parcel', 'shape', 4167, 'GEOMETRY', 2);
-CREATE INDEX shx_parcel_shape ON parcel USING gist (shape);
+PERFORM AddGeometryColumn('bde_ext', 'parcel', 'shape', 4167, 'GEOMETRY', 2);
+CREATE INDEX shx_parcel_shape ON bde_ext.parcel USING gist (shape);
 
-ALTER TABLE parcel OWNER TO bde_dba;
-REVOKE ALL ON TABLE parcel FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE parcel TO bde_admin;
-GRANT SELECT ON TABLE parcel TO bde_user;
+ALTER TABLE bde_ext.parcel OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.parcel FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.parcel TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.parcel TO bde_user;
 
 -- =============================================================================
 -- P A R C E L  L S
 -- =============================================================================
-DROP TABLE IF EXISTS parcel_ls CASCADE;
-CREATE TABLE parcel_ls
+DROP TABLE IF EXISTS bde_ext.parcel_ls CASCADE;
+CREATE TABLE bde_ext.parcel_ls
 (
   id INTEGER NOT NULL,
   ldt_loc_id INTEGER NOT NULL,
@@ -467,19 +467,19 @@ CREATE TABLE parcel_ls
   CONSTRAINT pkey_parcel_ls PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('parcel_ls', 'shape', 4167, 'LINESTRING', 2);
-CREATE INDEX shx_parcel_ls_shape ON parcel_ls USING gist (shape);
+PERFORM AddGeometryColumn('bde_ext', 'parcel_ls', 'shape', 4167, 'LINESTRING', 2);
+CREATE INDEX shx_parcel_ls_shape ON bde_ext.parcel_ls USING gist (shape);
 
-ALTER TABLE parcel_ls OWNER TO bde_dba;
-REVOKE ALL ON TABLE parcel_ls FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE parcel_ls TO bde_admin;
-GRANT SELECT ON TABLE parcel_ls TO bde_user;
+ALTER TABLE bde_ext.parcel_ls OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.parcel_ls FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.parcel_ls TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.parcel_ls TO bde_user;
 
 -- =============================================================================
 -- P A R C E L  L A B E L
 -- =============================================================================
-DROP TABLE IF EXISTS parcel_label CASCADE;
-CREATE TABLE parcel_label
+DROP TABLE IF EXISTS bde_ext.parcel_label CASCADE;
+CREATE TABLE bde_ext.parcel_label
 (
   id INTEGER NOT NULL,
   par_id INTEGER NOT NULL,
@@ -488,19 +488,19 @@ CREATE TABLE parcel_label
   CONSTRAINT parcel_label_pkey PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('parcel_label', 'shape', 4167, 'POINT', 2);
-CREATE INDEX shx_parcel_label_shape ON parcel_label USING gist (shape);
+PERFORM AddGeometryColumn('bde_ext', 'parcel_label', 'shape', 4167, 'POINT', 2);
+CREATE INDEX shx_parcel_label_shape ON bde_ext.parcel_label USING gist (shape);
 
-ALTER TABLE parcel_label OWNER TO bde_dba;
-REVOKE ALL ON TABLE parcel_label FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE parcel_label TO bde_admin;
-GRANT SELECT ON TABLE parcel_label TO bde_user;
+ALTER TABLE bde_ext.parcel_label OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.parcel_label FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.parcel_label TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.parcel_label TO bde_user;
 
 -- =============================================================================
 -- P A R C E L  D I M E N
 -- =============================================================================
-DROP TABLE IF EXISTS parcel_dimen CASCADE;
-CREATE TABLE parcel_dimen
+DROP TABLE IF EXISTS bde_ext.parcel_dimen CASCADE;
+CREATE TABLE bde_ext.parcel_dimen
 (
   obn_id INTEGER NOT NULL,
   par_id INTEGER NOT NULL,
@@ -509,16 +509,16 @@ CREATE TABLE parcel_dimen
   CONSTRAINT parcel_dimen_obn_id_par_id_key UNIQUE (obn_id , par_id)
 );
 
-ALTER TABLE parcel_dimen OWNER TO bde_dba;
-REVOKE ALL ON TABLE parcel_dimen FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE parcel_dimen TO bde_admin;
-GRANT SELECT ON TABLE parcel_dimen TO bde_user;
+ALTER TABLE bde_ext.parcel_dimen OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.parcel_dimen FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.parcel_dimen TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.parcel_dimen TO bde_user;
 
 -- =============================================================================
 -- P A R C E L  R I N G
 -- =============================================================================
-DROP TABLE IF EXISTS parcel_ring CASCADE;
-CREATE TABLE parcel_ring
+DROP TABLE IF EXISTS bde_ext.parcel_ring CASCADE;
+CREATE TABLE bde_ext.parcel_ring
 (
   id INTEGER NOT NULL,
   par_id INTEGER NOT NULL,
@@ -528,17 +528,17 @@ CREATE TABLE parcel_ring
   CONSTRAINT pkey_parcel_ring PRIMARY KEY (id)
 );
 
-ALTER TABLE parcel_ring OWNER TO bde_dba;
-REVOKE ALL ON TABLE parcel_ring FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE parcel_ring TO bde_admin;
-GRANT SELECT ON TABLE parcel_ring TO bde_user;
+ALTER TABLE bde_ext.parcel_ring OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.parcel_ring FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.parcel_ring TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.parcel_ring TO bde_user;
 
 
 -- =============================================================================
 -- S T A T   V E R S I O N
 -- =============================================================================
-DROP TABLE IF EXISTS stat_version CASCADE;
-CREATE TABLE stat_version
+DROP TABLE IF EXISTS bde_ext.stat_version CASCADE;
+CREATE TABLE bde_ext.stat_version
 (
   version INTEGER NOT NULL,
   area_class VARCHAR(4) NOT NULL,
@@ -551,16 +551,16 @@ CREATE TABLE stat_version
   CONSTRAINT stat_version_area_class_version_key UNIQUE (area_class , version)
 );
 
-ALTER TABLE stat_version OWNER TO bde_dba;
-REVOKE ALL ON TABLE stat_version FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE stat_version TO bde_admin;
-GRANT SELECT ON TABLE stat_version TO bde_user;
+ALTER TABLE bde_ext.stat_version OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.stat_version FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.stat_version TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.stat_version TO bde_user;
 
 -- =============================================================================
 -- S T A T I S T   A R E A
 -- =============================================================================
-DROP TABLE IF EXISTS statist_area CASCADE;
-CREATE TABLE statist_area
+DROP TABLE IF EXISTS bde_ext.statist_area CASCADE;
+CREATE TABLE bde_ext.statist_area
 (
   id INTEGER NOT NULL,
   name VARCHAR(100) NOT NULL,
@@ -575,16 +575,16 @@ CREATE TABLE statist_area
   CONSTRAINT pkey_statist_area PRIMARY KEY (id)
 );
 
-ALTER TABLE statist_area OWNER TO bde_dba;
-REVOKE ALL ON TABLE statist_area FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE statist_area TO bde_admin;
-GRANT SELECT ON TABLE statist_area TO bde_user;
+ALTER TABLE bde_ext.statist_area OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.statist_area FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.statist_area TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.statist_area TO bde_user;
 
 -- =============================================================================
 -- S U R V E Y
 -- =============================================================================
-DROP TABLE IF EXISTS survey CASCADE;
-CREATE TABLE survey
+DROP TABLE IF EXISTS bde_ext.survey CASCADE;
+CREATE TABLE bde_ext.survey
 (
   wrk_id INTEGER NOT NULL,
   ldt_loc_id INTEGER NOT NULL,
@@ -612,16 +612,16 @@ CREATE TABLE survey
   CONSTRAINT pkey_survey PRIMARY KEY (wrk_id)
 );
 
-ALTER TABLE survey OWNER TO bde_dba;
-REVOKE ALL ON TABLE survey FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey TO bde_admin;
-GRANT SELECT ON TABLE survey TO bde_user;
+ALTER TABLE bde_ext.survey OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.survey FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.survey TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.survey TO bde_user;
 
 -- =============================================================================
 -- T I T L E
 -- =============================================================================
-DROP TABLE IF EXISTS title CASCADE;
-CREATE TABLE title
+DROP TABLE IF EXISTS bde_ext.title CASCADE;
+CREATE TABLE bde_ext.title
 (
   title_no VARCHAR(20) NOT NULL,
   ldt_loc_id INTEGER NOT NULL,
@@ -641,16 +641,16 @@ CREATE TABLE title
   CONSTRAINT title_title_no_key UNIQUE (title_no)
 );
 
-ALTER TABLE title OWNER TO bde_dba;
-REVOKE ALL ON TABLE title FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title TO bde_admin;
-GRANT SELECT ON TABLE title TO bde_user;
+ALTER TABLE bde_ext.title OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.title FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.title TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.title TO bde_user;
 
 -- =============================================================================
 -- T I T L E   A C T I O N
 -- =============================================================================
-DROP TABLE IF EXISTS title_action CASCADE;
-CREATE TABLE title_action
+DROP TABLE IF EXISTS bde_ext.title_action CASCADE;
+CREATE TABLE bde_ext.title_action
 (
   ttl_title_no VARCHAR(20) NOT NULL,
   act_tin_id INTEGER NOT NULL,
@@ -660,16 +660,16 @@ CREATE TABLE title_action
   CONSTRAINT title_action_act_id_act_tin_id_ttl_title_no_key UNIQUE (act_id , act_tin_id , ttl_title_no)
 );
 
-ALTER TABLE title_action OWNER TO bde_dba;
-REVOKE ALL ON TABLE title_action FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_action TO bde_admin;
-GRANT SELECT ON TABLE title_action TO bde_user;
+ALTER TABLE bde_ext.title_action OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.title_action FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.title_action TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.title_action TO bde_user;
 
 -- =============================================================================
 -- T I T L E   D O C   R E F
 -- =============================================================================
-DROP TABLE IF EXISTS title_doc_ref CASCADE;
-CREATE TABLE title_doc_ref
+DROP TABLE IF EXISTS bde_ext.title_doc_ref CASCADE;
+CREATE TABLE bde_ext.title_doc_ref
 (
   id INTEGER NOT NULL,
   type VARCHAR(4),
@@ -678,16 +678,16 @@ CREATE TABLE title_doc_ref
   CONSTRAINT pkey_title_doc_ref PRIMARY KEY (id)
 );
 
-ALTER TABLE title_doc_ref OWNER TO bde_dba;
-REVOKE ALL ON TABLE title_doc_ref FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_doc_ref TO bde_admin;
-GRANT SELECT ON TABLE title_doc_ref TO bde_user;
+ALTER TABLE bde_ext.title_doc_ref OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.title_doc_ref FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.title_doc_ref TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.title_doc_ref TO bde_user;
 
 -- =============================================================================
 -- T I T L E   E S T A T E
 -- =============================================================================
-DROP TABLE IF EXISTS title_estate CASCADE;
-CREATE TABLE title_estate
+DROP TABLE IF EXISTS bde_ext.title_estate CASCADE;
+CREATE TABLE bde_ext.title_estate
 (
   id INTEGER NOT NULL,
   ttl_title_no VARCHAR(20) NOT NULL,
@@ -705,16 +705,16 @@ CREATE TABLE title_estate
   CONSTRAINT pkey_title_estate PRIMARY KEY (id)
 );
 
-ALTER TABLE title_estate OWNER TO bde_dba;
-REVOKE ALL ON TABLE title_estate FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_estate TO bde_admin;
-GRANT SELECT ON TABLE title_estate TO bde_user;
+ALTER TABLE bde_ext.title_estate OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.title_estate FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.title_estate TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.title_estate TO bde_user;
 
 -- =============================================================================
 -- T I T L E   M E M   T E X T
 -- =============================================================================
-DROP TABLE IF EXISTS title_mem_text CASCADE;
-CREATE TABLE title_mem_text
+DROP TABLE IF EXISTS bde_ext.title_mem_text CASCADE;
+CREATE TABLE bde_ext.title_mem_text
 (
   ttm_id INTEGER NOT NULL,
   sequence_no INTEGER NOT NULL,
@@ -732,16 +732,16 @@ CREATE TABLE title_mem_text
   CONSTRAINT title_mem_text_sequence_no_ttm_id_key UNIQUE (sequence_no , ttm_id)
 );
 
-ALTER TABLE title_mem_text OWNER TO bde_dba;
-REVOKE ALL ON TABLE title_mem_text FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_mem_text TO bde_admin;
-GRANT SELECT ON TABLE title_mem_text TO bde_user;
+ALTER TABLE bde_ext.title_mem_text OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.title_mem_text FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.title_mem_text TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.title_mem_text TO bde_user;
 
 -- =============================================================================
 -- T I T L E   M E M O R I A L
 -- =============================================================================
-DROP TABLE IF EXISTS title_memorial CASCADE;
-CREATE TABLE title_memorial
+DROP TABLE IF EXISTS bde_ext.title_memorial CASCADE;
+CREATE TABLE bde_ext.title_memorial
 (
   id INTEGER NOT NULL,
   ttl_title_no VARCHAR(20) NOT NULL,
@@ -770,16 +770,16 @@ CREATE TABLE title_memorial
   CONSTRAINT pkey_title_memorial PRIMARY KEY (id)
 );
 
-ALTER TABLE title_memorial OWNER TO bde_dba;
-REVOKE ALL ON TABLE title_memorial FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_memorial TO bde_admin;
-GRANT SELECT ON TABLE title_memorial TO bde_user;
+ALTER TABLE bde_ext.title_memorial OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.title_memorial FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.title_memorial TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.title_memorial TO bde_user;
 
 -- =============================================================================
 -- T I T L E   P A R C E L   A S S O C I A T I O N
 -- =============================================================================
-DROP TABLE IF EXISTS title_parcel_association CASCADE;
-CREATE TABLE title_parcel_association
+DROP TABLE IF EXISTS bde_ext.title_parcel_association CASCADE;
+CREATE TABLE bde_ext.title_parcel_association
 (
   id INTEGER NOT NULL,
   ttl_title_no VARCHAR(20) NOT NULL,
@@ -788,16 +788,16 @@ CREATE TABLE title_parcel_association
   CONSTRAINT pkey_title_parcel_association PRIMARY KEY (id)
 );
 
-ALTER TABLE title_parcel_association OWNER TO bde_dba;
-REVOKE ALL ON TABLE title_parcel_association FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_parcel_association TO bde_admin;
-GRANT SELECT ON TABLE title_parcel_association TO bde_user;
+ALTER TABLE bde_ext.title_parcel_association OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.title_parcel_association FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.title_parcel_association TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.title_parcel_association TO bde_user;
 
 -- =============================================================================
 -- T I T L E   T R A N S A C T   T Y P E
 -- =============================================================================
-DROP TABLE IF EXISTS transact_type CASCADE;
-CREATE TABLE transact_type
+DROP TABLE IF EXISTS bde_ext.transact_type CASCADE;
+CREATE TABLE bde_ext.transact_type
 (
   grp VARCHAR(4) NOT NULL,
   type VARCHAR(4) NOT NULL,
@@ -807,16 +807,16 @@ CREATE TABLE transact_type
   CONSTRAINT transact_type_grp_type_key UNIQUE (grp , type)
 );
 
-ALTER TABLE transact_type OWNER TO bde_dba;
-REVOKE ALL ON TABLE transact_type FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE transact_type TO bde_admin;
-GRANT SELECT ON TABLE transact_type TO bde_user;
+ALTER TABLE bde_ext.transact_type OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.transact_type FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.transact_type TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.transact_type TO bde_user;
 
 -- =============================================================================
 -- T T L   E N C
 -- =============================================================================
-DROP TABLE IF EXISTS ttl_enc CASCADE;
-CREATE TABLE ttl_enc
+DROP TABLE IF EXISTS bde_ext.ttl_enc CASCADE;
+CREATE TABLE bde_ext.ttl_enc
 (
   id INTEGER NOT NULL,
   ttl_title_no VARCHAR(20) NOT NULL,
@@ -827,16 +827,16 @@ CREATE TABLE ttl_enc
   CONSTRAINT pkey_ttl_enc PRIMARY KEY (id)
 );
 
-ALTER TABLE ttl_enc OWNER TO bde_dba;
-REVOKE ALL ON TABLE ttl_enc FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ttl_enc TO bde_admin;
-GRANT SELECT ON TABLE ttl_enc TO bde_user;
+ALTER TABLE bde_ext.ttl_enc OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.ttl_enc FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.ttl_enc TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.ttl_enc TO bde_user;
 
 -- =============================================================================
 -- T T L   H I E R A R C H Y
 -- =============================================================================
-DROP TABLE IF EXISTS ttl_hierarchy CASCADE;
-CREATE TABLE ttl_hierarchy
+DROP TABLE IF EXISTS bde_ext.ttl_hierarchy CASCADE;
+CREATE TABLE bde_ext.ttl_hierarchy
 (
   id INTEGER NOT NULL,
   status VARCHAR(4) NOT NULL,
@@ -848,16 +848,16 @@ CREATE TABLE ttl_hierarchy
   CONSTRAINT pkey_ttl_hierarchy PRIMARY KEY (id)
 );
 
-ALTER TABLE ttl_hierarchy OWNER TO bde_dba;
-REVOKE ALL ON TABLE ttl_hierarchy FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ttl_hierarchy TO bde_admin;
-GRANT SELECT ON TABLE ttl_hierarchy TO bde_user;
+ALTER TABLE bde_ext.ttl_hierarchy OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.ttl_hierarchy FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.ttl_hierarchy TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.ttl_hierarchy TO bde_user;
 
 -- =============================================================================
 -- T T L   I N S T
 -- =============================================================================
-DROP TABLE IF EXISTS ttl_inst CASCADE;
-CREATE TABLE ttl_inst
+DROP TABLE IF EXISTS bde_ext.ttl_inst CASCADE;
+CREATE TABLE bde_ext.ttl_inst
 (
   id INTEGER NOT NULL,
   inst_no VARCHAR(30) NOT NULL,
@@ -873,16 +873,16 @@ CREATE TABLE ttl_inst
   CONSTRAINT pkey_ttl_inst PRIMARY KEY (id)
 );
 
-ALTER TABLE ttl_inst OWNER TO bde_dba;
-REVOKE ALL ON TABLE ttl_inst FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ttl_inst TO bde_admin;
-GRANT SELECT ON TABLE ttl_inst TO bde_user;
+ALTER TABLE bde_ext.ttl_inst OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.ttl_inst FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.ttl_inst TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.ttl_inst TO bde_user;
 
 -- =============================================================================
 -- T T L   I N S T   T I T L E
 -- =============================================================================
-DROP TABLE IF EXISTS ttl_inst_title CASCADE;
-CREATE TABLE ttl_inst_title
+DROP TABLE IF EXISTS bde_ext.ttl_inst_title CASCADE;
+CREATE TABLE bde_ext.ttl_inst_title
 (
   tin_id INTEGER NOT NULL,
   ttl_title_no VARCHAR(20) NOT NULL,
@@ -891,16 +891,16 @@ CREATE TABLE ttl_inst_title
   CONSTRAINT ttl_inst_title_tin_id_ttl_title_no_key UNIQUE (tin_id , ttl_title_no)
 );
 
-ALTER TABLE ttl_inst_title OWNER TO bde_dba;
-REVOKE ALL ON TABLE ttl_inst_title FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE ttl_inst_title TO bde_admin;
-GRANT SELECT ON TABLE ttl_inst_title TO bde_user;
+ALTER TABLE bde_ext.ttl_inst_title OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.ttl_inst_title FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.ttl_inst_title TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.ttl_inst_title TO bde_user;
 
 -- =============================================================================
 -- U S E R
 -- =============================================================================
-DROP TABLE IF EXISTS "user" CASCADE;
-CREATE TABLE "user"
+DROP TABLE IF EXISTS bde_ext."user" CASCADE;
+CREATE TABLE bde_ext."user"
 (
   id VARCHAR(20) NOT NULL,
   type VARCHAR(4) NOT NULL,
@@ -914,16 +914,16 @@ CREATE TABLE "user"
   CONSTRAINT user_id_key UNIQUE (id)
 );
 
-ALTER TABLE "user" OWNER TO bde_dba;
-REVOKE ALL ON TABLE "user" FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE "user" TO bde_admin;
-GRANT SELECT ON TABLE "user" TO bde_user;
+ALTER TABLE bde_ext."user" OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext."user" FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext."user" TO bde_admin;
+GRANT SELECT ON TABLE bde_ext."user" TO bde_user;
 
 -- =============================================================================
 -- V E C T O R   L S
 -- =============================================================================
-DROP TABLE IF EXISTS vector_ls CASCADE;
-CREATE TABLE vector_ls
+DROP TABLE IF EXISTS bde_ext.vector_ls CASCADE;
+CREATE TABLE bde_ext.vector_ls
 (
   type VARCHAR(4) NOT NULL,
   nod_id_start INTEGER NOT NULL,
@@ -936,19 +936,19 @@ CREATE TABLE vector_ls
   CONSTRAINT pkey_vector_ls PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('vector_ls', 'shape', 4167, 'LINESTRING', 2);
-CREATE INDEX shx_vector_ls_shape ON vector_ls USING gist (shape);
+PERFORM AddGeometryColumn('bde_ext', 'vector_ls', 'shape', 4167, 'LINESTRING', 2);
+CREATE INDEX shx_vector_ls_shape ON bde_ext.vector_ls USING gist (shape);
 
-ALTER TABLE vector_ls OWNER TO bde_dba;
-REVOKE ALL ON TABLE vector_ls FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE vector_ls TO bde_admin;
-GRANT SELECT ON TABLE vector_ls TO bde_user;
+ALTER TABLE bde_ext.vector_ls OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.vector_ls FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.vector_ls TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.vector_ls TO bde_user;
 
 -- =============================================================================
 -- V E C T O R   P T
 -- =============================================================================
-DROP TABLE IF EXISTS vector_pt CASCADE;
-CREATE TABLE vector_pt
+DROP TABLE IF EXISTS bde_ext.vector_pt CASCADE;
+CREATE TABLE bde_ext.vector_pt
 (
   type VARCHAR(4) NOT NULL,
   nod_id_start INTEGER NOT NULL,
@@ -961,19 +961,19 @@ CREATE TABLE vector_pt
   CONSTRAINT pkey_vector_pt PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('vector_pt', 'shape', 4167, 'POINT', 2);
-CREATE INDEX shx_vector_pt_shape ON vector_pt USING gist (shape);
+PERFORM AddGeometryColumn('bde_ext', 'vector_pt', 'shape', 4167, 'POINT', 2);
+CREATE INDEX shx_vector_pt_shape ON bde_ext.vector_pt USING gist (shape);
 
-ALTER TABLE vector_pt OWNER TO bde_dba;
-REVOKE ALL ON TABLE vector_pt FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE vector_pt TO bde_admin;
-GRANT SELECT ON TABLE vector_pt TO bde_user;
+ALTER TABLE bde_ext.vector_pt OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.vector_pt FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.vector_pt TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.vector_pt TO bde_user;
 
 -- =============================================================================
 -- W O R K
 -- =============================================================================
-DROP TABLE IF EXISTS work CASCADE;
-CREATE TABLE work
+DROP TABLE IF EXISTS bde_ext.work CASCADE;
+CREATE TABLE bde_ext.work
 (
   id INTEGER NOT NULL,
   trt_grp VARCHAR(4) NOT NULL,
@@ -1003,17 +1003,17 @@ CREATE TABLE work
   CONSTRAINT pkey_work PRIMARY KEY (id)
 );
 
-ALTER TABLE work OWNER TO bde_dba;
-REVOKE ALL ON TABLE work FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE work TO bde_admin;
-GRANT SELECT ON TABLE work TO bde_user;
+ALTER TABLE bde_ext.work OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.work FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.work TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.work TO bde_user;
 
 -- =============================================================================
 -- S T R E E T   A D D R E S S   E X T E R N A L
 -- =============================================================================
 
-DROP TABLE IF EXISTS street_address_ext CASCADE;
-CREATE TABLE street_address_ext
+DROP TABLE IF EXISTS bde_ext.street_address_ext CASCADE;
+CREATE TABLE bde_ext.street_address_ext
 (
   house_number VARCHAR(25) NOT NULL,
   range_low INTEGER NOT NULL,
@@ -1030,20 +1030,20 @@ CREATE TABLE street_address_ext
   CONSTRAINT pkey_street_address_ext PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('street_address_ext', 'shape', 4167, 'POINT', 2);
-CREATE INDEX shx_street_address_ext_shape ON street_address_ext USING gist (shape);
+PERFORM AddGeometryColumn('bde_ext', 'street_address_ext', 'shape', 4167, 'POINT', 2);
+CREATE INDEX shx_street_address_ext_shape ON bde_ext.street_address_ext USING gist (shape);
 
-ALTER TABLE street_address_ext OWNER TO bde_dba;
-REVOKE ALL ON TABLE street_address_ext FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE street_address_ext TO bde_admin;
-GRANT SELECT ON TABLE street_address_ext TO bde_user;
+ALTER TABLE bde_ext.street_address_ext OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.street_address_ext FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.street_address_ext TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.street_address_ext TO bde_user;
 
 -- =============================================================================
 -- F E A T U R E   N A M E   P T
 -- =============================================================================
 
-DROP TABLE IF EXISTS feature_name_pt CASCADE;
-CREATE TABLE feature_name_pt
+DROP TABLE IF EXISTS bde_ext.feature_name_pt CASCADE;
+CREATE TABLE bde_ext.feature_name_pt
 (
   id integer NOT NULL,
   type character varying(4) NOT NULL,
@@ -1055,20 +1055,20 @@ CREATE TABLE feature_name_pt
   CONSTRAINT pkey_feature_name_pt PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('feature_name_pt', 'shape', 4167, 'POINT', 2);
+PERFORM AddGeometryColumn('bde_ext', 'feature_name_pt', 'shape', 4167, 'POINT', 2);
 
-ALTER TABLE feature_name_pt OWNER TO bde_dba;
-REVOKE ALL ON TABLE feature_name_pt FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE feature_name_pt TO bde_admin;
-GRANT SELECT ON TABLE feature_name_pt TO bde_user;
+ALTER TABLE bde_ext.feature_name_pt OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.feature_name_pt FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.feature_name_pt TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.feature_name_pt TO bde_user;
 
 
 -- =============================================================================
 -- F E A T U R E   N A M E   P O L Y
 -- =============================================================================
 
-DROP TABLE IF EXISTS feature_name_poly CASCADE;
-CREATE TABLE feature_name_poly
+DROP TABLE IF EXISTS bde_ext.feature_name_poly CASCADE;
+CREATE TABLE bde_ext.feature_name_poly
 (
   id integer NOT NULL,
   type character varying(4) NOT NULL,
@@ -1080,20 +1080,20 @@ CREATE TABLE feature_name_poly
   CONSTRAINT pkey_feature_name_poly PRIMARY KEY (id)
 );
 
-PERFORM AddGeometryColumn('feature_name_poly', 'shape', 4167, 'POLYGON', 2);
+PERFORM AddGeometryColumn('bde_ext', 'feature_name_poly', 'shape', 4167, 'POLYGON', 2);
 
-ALTER TABLE feature_name_poly OWNER TO bde_dba;
-REVOKE ALL ON TABLE feature_name_poly FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE feature_name_poly TO bde_admin;
-GRANT SELECT ON TABLE feature_name_poly TO bde_user;
+ALTER TABLE bde_ext.feature_name_poly OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.feature_name_poly FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.feature_name_poly TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.feature_name_poly TO bde_user;
 
 
 -- =============================================================================
 -- C O O R D I N A T E
 -- =============================================================================
 
-DROP TABLE IF EXISTS coordinate CASCADE;
-CREATE TABLE coordinate
+DROP TABLE IF EXISTS bde_ext.coordinate CASCADE;
+CREATE TABLE bde_ext.coordinate
 (
   id integer NOT NULL,
   cos_id integer NOT NULL,
@@ -1113,16 +1113,16 @@ CREATE TABLE coordinate
   CONSTRAINT pkey_coordinate PRIMARY KEY (id)
 );
 
-ALTER TABLE coordinate OWNER TO bde_dba;
-REVOKE ALL ON TABLE coordinate FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE coordinate TO bde_admin;
-GRANT SELECT ON TABLE coordinate TO bde_user;
+ALTER TABLE bde_ext.coordinate OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.coordinate FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.coordinate TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.coordinate TO bde_user;
 
 -- =============================================================================
 -- O F F I C E
 -- =============================================================================
-DROP TABLE IF EXISTS office CASCADE;
-CREATE TABLE office
+DROP TABLE IF EXISTS bde_ext.office CASCADE;
+CREATE TABLE bde_ext.office
 (
   code VARCHAR(4) NOT NULL,
   name VARCHAR(50) NOT NULL,
@@ -1133,16 +1133,16 @@ CREATE TABLE office
   CONSTRAINT office_pkey PRIMARY KEY (audit_id),
   CONSTRAINT office_code_key UNIQUE (code)
 );
-ALTER TABLE office OWNER TO bde_dba;
-REVOKE ALL ON TABLE office FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE office TO bde_admin;
-GRANT SELECT ON TABLE office TO bde_user;
+ALTER TABLE bde_ext.office OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.office FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.office TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.office TO bde_user;
 
 -- =============================================================================
 -- SURVEY PLAN IMAGE REVISION
 -- =============================================================================
-DROP TABLE IF EXISTS survey_plan_image_revision CASCADE;
-CREATE TABLE survey_plan_image_revision (
+DROP TABLE IF EXISTS bde_ext.survey_plan_image_revision CASCADE;
+CREATE TABLE bde_ext.survey_plan_image_revision (
     ID INTEGER NOT NULL,
     SUR_WRK_ID INTEGER NOT NULL,
     SURVEY_REFERENCE VARCHAR(100) NOT NULL,
@@ -1152,10 +1152,10 @@ CREATE TABLE survey_plan_image_revision (
     LAST_UPDATED TIMESTAMP,
     CONSTRAINT survey_plan_image_revision_pkey PRIMARY KEY (id)
 );
-ALTER TABLE survey_plan_image_revision OWNER TO bde_dba;
-REVOKE ALL ON TABLE survey_plan_image_revision FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_plan_image_revision TO bde_admin;
-GRANT SELECT ON TABLE survey_plan_image_revision TO bde_user;
+ALTER TABLE bde_ext.survey_plan_image_revision OWNER TO bde_dba;
+REVOKE ALL ON TABLE bde_ext.survey_plan_image_revision FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE bde_ext.survey_plan_image_revision TO bde_admin;
+GRANT SELECT ON TABLE bde_ext.survey_plan_image_revision TO bde_user;
 
 END
 $SCHEMA$;

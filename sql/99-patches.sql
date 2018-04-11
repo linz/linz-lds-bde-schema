@@ -15,8 +15,6 @@
 -- of the file.
 --------------------------------------------------------------------------------
 
-SET search_path = lds, bde, public;
-
 DO $PATCHES$
 BEGIN
 

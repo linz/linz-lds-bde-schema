@@ -26,14 +26,12 @@ GRANT USAGE ON SCHEMA lds TO bde_user;
 
 COMMENT ON SCHEMA lds IS 'Schema for LDS simplified Landonline layers';
 
-SET search_path = lds, bde, public;
-
 --------------------------------------------------------------------------------
 -- LDS table geodetic_marks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS geodetic_marks CASCADE;
+DROP TABLE IF EXISTS lds.geodetic_marks CASCADE;
 
-CREATE TABLE geodetic_marks (
+CREATE TABLE lds.geodetic_marks (
     id INTEGER NOT NULL,
     geodetic_code CHAR(4) NOT NULL,
     current_mark_name VARCHAR(100),
@@ -47,23 +45,23 @@ CREATE TABLE geodetic_marks (
     longitude NUMERIC(22,12) NOT NULL,
     ellipsoidal_height NUMERIC(22,12) NULL
 );
-PERFORM AddGeometryColumn('geodetic_marks', 'shape', 4167, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'geodetic_marks', 'shape', 4167, 'POINT', 2);
 
-ALTER TABLE geodetic_marks ADD PRIMARY KEY (id);
-CREATE INDEX shx_geo_shape ON geodetic_marks USING gist (shape);
+ALTER TABLE lds.geodetic_marks ADD PRIMARY KEY (id);
+CREATE INDEX shx_geo_shape ON lds.geodetic_marks USING gist (shape);
 
-ALTER TABLE geodetic_marks OWNER TO bde_dba;
+ALTER TABLE lds.geodetic_marks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE geodetic_marks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE geodetic_marks TO bde_admin;
-GRANT SELECT ON TABLE geodetic_marks TO bde_user;
+REVOKE ALL ON TABLE lds.geodetic_marks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.geodetic_marks TO bde_admin;
+GRANT SELECT ON TABLE lds.geodetic_marks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table geodetic_network_marks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS geodetic_network_marks CASCADE;
+DROP TABLE IF EXISTS lds.geodetic_network_marks CASCADE;
 
-CREATE TABLE geodetic_network_marks (
+CREATE TABLE lds.geodetic_network_marks (
     id INTEGER NOT NULL,
     nod_id INTEGER NOT NULL,
     geodetic_code CHAR(4) NOT NULL,
@@ -79,28 +77,28 @@ CREATE TABLE geodetic_network_marks (
     longitude NUMERIC(22,12) NOT NULL,
     ellipsoidal_height NUMERIC(22,12) NULL
 );
-PERFORM AddGeometryColumn('geodetic_network_marks', 'shape', 4167, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'geodetic_network_marks', 'shape', 4167, 'POINT', 2);
 
-CREATE SEQUENCE geodetic_network_marks_id_seq;
-ALTER TABLE geodetic_network_marks_id_seq OWNER TO bde_dba;
-ALTER TABLE geodetic_network_marks ALTER COLUMN id SET DEFAULT nextval('geodetic_network_marks_id_seq');
+CREATE SEQUENCE lds.geodetic_network_marks_id_seq;
+ALTER TABLE lds.geodetic_network_marks_id_seq OWNER TO bde_dba;
+ALTER TABLE lds.geodetic_network_marks ALTER COLUMN id SET DEFAULT nextval('lds.geodetic_network_marks_id_seq');
 
-ALTER TABLE geodetic_network_marks ADD PRIMARY KEY (id);
-CREATE UNIQUE INDEX idx_geo_net_mrk_nod_net ON geodetic_network_marks (nod_id, control_network);
-CREATE INDEX shx_geo_net_shape ON geodetic_network_marks USING gist (shape);
+ALTER TABLE lds.geodetic_network_marks ADD PRIMARY KEY (id);
+CREATE UNIQUE INDEX idx_geo_net_mrk_nod_net ON lds.geodetic_network_marks (nod_id, control_network);
+CREATE INDEX shx_geo_net_shape ON lds.geodetic_network_marks USING gist (shape);
 
-ALTER TABLE geodetic_network_marks OWNER TO bde_dba;
+ALTER TABLE lds.geodetic_network_marks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE geodetic_network_marks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE geodetic_network_marks TO bde_admin;
-GRANT SELECT ON TABLE geodetic_network_marks TO bde_user;
+REVOKE ALL ON TABLE lds.geodetic_network_marks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.geodetic_network_marks TO bde_admin;
+GRANT SELECT ON TABLE lds.geodetic_network_marks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table geodetic_vertical_marks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS geodetic_vertical_marks CASCADE;
+DROP TABLE IF EXISTS lds.geodetic_vertical_marks CASCADE;
 
-CREATE TABLE geodetic_vertical_marks(
+CREATE TABLE lds.geodetic_vertical_marks(
     id INTEGER NOT NULL,
     nod_id INTEGER NOT NULL,
     geodetic_code CHAR(4) NOT NULL,
@@ -114,29 +112,29 @@ CREATE TABLE geodetic_vertical_marks(
     normal_orthometric_height NUMERIC(22, 12),
     coordinate_system VARCHAR(100) NOT NULL
 );
-PERFORM AddGeometryColumn('geodetic_vertical_marks', 'shape', 4167, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'geodetic_vertical_marks', 'shape', 4167, 'POINT', 2);
 
-ALTER TABLE geodetic_vertical_marks ADD UNIQUE (nod_id, coordinate_system);
+ALTER TABLE lds.geodetic_vertical_marks ADD UNIQUE (nod_id, coordinate_system);
 
-CREATE SEQUENCE geodetic_vertical_marks_id_seq;
-ALTER TABLE geodetic_vertical_marks_id_seq OWNER TO bde_dba;
-ALTER TABLE geodetic_vertical_marks ALTER COLUMN id SET DEFAULT nextval('geodetic_vertical_marks_id_seq');
+CREATE SEQUENCE lds.geodetic_vertical_marks_id_seq;
+ALTER TABLE lds.geodetic_vertical_marks_id_seq OWNER TO bde_dba;
+ALTER TABLE lds.geodetic_vertical_marks ALTER COLUMN id SET DEFAULT nextval('lds.geodetic_vertical_marks_id_seq');
 
-ALTER TABLE geodetic_vertical_marks ADD PRIMARY KEY (id);
-CREATE INDEX shx_geo_vert_shape ON geodetic_vertical_marks USING gist (shape);
+ALTER TABLE lds.geodetic_vertical_marks ADD PRIMARY KEY (id);
+CREATE INDEX shx_geo_vert_shape ON lds.geodetic_vertical_marks USING gist (shape);
 
-ALTER TABLE geodetic_vertical_marks OWNER TO bde_dba;
+ALTER TABLE lds.geodetic_vertical_marks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE geodetic_vertical_marks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE geodetic_vertical_marks TO bde_admin;
-GRANT SELECT ON TABLE geodetic_vertical_marks TO bde_user;
+REVOKE ALL ON TABLE lds.geodetic_vertical_marks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.geodetic_vertical_marks TO bde_admin;
+GRANT SELECT ON TABLE lds.geodetic_vertical_marks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table geodetic_antarctic_marks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS geodetic_antarctic_marks CASCADE;
+DROP TABLE IF EXISTS lds.geodetic_antarctic_marks CASCADE;
 
-CREATE TABLE geodetic_antarctic_marks (
+CREATE TABLE lds.geodetic_antarctic_marks (
     id INTEGER NOT NULL,
     geodetic_code CHAR(4) NOT NULL,
     current_mark_name VARCHAR(100),
@@ -149,23 +147,23 @@ CREATE TABLE geodetic_antarctic_marks (
     longitude NUMERIC(22,12) NOT NULL,
     ellipsoidal_height NUMERIC(22,12) NULL
 );
-PERFORM AddGeometryColumn('geodetic_antarctic_marks', 'shape', 4764, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'geodetic_antarctic_marks', 'shape', 4764, 'POINT', 2);
 
-ALTER TABLE geodetic_antarctic_marks ADD PRIMARY KEY (id);
-CREATE INDEX shx_geo_ant_shape ON geodetic_antarctic_marks USING gist (shape);
+ALTER TABLE lds.geodetic_antarctic_marks ADD PRIMARY KEY (id);
+CREATE INDEX shx_geo_ant_shape ON lds.geodetic_antarctic_marks USING gist (shape);
 
-ALTER TABLE geodetic_antarctic_marks OWNER TO bde_dba;
+ALTER TABLE lds.geodetic_antarctic_marks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE geodetic_antarctic_marks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE geodetic_antarctic_marks TO bde_admin;
-GRANT SELECT ON TABLE geodetic_antarctic_marks TO bde_user;
+REVOKE ALL ON TABLE lds.geodetic_antarctic_marks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.geodetic_antarctic_marks TO bde_admin;
+GRANT SELECT ON TABLE lds.geodetic_antarctic_marks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table geodetic_antarctic_vertical_marks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS geodetic_antarctic_vertical_marks CASCADE;
+DROP TABLE IF EXISTS lds.geodetic_antarctic_vertical_marks CASCADE;
 
-CREATE TABLE geodetic_antarctic_vertical_marks(
+CREATE TABLE lds.geodetic_antarctic_vertical_marks(
     id INTEGER NOT NULL,
     nod_id INTEGER NOT NULL,
     geodetic_code CHAR(4) NOT NULL,
@@ -178,29 +176,29 @@ CREATE TABLE geodetic_antarctic_vertical_marks(
     normal_orthometric_height NUMERIC(22, 12),
     coordinate_system VARCHAR(100) NOT NULL
 );
-PERFORM AddGeometryColumn('geodetic_antarctic_vertical_marks', 'shape', 4764, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'geodetic_antarctic_vertical_marks', 'shape', 4764, 'POINT', 2);
 
-ALTER TABLE geodetic_antarctic_vertical_marks ADD UNIQUE (nod_id, coordinate_system);
+ALTER TABLE lds.geodetic_antarctic_vertical_marks ADD UNIQUE (nod_id, coordinate_system);
 
-CREATE SEQUENCE geodetic_antarctic_vertical_marks_id_seq;
-ALTER TABLE geodetic_antarctic_vertical_marks_id_seq OWNER TO bde_dba;
-ALTER TABLE geodetic_antarctic_vertical_marks ALTER COLUMN id SET DEFAULT nextval('geodetic_antarctic_vertical_marks_id_seq');
+CREATE SEQUENCE lds.geodetic_antarctic_vertical_marks_id_seq;
+ALTER TABLE lds.geodetic_antarctic_vertical_marks_id_seq OWNER TO bde_dba;
+ALTER TABLE lds.geodetic_antarctic_vertical_marks ALTER COLUMN id SET DEFAULT nextval('lds.geodetic_antarctic_vertical_marks_id_seq');
 
-ALTER TABLE geodetic_antarctic_vertical_marks ADD PRIMARY KEY (id);
-CREATE INDEX shx_geo_ant_vert_shape ON geodetic_antarctic_vertical_marks USING gist (shape);
+ALTER TABLE lds.geodetic_antarctic_vertical_marks ADD PRIMARY KEY (id);
+CREATE INDEX shx_geo_ant_vert_shape ON lds.geodetic_antarctic_vertical_marks USING gist (shape);
 
-ALTER TABLE geodetic_antarctic_vertical_marks OWNER TO bde_dba;
+ALTER TABLE lds.geodetic_antarctic_vertical_marks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE geodetic_antarctic_vertical_marks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE geodetic_antarctic_vertical_marks TO bde_admin;
-GRANT SELECT ON TABLE geodetic_antarctic_vertical_marks TO bde_user;
+REVOKE ALL ON TABLE lds.geodetic_antarctic_vertical_marks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.geodetic_antarctic_vertical_marks TO bde_admin;
+GRANT SELECT ON TABLE lds.geodetic_antarctic_vertical_marks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table survey_protected_marks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS survey_protected_marks CASCADE;
+DROP TABLE IF EXISTS lds.survey_protected_marks CASCADE;
 
-CREATE TABLE survey_protected_marks (
+CREATE TABLE lds.survey_protected_marks (
     id INTEGER NOT NULL,
     geodetic_code CHAR(4),
     current_mark_name VARCHAR(100),
@@ -210,23 +208,23 @@ CREATE TABLE survey_protected_marks (
     "order" INTEGER NOT NULL,
     last_survey VARCHAR(50),
     last_survey_date DATE
-);PERFORM AddGeometryColumn('survey_protected_marks', 'shape', 4167, 'POINT', 2);
+);PERFORM AddGeometryColumn('lds', 'survey_protected_marks', 'shape', 4167, 'POINT', 2);
 
-ALTER TABLE survey_protected_marks ADD PRIMARY KEY (id);
-CREATE INDEX shx_spm_shape ON survey_protected_marks USING gist (shape);
+ALTER TABLE lds.survey_protected_marks ADD PRIMARY KEY (id);
+CREATE INDEX shx_spm_shape ON lds.survey_protected_marks USING gist (shape);
 
-ALTER TABLE survey_protected_marks OWNER TO bde_dba;
+ALTER TABLE lds.survey_protected_marks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE survey_protected_marks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_protected_marks TO bde_admin;
-GRANT SELECT ON TABLE survey_protected_marks TO bde_user;
+REVOKE ALL ON TABLE lds.survey_protected_marks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.survey_protected_marks TO bde_admin;
+GRANT SELECT ON TABLE lds.survey_protected_marks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table all_parcels
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS all_parcels CASCADE;
+DROP TABLE IF EXISTS lds.all_parcels CASCADE;
 
-CREATE TABLE all_parcels (
+CREATE TABLE lds.all_parcels (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -239,23 +237,23 @@ CREATE TABLE all_parcels (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0)
 );
-PERFORM AddGeometryColumn('all_parcels', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'all_parcels', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE all_parcels ADD PRIMARY KEY (id);
-CREATE INDEX shx_all_par_shape ON all_parcels USING gist (shape);
+ALTER TABLE lds.all_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_all_par_shape ON lds.all_parcels USING gist (shape);
 
-ALTER TABLE all_parcels OWNER TO bde_dba;
+ALTER TABLE lds.all_parcels OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE all_parcels FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE all_parcels TO bde_admin;
-GRANT SELECT ON TABLE all_parcels TO bde_user;
+REVOKE ALL ON TABLE lds.all_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.all_parcels TO bde_admin;
+GRANT SELECT ON TABLE lds.all_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table all_linear_parcels
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS all_linear_parcels CASCADE;
+DROP TABLE IF EXISTS lds.all_linear_parcels CASCADE;
 
-CREATE TABLE all_linear_parcels (
+CREATE TABLE lds.all_linear_parcels (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -268,23 +266,23 @@ CREATE TABLE all_linear_parcels (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0)
 );
-PERFORM AddGeometryColumn('all_linear_parcels', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'all_linear_parcels', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE all_linear_parcels ADD PRIMARY KEY (id);
-CREATE INDEX shx_all_line_par_shape ON all_linear_parcels USING gist (shape);
+ALTER TABLE lds.all_linear_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_all_line_par_shape ON lds.all_linear_parcels USING gist (shape);
 
-ALTER TABLE all_linear_parcels OWNER TO bde_dba;
+ALTER TABLE lds.all_linear_parcels OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE all_linear_parcels FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE all_linear_parcels TO bde_admin;
-GRANT SELECT ON TABLE all_linear_parcels TO bde_user;
+REVOKE ALL ON TABLE lds.all_linear_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.all_linear_parcels TO bde_admin;
+GRANT SELECT ON TABLE lds.all_linear_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table primary_parcels
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS primary_parcels CASCADE;
+DROP TABLE IF EXISTS lds.primary_parcels CASCADE;
 
-CREATE TABLE primary_parcels (
+CREATE TABLE lds.primary_parcels (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -296,23 +294,23 @@ CREATE TABLE primary_parcels (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0) NOT NULL
 );
-PERFORM AddGeometryColumn('primary_parcels', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'primary_parcels', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE primary_parcels ADD PRIMARY KEY (id);
-CREATE INDEX shx_all_prim_par_shape ON primary_parcels USING gist (shape);
+ALTER TABLE lds.primary_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_all_prim_par_shape ON lds.primary_parcels USING gist (shape);
 
-ALTER TABLE primary_parcels OWNER TO bde_dba;
+ALTER TABLE lds.primary_parcels OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE primary_parcels FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE primary_parcels TO bde_admin;
-GRANT SELECT ON TABLE primary_parcels TO bde_user;
+REVOKE ALL ON TABLE lds.primary_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.primary_parcels TO bde_admin;
+GRANT SELECT ON TABLE lds.primary_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table land_parcels
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS land_parcels CASCADE;
+DROP TABLE IF EXISTS lds.land_parcels CASCADE;
 
-CREATE TABLE land_parcels (
+CREATE TABLE lds.land_parcels (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -324,23 +322,23 @@ CREATE TABLE land_parcels (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0) NOT NULL
 );
-PERFORM AddGeometryColumn('land_parcels', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'land_parcels', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE land_parcels ADD PRIMARY KEY (id);
-CREATE INDEX shx_lnd_par_shape ON land_parcels USING gist (shape);
+ALTER TABLE lds.land_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_lnd_par_shape ON lds.land_parcels USING gist (shape);
 
-ALTER TABLE land_parcels OWNER TO bde_dba;
+ALTER TABLE lds.land_parcels OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE land_parcels FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE land_parcels TO bde_admin;
-GRANT SELECT ON TABLE land_parcels TO bde_user;
+REVOKE ALL ON TABLE lds.land_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.land_parcels TO bde_admin;
+GRANT SELECT ON TABLE lds.land_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table hydro_parcels
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS hydro_parcels CASCADE;
+DROP TABLE IF EXISTS lds.hydro_parcels CASCADE;
 
-CREATE TABLE hydro_parcels (
+CREATE TABLE lds.hydro_parcels (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -352,23 +350,23 @@ CREATE TABLE hydro_parcels (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0) NOT NULL
 );
-PERFORM AddGeometryColumn('hydro_parcels', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'hydro_parcels', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE hydro_parcels ADD PRIMARY KEY (id);
-CREATE INDEX shx_hyd_par_shape ON hydro_parcels USING gist (shape);
+ALTER TABLE lds.hydro_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_hyd_par_shape ON lds.hydro_parcels USING gist (shape);
 
-ALTER TABLE hydro_parcels OWNER TO bde_dba;
+ALTER TABLE lds.hydro_parcels OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE hydro_parcels FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE hydro_parcels TO bde_admin;
-GRANT SELECT ON TABLE hydro_parcels TO bde_user;
+REVOKE ALL ON TABLE lds.hydro_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.hydro_parcels TO bde_admin;
+GRANT SELECT ON TABLE lds.hydro_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table road_parcels
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS road_parcels CASCADE;
+DROP TABLE IF EXISTS lds.road_parcels CASCADE;
 
-CREATE TABLE road_parcels (
+CREATE TABLE lds.road_parcels (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -380,23 +378,23 @@ CREATE TABLE road_parcels (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0) NOT NULL
 );
-PERFORM AddGeometryColumn('road_parcels', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'road_parcels', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE road_parcels ADD PRIMARY KEY (id);
-CREATE INDEX shx_road_par_shape ON road_parcels USING gist (shape);
+ALTER TABLE lds.road_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_road_par_shape ON lds.road_parcels USING gist (shape);
 
-ALTER TABLE road_parcels OWNER TO bde_dba;
+ALTER TABLE lds.road_parcels OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE road_parcels FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE road_parcels TO bde_admin;
-GRANT SELECT ON TABLE road_parcels TO bde_user;
+REVOKE ALL ON TABLE lds.road_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.road_parcels TO bde_admin;
+GRANT SELECT ON TABLE lds.road_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table non_primary_parcels
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS non_primary_parcels CASCADE;
+DROP TABLE IF EXISTS lds.non_primary_parcels CASCADE;
 
-CREATE TABLE non_primary_parcels (
+CREATE TABLE lds.non_primary_parcels (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -408,23 +406,23 @@ CREATE TABLE non_primary_parcels (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0) NOT NULL
 );
-PERFORM AddGeometryColumn('non_primary_parcels', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'non_primary_parcels', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE non_primary_parcels ADD PRIMARY KEY (id);
-CREATE INDEX shx_non_prim_par_shape ON non_primary_parcels USING gist (shape);
+ALTER TABLE lds.non_primary_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_non_prim_par_shape ON lds.non_primary_parcels USING gist (shape);
 
-ALTER TABLE non_primary_parcels OWNER TO bde_dba;
+ALTER TABLE lds.non_primary_parcels OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE non_primary_parcels FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE non_primary_parcels TO bde_admin;
-GRANT SELECT ON TABLE non_primary_parcels TO bde_user;
+REVOKE ALL ON TABLE lds.non_primary_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.non_primary_parcels TO bde_admin;
+GRANT SELECT ON TABLE lds.non_primary_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table non_primary_linear_parcels
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS non_primary_linear_parcels CASCADE;
+DROP TABLE IF EXISTS lds.non_primary_linear_parcels CASCADE;
 
-CREATE TABLE non_primary_linear_parcels (
+CREATE TABLE lds.non_primary_linear_parcels (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -436,23 +434,23 @@ CREATE TABLE non_primary_linear_parcels (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0)
 );
-PERFORM AddGeometryColumn('non_primary_linear_parcels', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'non_primary_linear_parcels', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE non_primary_linear_parcels ADD PRIMARY KEY (id);
-CREATE INDEX shx_non_pril_par_shape ON non_primary_linear_parcels USING gist (shape);
+ALTER TABLE lds.non_primary_linear_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_non_pril_par_shape ON lds.non_primary_linear_parcels USING gist (shape);
 
-ALTER TABLE non_primary_linear_parcels OWNER TO bde_dba;
+ALTER TABLE lds.non_primary_linear_parcels OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE non_primary_linear_parcels FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE non_primary_linear_parcels TO bde_admin;
-GRANT SELECT ON TABLE non_primary_linear_parcels TO bde_user;
+REVOKE ALL ON TABLE lds.non_primary_linear_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.non_primary_linear_parcels TO bde_admin;
+GRANT SELECT ON TABLE lds.non_primary_linear_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table strata_parcels
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS strata_parcels CASCADE;
+DROP TABLE IF EXISTS lds.strata_parcels CASCADE;
 
-CREATE TABLE strata_parcels (
+CREATE TABLE lds.strata_parcels (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -464,23 +462,23 @@ CREATE TABLE strata_parcels (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0) NOT NULL
 );
-PERFORM AddGeometryColumn('strata_parcels', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'strata_parcels', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE strata_parcels ADD PRIMARY KEY (id);
-CREATE INDEX shx_str_par_shape ON strata_parcels USING gist (shape);
+ALTER TABLE lds.strata_parcels ADD PRIMARY KEY (id);
+CREATE INDEX shx_str_par_shape ON lds.strata_parcels USING gist (shape);
 
-ALTER TABLE strata_parcels OWNER TO bde_dba;
+ALTER TABLE lds.strata_parcels OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE strata_parcels FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE strata_parcels TO bde_admin;
-GRANT SELECT ON TABLE strata_parcels TO bde_user;
+REVOKE ALL ON TABLE lds.strata_parcels FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.strata_parcels TO bde_admin;
+GRANT SELECT ON TABLE lds.strata_parcels TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table all_parcels_pend
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS all_parcels_pend CASCADE;
+DROP TABLE IF EXISTS lds.all_parcels_pend CASCADE;
 
-CREATE TABLE all_parcels_pend (
+CREATE TABLE lds.all_parcels_pend (
     id INTEGER NOT NULL,
     appellation VARCHAR(2048),
     affected_surveys VARCHAR(2048),
@@ -493,22 +491,22 @@ CREATE TABLE all_parcels_pend (
     survey_area NUMERIC(20, 4),
     calc_area NUMERIC(20, 0)
 );
-PERFORM AddGeometryColumn('all_parcels_pend', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'all_parcels_pend', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE all_parcels_pend ADD PRIMARY KEY (id);
-CREATE INDEX shx_all_par_pend_shape ON all_parcels_pend USING gist (shape);
+ALTER TABLE lds.all_parcels_pend ADD PRIMARY KEY (id);
+CREATE INDEX shx_all_par_pend_shape ON lds.all_parcels_pend USING gist (shape);
 
-ALTER TABLE all_parcels_pend OWNER TO bde_dba;
+ALTER TABLE lds.all_parcels_pend OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE all_parcels_pend FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE all_parcels_pend TO bde_admin;
-GRANT SELECT ON TABLE all_parcels_pend TO bde_user;
+REVOKE ALL ON TABLE lds.all_parcels_pend FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.all_parcels_pend TO bde_admin;
+GRANT SELECT ON TABLE lds.all_parcels_pend TO bde_user;
 --------------------------------------------------------------------------------
 -- LDS table titles
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS titles CASCADE;
+DROP TABLE IF EXISTS lds.titles CASCADE;
 
-CREATE TABLE titles (
+CREATE TABLE lds.titles (
     id INTEGER NOT NULL,
     title_no VARCHAR(20) NOT NULL,
     status VARCHAR(4) NOT NULL,
@@ -520,23 +518,23 @@ CREATE TABLE titles (
     number_owners INT8 NOT NULL,
     spatial_extents_shared BOOLEAN
 );
-PERFORM AddGeometryColumn('titles', 'shape', 4167, 'MULTIPOLYGON', 2);
+PERFORM AddGeometryColumn('lds', 'titles', 'shape', 4167, 'MULTIPOLYGON', 2);
 
-ALTER TABLE titles ADD PRIMARY KEY (id);
-CREATE INDEX shx_title_shape ON titles USING gist (shape);
+ALTER TABLE lds.titles ADD PRIMARY KEY (id);
+CREATE INDEX shx_title_shape ON lds.titles USING gist (shape);
 
-ALTER TABLE titles OWNER TO bde_dba;
+ALTER TABLE lds.titles OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE titles FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE titles TO bde_admin;
-GRANT SELECT ON TABLE titles TO bde_user;
+REVOKE ALL ON TABLE lds.titles FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.titles TO bde_admin;
+GRANT SELECT ON TABLE lds.titles TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table titles_plus
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS titles_plus CASCADE;
+DROP TABLE IF EXISTS lds.titles_plus CASCADE;
 
-CREATE TABLE titles_plus (
+CREATE TABLE lds.titles_plus (
     id INTEGER NOT NULL,
     title_no VARCHAR(20) NOT NULL,
     status VARCHAR(4) NOT NULL,
@@ -548,23 +546,23 @@ CREATE TABLE titles_plus (
     owners TEXT,
     spatial_extents_shared BOOLEAN
 );
-PERFORM AddGeometryColumn('titles_plus', 'shape', 4167, 'MULTIPOLYGON', 2);
+PERFORM AddGeometryColumn('lds', 'titles_plus', 'shape', 4167, 'MULTIPOLYGON', 2);
 
-ALTER TABLE titles_plus ADD PRIMARY KEY (id);
-CREATE INDEX shx_title_plus_shape ON titles_plus USING gist (shape);
+ALTER TABLE lds.titles_plus ADD PRIMARY KEY (id);
+CREATE INDEX shx_title_plus_shape ON lds.titles_plus USING gist (shape);
 
-ALTER TABLE titles_plus OWNER TO bde_dba;
+ALTER TABLE lds.titles_plus OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE titles_plus FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE titles_plus TO bde_admin;
-GRANT SELECT ON TABLE titles_plus TO bde_user;
+REVOKE ALL ON TABLE lds.titles_plus FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.titles_plus TO bde_admin;
+GRANT SELECT ON TABLE lds.titles_plus TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table title_owners
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS title_owners CASCADE;
+DROP TABLE IF EXISTS lds.title_owners CASCADE;
 
-CREATE TABLE title_owners (
+CREATE TABLE lds.title_owners (
     id INTEGER NOT NULL,
     owner VARCHAR(250) NOT NULL,
     title_no VARCHAR(20) NOT NULL,
@@ -572,29 +570,29 @@ CREATE TABLE title_owners (
     land_district VARCHAR(100) NOT NULL,
     part_ownership BOOLEAN NOT NULL
 );
-PERFORM AddGeometryColumn('title_owners', 'shape', 4167, 'MULTIPOLYGON', 2);
+PERFORM AddGeometryColumn('lds', 'title_owners', 'shape', 4167, 'MULTIPOLYGON', 2);
 
-ALTER TABLE title_owners ADD UNIQUE (owner, title_no);
+ALTER TABLE lds.title_owners ADD UNIQUE (owner, title_no);
 
-CREATE SEQUENCE title_owners_id_seq;
-ALTER TABLE title_owners_id_seq OWNER TO bde_dba;
-ALTER TABLE title_owners ALTER COLUMN id SET DEFAULT nextval('title_owners_id_seq');
+CREATE SEQUENCE lds.title_owners_id_seq;
+ALTER TABLE lds.title_owners_id_seq OWNER TO bde_dba;
+ALTER TABLE lds.title_owners ALTER COLUMN id SET DEFAULT nextval('lds.title_owners_id_seq');
 
-ALTER TABLE title_owners ADD PRIMARY KEY (id);
-CREATE INDEX shx_owners_shape ON title_owners USING gist (shape);
+ALTER TABLE lds.title_owners ADD PRIMARY KEY (id);
+CREATE INDEX shx_owners_shape ON lds.title_owners USING gist (shape);
 
-ALTER TABLE title_owners OWNER TO bde_dba;
+ALTER TABLE lds.title_owners OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE title_owners FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_owners TO bde_admin;
-GRANT SELECT ON TABLE title_owners TO bde_user;
+REVOKE ALL ON TABLE lds.title_owners FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.title_owners TO bde_admin;
+GRANT SELECT ON TABLE lds.title_owners TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table road_centre_line
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS road_centre_line CASCADE;
+DROP TABLE IF EXISTS lds.road_centre_line CASCADE;
 
-CREATE TABLE road_centre_line (
+CREATE TABLE lds.road_centre_line (
     id INTEGER NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     locality VARCHAR(100),
@@ -602,23 +600,23 @@ CREATE TABLE road_centre_line (
     name_utf8 VARCHAR(100),
     locality_utf8 VARCHAR(100)
 );
-PERFORM AddGeometryColumn('road_centre_line', 'shape', 4167, 'MULTILINESTRING', 2);
+PERFORM AddGeometryColumn('lds', 'road_centre_line', 'shape', 4167, 'MULTILINESTRING', 2);
 
-ALTER TABLE road_centre_line ADD PRIMARY KEY (id);
-CREATE INDEX shx_rcl_shape ON road_centre_line USING gist (shape);
+ALTER TABLE lds.road_centre_line ADD PRIMARY KEY (id);
+CREATE INDEX shx_rcl_shape ON lds.road_centre_line USING gist (shape);
 
-ALTER TABLE road_centre_line OWNER TO bde_dba;
+ALTER TABLE lds.road_centre_line OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE road_centre_line FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE road_centre_line TO bde_admin;
-GRANT SELECT ON TABLE road_centre_line TO bde_user;
+REVOKE ALL ON TABLE lds.road_centre_line FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.road_centre_line TO bde_admin;
+GRANT SELECT ON TABLE lds.road_centre_line TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table road_centre_line_subsection
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS road_centre_line_subsection CASCADE;
+DROP TABLE IF EXISTS lds.road_centre_line_subsection CASCADE;
 
-CREATE TABLE road_centre_line_subsection (
+CREATE TABLE lds.road_centre_line_subsection (
     id INTEGER NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     other_names VARCHAR(255),
@@ -630,44 +628,44 @@ CREATE TABLE road_centre_line_subsection (
     locality_utf8 VARCHAR(100)
 );
 
-PERFORM AddGeometryColumn('road_centre_line_subsection', 'shape', 4167, 'LINESTRING', 2);
+PERFORM AddGeometryColumn('lds', 'road_centre_line_subsection', 'shape', 4167, 'LINESTRING', 2);
 
-ALTER TABLE road_centre_line_subsection ADD PRIMARY KEY (id);
-CREATE INDEX shx_rcls_shape ON road_centre_line_subsection USING gist (shape);
+ALTER TABLE lds.road_centre_line_subsection ADD PRIMARY KEY (id);
+CREATE INDEX shx_rcls_shape ON lds.road_centre_line_subsection USING gist (shape);
 
-ALTER TABLE road_centre_line_subsection OWNER TO bde_dba;
+ALTER TABLE lds.road_centre_line_subsection OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE road_centre_line_subsection FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE road_centre_line_subsection TO bde_admin;
-GRANT SELECT ON TABLE road_centre_line_subsection TO bde_user;
+REVOKE ALL ON TABLE lds.road_centre_line_subsection FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.road_centre_line_subsection TO bde_admin;
+GRANT SELECT ON TABLE lds.road_centre_line_subsection TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table railway_centre_line
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS railway_centre_line CASCADE;
+DROP TABLE IF EXISTS lds.railway_centre_line CASCADE;
 
-CREATE TABLE railway_centre_line (
+CREATE TABLE lds.railway_centre_line (
     id INTEGER NOT NULL,
     "name" VARCHAR(100) NOT NULL,
     name_utf8 VARCHAR(100)
 );
-PERFORM AddGeometryColumn('railway_centre_line', 'shape', 4167, 'MULTILINESTRING', 2);
+PERFORM AddGeometryColumn('lds', 'railway_centre_line', 'shape', 4167, 'MULTILINESTRING', 2);
 
-ALTER TABLE railway_centre_line ADD PRIMARY KEY (id);
-CREATE INDEX shx_rlwy_cl_shape ON railway_centre_line USING gist (shape);
+ALTER TABLE lds.railway_centre_line ADD PRIMARY KEY (id);
+CREATE INDEX shx_rlwy_cl_shape ON lds.railway_centre_line USING gist (shape);
 
-ALTER TABLE railway_centre_line OWNER TO bde_dba;
+ALTER TABLE lds.railway_centre_line OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE railway_centre_line FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE railway_centre_line TO bde_admin;
-GRANT SELECT ON TABLE railway_centre_line TO bde_user;
+REVOKE ALL ON TABLE lds.railway_centre_line FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.railway_centre_line TO bde_admin;
+GRANT SELECT ON TABLE lds.railway_centre_line TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table street_address (Historic)
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS street_address CASCADE;
+DROP TABLE IF EXISTS lds.street_address CASCADE;
 
-CREATE TABLE street_address (
+CREATE TABLE lds.street_address (
     id INTEGER NOT NULL,
     rna_id INTEGER NOT NULL,
     address VARCHAR(126) NOT NULL,
@@ -676,24 +674,24 @@ CREATE TABLE street_address (
     locality VARCHAR(30),
     territorial_authority VARCHAR(255)
 );
-PERFORM AddGeometryColumn('street_address', 'shape', 4167, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'street_address', 'shape', 4167, 'POINT', 2);
 
-ALTER TABLE street_address ADD PRIMARY KEY (id);
-CREATE INDEX shx_sad_shape ON street_address USING gist (shape);
+ALTER TABLE lds.street_address ADD PRIMARY KEY (id);
+CREATE INDEX shx_sad_shape ON lds.street_address USING gist (shape);
 
-ALTER TABLE street_address OWNER TO bde_dba;
+ALTER TABLE lds.street_address OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE street_address FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE street_address TO bde_admin;
-GRANT SELECT ON TABLE street_address TO bde_user;
+REVOKE ALL ON TABLE lds.street_address FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.street_address TO bde_admin;
+GRANT SELECT ON TABLE lds.street_address TO bde_user;
 
-DROP TABLE IF EXISTS street_address2 CASCADE;
+DROP TABLE IF EXISTS lds.street_address2 CASCADE;
 
 --------------------------------------------------------------------------------
 -- LDS table street_address2 (new version)
 --------------------------------------------------------------------------------
 
-CREATE TABLE street_address2 (
+CREATE TABLE lds.street_address2 (
     id integer NOT NULL,
     rna_id integer NOT NULL,
     rcl_id integer NOT NULL,
@@ -709,62 +707,62 @@ CREATE TABLE street_address2 (
     locality_utf8 VARCHAR(100)
 );
 
-PERFORM AddGeometryColumn('street_address2', 'shape', 4167, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'street_address2', 'shape', 4167, 'POINT', 2);
 
-ALTER TABLE street_address2 ADD PRIMARY KEY (id);
+ALTER TABLE lds.street_address2 ADD PRIMARY KEY (id);
 
-ALTER TABLE street_address2 OWNER TO bde_dba;
+ALTER TABLE lds.street_address2 OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE street_address2 FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE street_address2 TO bde_admin;
-GRANT SELECT ON TABLE street_address2 TO bde_user;
+REVOKE ALL ON TABLE lds.street_address2 FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.street_address2 TO bde_admin;
+GRANT SELECT ON TABLE lds.street_address2 TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table mesh_blocks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS mesh_blocks CASCADE;
+DROP TABLE IF EXISTS lds.mesh_blocks CASCADE;
 
-CREATE TABLE mesh_blocks (
+CREATE TABLE lds.mesh_blocks (
     id INTEGER NOT NULL,
     code VARCHAR(7) NOT NULL
 );
-PERFORM AddGeometryColumn('mesh_blocks', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'mesh_blocks', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE mesh_blocks ADD PRIMARY KEY (id);
-CREATE INDEX shx_mesh_blocks_shape ON mesh_blocks USING gist (shape);
+ALTER TABLE lds.mesh_blocks ADD PRIMARY KEY (id);
+CREATE INDEX shx_mesh_blocks_shape ON lds.mesh_blocks USING gist (shape);
 
-ALTER TABLE mesh_blocks OWNER TO bde_dba;
+ALTER TABLE lds.mesh_blocks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE mesh_blocks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE mesh_blocks TO bde_admin;
-GRANT SELECT ON TABLE mesh_blocks TO bde_user;
+REVOKE ALL ON TABLE lds.mesh_blocks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.mesh_blocks TO bde_admin;
+GRANT SELECT ON TABLE lds.mesh_blocks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table land_districts
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS land_districts CASCADE;
+DROP TABLE IF EXISTS lds.land_districts CASCADE;
 
-CREATE TABLE land_districts (
+CREATE TABLE lds.land_districts (
     id INTEGER NOT NULL,
     name VARCHAR(100) NOT NULL
 );
-PERFORM AddGeometryColumn('land_districts', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'land_districts', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE land_districts ADD PRIMARY KEY (id);
-CREATE INDEX shx_land_districts_shape ON land_districts USING gist (shape);
+ALTER TABLE lds.land_districts ADD PRIMARY KEY (id);
+CREATE INDEX shx_land_districts_shape ON lds.land_districts USING gist (shape);
 
-ALTER TABLE land_districts OWNER TO bde_dba;
+ALTER TABLE lds.land_districts OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE land_districts FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE land_districts TO bde_admin;
-GRANT SELECT ON TABLE land_districts TO bde_user;
+REVOKE ALL ON TABLE lds.land_districts FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.land_districts TO bde_admin;
+GRANT SELECT ON TABLE lds.land_districts TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table survey_plans
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS survey_plans CASCADE;
+DROP TABLE IF EXISTS lds.survey_plans CASCADE;
 
-CREATE TABLE survey_plans (
+CREATE TABLE lds.survey_plans (
     id INTEGER NOT NULL,
     survey_reference VARCHAR(50) NOT NULL,
     land_district VARCHAR(100) NOT NULL,
@@ -775,90 +773,90 @@ CREATE TABLE survey_plans (
     type VARCHAR(100) NOT NULL,
     datum VARCHAR(10)
 );
-PERFORM AddGeometryColumn('survey_plans', 'shape', 4167, 'MULTIPOINT', 2);
+PERFORM AddGeometryColumn('lds', 'survey_plans', 'shape', 4167, 'MULTIPOINT', 2);
 
-ALTER TABLE survey_plans ADD PRIMARY KEY (id);
-CREATE INDEX shx_sur_shape ON survey_plans USING gist (shape);
+ALTER TABLE lds.survey_plans ADD PRIMARY KEY (id);
+CREATE INDEX shx_sur_shape ON lds.survey_plans USING gist (shape);
 
-ALTER TABLE survey_plans OWNER TO bde_dba;
+ALTER TABLE lds.survey_plans OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE survey_plans FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_plans TO bde_admin;
-GRANT SELECT ON TABLE survey_plans TO bde_user;
+REVOKE ALL ON TABLE lds.survey_plans FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.survey_plans TO bde_admin;
+GRANT SELECT ON TABLE lds.survey_plans TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table cadastral_adjustments
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS cadastral_adjustments CASCADE;
+DROP TABLE IF EXISTS lds.cadastral_adjustments CASCADE;
 
-DROP TABLE IF EXISTS cadastral_adjustments CASCADE;
-CREATE TABLE cadastral_adjustments (
+DROP TABLE IF EXISTS lds.cadastral_adjustments CASCADE;
+CREATE TABLE lds.cadastral_adjustments (
     id INTEGER NOT NULL,
     date_adjusted TIMESTAMP NOT NULL,
     survey_reference VARCHAR(50),
     adjusted_nodes INTEGER NOT NULL
 );
-PERFORM AddGeometryColumn('cadastral_adjustments', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'cadastral_adjustments', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE cadastral_adjustments ADD PRIMARY KEY (id);
-CREATE INDEX shx_cad_adj_shape ON cadastral_adjustments USING gist (shape);
+ALTER TABLE lds.cadastral_adjustments ADD PRIMARY KEY (id);
+CREATE INDEX shx_cad_adj_shape ON lds.cadastral_adjustments USING gist (shape);
 
-ALTER TABLE cadastral_adjustments OWNER TO bde_dba;
+ALTER TABLE lds.cadastral_adjustments OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE cadastral_adjustments FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE cadastral_adjustments TO bde_admin;
-GRANT SELECT ON TABLE cadastral_adjustments TO bde_user;
+REVOKE ALL ON TABLE lds.cadastral_adjustments FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.cadastral_adjustments TO bde_admin;
+GRANT SELECT ON TABLE lds.cadastral_adjustments TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table spi_adjustments
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS spi_adjustments CASCADE;
+DROP TABLE IF EXISTS lds.spi_adjustments CASCADE;
 
-CREATE TABLE spi_adjustments (
+CREATE TABLE lds.spi_adjustments (
     id INTEGER NOT NULL,
     date_adjusted TIMESTAMP NOT NULL,
     survey_reference VARCHAR(50),
     adjusted_nodes INTEGER NOT NULL
 );
-PERFORM AddGeometryColumn('spi_adjustments', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'spi_adjustments', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE spi_adjustments ADD PRIMARY KEY (id);
-CREATE INDEX shx_spi_adj_shape ON spi_adjustments USING gist (shape);
+ALTER TABLE lds.spi_adjustments ADD PRIMARY KEY (id);
+CREATE INDEX shx_spi_adj_shape ON lds.spi_adjustments USING gist (shape);
 
-ALTER TABLE spi_adjustments OWNER TO bde_dba;
+ALTER TABLE lds.spi_adjustments OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE spi_adjustments FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE spi_adjustments TO bde_admin;
-GRANT SELECT ON TABLE spi_adjustments TO bde_user;
+REVOKE ALL ON TABLE lds.spi_adjustments FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.spi_adjustments TO bde_admin;
+GRANT SELECT ON TABLE lds.spi_adjustments TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table waca_adjustments
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS waca_adjustments CASCADE;
+DROP TABLE IF EXISTS lds.waca_adjustments CASCADE;
 
-CREATE TABLE waca_adjustments (
+CREATE TABLE lds.waca_adjustments (
     id INTEGER NOT NULL,
     date_adjusted TIMESTAMP NOT NULL,
     survey_reference VARCHAR(50),
     adjusted_nodes INTEGER NOT NULL
 );
-PERFORM AddGeometryColumn('waca_adjustments', 'shape', 4167, 'GEOMETRY', 2);
+PERFORM AddGeometryColumn('lds', 'waca_adjustments', 'shape', 4167, 'GEOMETRY', 2);
 
-ALTER TABLE waca_adjustments ADD PRIMARY KEY (id);
-CREATE INDEX shx_waca_adj_shape ON waca_adjustments USING gist (shape);
+ALTER TABLE lds.waca_adjustments ADD PRIMARY KEY (id);
+CREATE INDEX shx_waca_adj_shape ON lds.waca_adjustments USING gist (shape);
 
-ALTER TABLE waca_adjustments OWNER TO bde_dba;
+ALTER TABLE lds.waca_adjustments OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE waca_adjustments FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE waca_adjustments TO bde_admin;
-GRANT SELECT ON TABLE waca_adjustments TO bde_user;
+REVOKE ALL ON TABLE lds.waca_adjustments FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.waca_adjustments TO bde_admin;
+GRANT SELECT ON TABLE lds.waca_adjustments TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table survey_observations
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS survey_observations CASCADE;
+DROP TABLE IF EXISTS lds.survey_observations CASCADE;
 
-CREATE TABLE survey_observations (
+CREATE TABLE lds.survey_observations (
     id integer NOT NULL,
     nod_id_start integer NOT NULL,
     mark_name_start VARCHAR(100),
@@ -874,23 +872,23 @@ CREATE TABLE survey_observations (
     ref_datetime timestamp without time zone NOT NULL,
     survey_reference VARCHAR(50)
 );
-PERFORM AddGeometryColumn('survey_observations', 'shape', 4167, 'LINESTRING', 2);
+PERFORM AddGeometryColumn('lds', 'survey_observations', 'shape', 4167, 'LINESTRING', 2);
 
-ALTER TABLE survey_observations ADD PRIMARY KEY (id);
-CREATE INDEX shx_sur_obs_shape ON survey_observations USING gist (shape);
+ALTER TABLE lds.survey_observations ADD PRIMARY KEY (id);
+CREATE INDEX shx_sur_obs_shape ON lds.survey_observations USING gist (shape);
 
-ALTER TABLE survey_observations OWNER TO bde_dba;
+ALTER TABLE lds.survey_observations OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE survey_observations FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_observations TO bde_admin;
-GRANT SELECT ON TABLE survey_observations TO bde_user;
+REVOKE ALL ON TABLE lds.survey_observations FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.survey_observations TO bde_admin;
+GRANT SELECT ON TABLE lds.survey_observations TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table survey_arc_observations
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS survey_arc_observations CASCADE;
+DROP TABLE IF EXISTS lds.survey_arc_observations CASCADE;
 
-CREATE TABLE survey_arc_observations (
+CREATE TABLE lds.survey_arc_observations (
     id INTEGER NOT NULL,
     nod_id_start integer NOT NULL,
     mark_name_start VARCHAR(100),
@@ -912,24 +910,24 @@ CREATE TABLE survey_arc_observations (
     arc_radius_label VARCHAR(10)
 );
 
-PERFORM AddGeometryColumn('survey_arc_observations', 'shape', 4167, 'LINESTRING', 2);
+PERFORM AddGeometryColumn('lds', 'survey_arc_observations', 'shape', 4167, 'LINESTRING', 2);
 
-ALTER TABLE survey_arc_observations ADD PRIMARY KEY (id);
-CREATE INDEX shx_sur_arc_obs_shape ON survey_arc_observations USING gist (shape);
+ALTER TABLE lds.survey_arc_observations ADD PRIMARY KEY (id);
+CREATE INDEX shx_sur_arc_obs_shape ON lds.survey_arc_observations USING gist (shape);
 
-ALTER TABLE survey_arc_observations OWNER TO bde_dba;
+ALTER TABLE lds.survey_arc_observations OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE survey_arc_observations FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_arc_observations TO bde_admin;
-GRANT SELECT ON TABLE survey_arc_observations TO bde_user;
+REVOKE ALL ON TABLE lds.survey_arc_observations FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.survey_arc_observations TO bde_admin;
+GRANT SELECT ON TABLE lds.survey_arc_observations TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table parcel_vectors
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS parcel_vectors CASCADE;
+DROP TABLE IF EXISTS lds.parcel_vectors CASCADE;
 
-DROP TABLE IF EXISTS parcel_vectors CASCADE;
-CREATE TABLE parcel_vectors (
+DROP TABLE IF EXISTS lds.parcel_vectors CASCADE;
+CREATE TABLE lds.parcel_vectors (
     id INTEGER NOT NULL,
     type VARCHAR(6) NOT NULL,
     bearing NUMERIC(22,12),
@@ -937,24 +935,24 @@ CREATE TABLE parcel_vectors (
     bearing_label VARCHAR(10),
     distance_label VARCHAR(10)
 );
-PERFORM AddGeometryColumn('parcel_vectors', 'shape', 4167, 'LINESTRING', 2);
+PERFORM AddGeometryColumn('lds', 'parcel_vectors', 'shape', 4167, 'LINESTRING', 2);
 
-ALTER TABLE parcel_vectors ADD PRIMARY KEY (id);
-CREATE INDEX shx_par_vct_shape ON parcel_vectors USING gist (shape);
+ALTER TABLE lds.parcel_vectors ADD PRIMARY KEY (id);
+CREATE INDEX shx_par_vct_shape ON lds.parcel_vectors USING gist (shape);
 
-ALTER TABLE parcel_vectors OWNER TO bde_dba;
+ALTER TABLE lds.parcel_vectors OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE parcel_vectors FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE parcel_vectors TO bde_admin;
-GRANT SELECT ON TABLE parcel_vectors TO bde_user;
+REVOKE ALL ON TABLE lds.parcel_vectors FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.parcel_vectors TO bde_admin;
+GRANT SELECT ON TABLE lds.parcel_vectors TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table survey_network_marks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS survey_network_marks CASCADE;
+DROP TABLE IF EXISTS lds.survey_network_marks CASCADE;
 
-DROP TABLE IF EXISTS survey_network_marks CASCADE;
-CREATE TABLE survey_network_marks (
+DROP TABLE IF EXISTS lds.survey_network_marks CASCADE;
+CREATE TABLE lds.survey_network_marks (
     id INTEGER NOT NULL,
     geodetic_code CHAR(4),
     current_mark_name VARCHAR(100),
@@ -965,71 +963,71 @@ CREATE TABLE survey_network_marks (
     nominal_accuracy NUMERIC(4,2),
     last_survey VARCHAR(50)
 );
-PERFORM AddGeometryColumn('survey_network_marks', 'shape', 4167, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'survey_network_marks', 'shape', 4167, 'POINT', 2);
 
-ALTER TABLE survey_network_marks ADD PRIMARY KEY (id);
-CREATE INDEX shx_csnm_shape ON survey_network_marks USING gist (shape);
+ALTER TABLE lds.survey_network_marks ADD PRIMARY KEY (id);
+CREATE INDEX shx_csnm_shape ON lds.survey_network_marks USING gist (shape);
 
-ALTER TABLE survey_network_marks OWNER TO bde_dba;
+ALTER TABLE lds.survey_network_marks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE survey_network_marks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_network_marks TO bde_admin;
-GRANT SELECT ON TABLE survey_network_marks TO bde_user;
+REVOKE ALL ON TABLE lds.survey_network_marks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.survey_network_marks TO bde_admin;
+GRANT SELECT ON TABLE lds.survey_network_marks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table survey_bdy_marks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS survey_bdy_marks CASCADE;
+DROP TABLE IF EXISTS lds.survey_bdy_marks CASCADE;
 
-DROP TABLE IF EXISTS survey_bdy_marks CASCADE;
-CREATE TABLE survey_bdy_marks (
+DROP TABLE IF EXISTS lds.survey_bdy_marks CASCADE;
+CREATE TABLE lds.survey_bdy_marks (
     id INTEGER NOT NULL,
     name VARCHAR(100),
     "order" INTEGER NOT NULL,
     nominal_accuracy NUMERIC(4,2),
     date_last_adjusted TIMESTAMP
 );
-PERFORM AddGeometryColumn('survey_bdy_marks', 'shape', 4167, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'survey_bdy_marks', 'shape', 4167, 'POINT', 2);
 
-ALTER TABLE survey_bdy_marks ADD PRIMARY KEY (id);
-CREATE INDEX shx_cad_bdy_mrk_shape ON survey_bdy_marks USING gist (shape);
+ALTER TABLE lds.survey_bdy_marks ADD PRIMARY KEY (id);
+CREATE INDEX shx_cad_bdy_mrk_shape ON lds.survey_bdy_marks USING gist (shape);
 
-ALTER TABLE survey_bdy_marks OWNER TO bde_dba;
+ALTER TABLE lds.survey_bdy_marks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE survey_bdy_marks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_bdy_marks TO bde_admin;
-GRANT SELECT ON TABLE survey_bdy_marks TO bde_user;
+REVOKE ALL ON TABLE lds.survey_bdy_marks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.survey_bdy_marks TO bde_admin;
+GRANT SELECT ON TABLE lds.survey_bdy_marks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table survey_non_bdy_marks
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS survey_non_bdy_marks CASCADE;
+DROP TABLE IF EXISTS lds.survey_non_bdy_marks CASCADE;
 
-DROP TABLE IF EXISTS survey_non_bdy_marks CASCADE;
-CREATE TABLE survey_non_bdy_marks (
+DROP TABLE IF EXISTS lds.survey_non_bdy_marks CASCADE;
+CREATE TABLE lds.survey_non_bdy_marks (
     id INTEGER NOT NULL,
     name VARCHAR(100),
     "order" INTEGER NOT NULL,
     nominal_accuracy NUMERIC(4,2),
     date_last_adjusted TIMESTAMP
 );
-PERFORM AddGeometryColumn('survey_non_bdy_marks', 'shape', 4167, 'POINT', 2);
+PERFORM AddGeometryColumn('lds', 'survey_non_bdy_marks', 'shape', 4167, 'POINT', 2);
 
-ALTER TABLE survey_non_bdy_marks ADD PRIMARY KEY (id);
-CREATE INDEX shx_cad_nbdy_mrk_shape ON survey_non_bdy_marks USING gist (shape);
+ALTER TABLE lds.survey_non_bdy_marks ADD PRIMARY KEY (id);
+CREATE INDEX shx_cad_nbdy_mrk_shape ON lds.survey_non_bdy_marks USING gist (shape);
 
-ALTER TABLE survey_non_bdy_marks OWNER TO bde_dba;
+ALTER TABLE lds.survey_non_bdy_marks OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE survey_non_bdy_marks FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE survey_non_bdy_marks TO bde_admin;
-GRANT SELECT ON TABLE survey_non_bdy_marks TO bde_user;
+REVOKE ALL ON TABLE lds.survey_non_bdy_marks FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.survey_non_bdy_marks TO bde_admin;
+GRANT SELECT ON TABLE lds.survey_non_bdy_marks TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table parcel_stat_actions
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS parcel_stat_actions CASCADE;
+DROP TABLE IF EXISTS lds.parcel_stat_actions CASCADE;
 
-CREATE TABLE parcel_stat_actions (
+CREATE TABLE lds.parcel_stat_actions (
     id INTEGER NOT NULL,
     par_id INTEGER NOT NULL,
     status VARCHAR(10) NOT NULL,
@@ -1037,60 +1035,60 @@ CREATE TABLE parcel_stat_actions (
     statutory_action VARCHAR(1024)
 );
 
-ALTER TABLE parcel_stat_actions ADD PRIMARY KEY (id);
+ALTER TABLE lds.parcel_stat_actions ADD PRIMARY KEY (id);
 
-ALTER TABLE parcel_stat_actions OWNER TO bde_dba;
+ALTER TABLE lds.parcel_stat_actions OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE parcel_stat_actions FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE parcel_stat_actions TO bde_admin;
-GRANT SELECT ON TABLE parcel_stat_actions TO bde_user;
+REVOKE ALL ON TABLE lds.parcel_stat_actions FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.parcel_stat_actions TO bde_admin;
+GRANT SELECT ON TABLE lds.parcel_stat_actions TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table affected_parcel_surveys
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS affected_parcel_surveys CASCADE;
+DROP TABLE IF EXISTS lds.affected_parcel_surveys CASCADE;
 
-CREATE TABLE affected_parcel_surveys (
+CREATE TABLE lds.affected_parcel_surveys (
     id INTEGER NOT NULL,
     par_id INTEGER NOT NULL,
     sur_wrk_id INTEGER NOT NULL,
     action VARCHAR(12)
 );
 
-ALTER TABLE affected_parcel_surveys ADD PRIMARY KEY (id);
+ALTER TABLE lds.affected_parcel_surveys ADD PRIMARY KEY (id);
 
-ALTER TABLE affected_parcel_surveys OWNER TO bde_dba;
+ALTER TABLE lds.affected_parcel_surveys OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE affected_parcel_surveys FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE affected_parcel_surveys TO bde_admin;
-GRANT SELECT ON TABLE affected_parcel_surveys TO bde_user;
+REVOKE ALL ON TABLE lds.affected_parcel_surveys FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.affected_parcel_surveys TO bde_admin;
+GRANT SELECT ON TABLE lds.affected_parcel_surveys TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table title_parcel_associations
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS title_parcel_associations CASCADE;
+DROP TABLE IF EXISTS lds.title_parcel_associations CASCADE;
 
-CREATE TABLE title_parcel_associations (
+CREATE TABLE lds.title_parcel_associations (
     id INTEGER NOT NULL,
     title_no VARCHAR(20) NOT NULL,
     par_id INTEGER NOT NULL,
     source VARCHAR(8) NOT NULL
 );
 
-ALTER TABLE title_parcel_associations ADD PRIMARY KEY (id);
+ALTER TABLE lds.title_parcel_associations ADD PRIMARY KEY (id);
 
-ALTER TABLE title_parcel_associations OWNER TO bde_dba;
+ALTER TABLE lds.title_parcel_associations OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE title_parcel_associations FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_parcel_associations TO bde_admin;
-GRANT SELECT ON TABLE title_parcel_associations TO bde_user;
+REVOKE ALL ON TABLE lds.title_parcel_associations FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.title_parcel_associations TO bde_admin;
+GRANT SELECT ON TABLE lds.title_parcel_associations TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table title_estates
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS title_estates CASCADE;
+DROP TABLE IF EXISTS lds.title_estates CASCADE;
 
-CREATE TABLE title_estates (
+CREATE TABLE lds.title_estates (
     id INTEGER NOT NULL,
     title_no VARCHAR(20) NOT NULL,
     land_district VARCHAR(100) NOT NULL,
@@ -1104,20 +1102,20 @@ CREATE TABLE title_estates (
     area BIGINT
 );
 
-ALTER TABLE title_estates ADD PRIMARY KEY (id);
+ALTER TABLE lds.title_estates ADD PRIMARY KEY (id);
 
-ALTER TABLE title_estates OWNER TO bde_dba;
+ALTER TABLE lds.title_estates OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE title_estates FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_estates TO bde_admin;
-GRANT SELECT ON TABLE title_estates TO bde_user;
+REVOKE ALL ON TABLE lds.title_estates FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.title_estates TO bde_admin;
+GRANT SELECT ON TABLE lds.title_estates TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table titles_aspatial
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS titles_aspatial CASCADE;
+DROP TABLE IF EXISTS lds.titles_aspatial CASCADE;
 
-CREATE TABLE titles_aspatial (
+CREATE TABLE lds.titles_aspatial (
     id INTEGER NOT NULL,
     title_no VARCHAR(20) NOT NULL,
     status VARCHAR(50) NOT NULL,
@@ -1134,20 +1132,20 @@ CREATE TABLE titles_aspatial (
     number_owners INT8 NOT NULL
 );
 
-ALTER TABLE titles_aspatial ADD PRIMARY KEY (id);
+ALTER TABLE lds.titles_aspatial ADD PRIMARY KEY (id);
 
-ALTER TABLE titles_aspatial OWNER TO bde_dba;
+ALTER TABLE lds.titles_aspatial OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE titles_aspatial FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE titles_aspatial TO bde_admin;
-GRANT SELECT ON TABLE titles_aspatial TO bde_user;
+REVOKE ALL ON TABLE lds.titles_aspatial FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.titles_aspatial TO bde_admin;
+GRANT SELECT ON TABLE lds.titles_aspatial TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table title_owners_aspatial
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS title_owners_aspatial CASCADE;
+DROP TABLE IF EXISTS lds.title_owners_aspatial CASCADE;
 
-CREATE TABLE title_owners_aspatial (
+CREATE TABLE lds.title_owners_aspatial (
     id INTEGER NOT NULL,
     tte_id INTEGER NOT NULL,
     title_no VARCHAR(20) NOT NULL,
@@ -1161,20 +1159,20 @@ CREATE TABLE title_owners_aspatial (
     name_suffix VARCHAR(6)
 );
 
-ALTER TABLE title_owners_aspatial ADD PRIMARY KEY (id);
+ALTER TABLE lds.title_owners_aspatial ADD PRIMARY KEY (id);
 
-ALTER TABLE title_owners_aspatial OWNER TO bde_dba;
+ALTER TABLE lds.title_owners_aspatial OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE title_owners_aspatial FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_owners_aspatial TO bde_admin;
-GRANT SELECT ON TABLE title_owners_aspatial TO bde_user;
+REVOKE ALL ON TABLE lds.title_owners_aspatial FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.title_owners_aspatial TO bde_admin;
+GRANT SELECT ON TABLE lds.title_owners_aspatial TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table title_memorials
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS title_memorials CASCADE;
+DROP TABLE IF EXISTS lds.title_memorials CASCADE;
 
-CREATE TABLE title_memorials
+CREATE TABLE lds.title_memorials
 (
     id integer NOT NULL,
     title_no VARCHAR(20) NOT NULL,
@@ -1187,20 +1185,20 @@ CREATE TABLE title_memorials
     encumbrancees VARCHAR(4096)
 );
 
-ALTER TABLE title_memorials ADD PRIMARY KEY (id);
+ALTER TABLE lds.title_memorials ADD PRIMARY KEY (id);
 
-ALTER TABLE title_memorials OWNER TO bde_dba;
+ALTER TABLE lds.title_memorials OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE title_memorials FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_memorials TO bde_admin;
-GRANT SELECT ON TABLE title_memorials TO bde_user;
+REVOKE ALL ON TABLE lds.title_memorials FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.title_memorials TO bde_admin;
+GRANT SELECT ON TABLE lds.title_memorials TO bde_user;
 
 --------------------------------------------------------------------------------
 -- LDS table title_memorial_additional_text
 --------------------------------------------------------------------------------
-DROP TABLE IF EXISTS title_memorial_additional_text CASCADE;
+DROP TABLE IF EXISTS lds.title_memorial_additional_text CASCADE;
 
-CREATE TABLE title_memorial_additional_text
+CREATE TABLE lds.title_memorial_additional_text
 (
     id integer NOT NULL,
     ttm_id integer NOT NULL,
@@ -1217,13 +1215,13 @@ CREATE TABLE title_memorial_additional_text
     title_issued character varying(2048)
 );
 
-ALTER TABLE title_memorial_additional_text ADD PRIMARY KEY (id);
+ALTER TABLE lds.title_memorial_additional_text ADD PRIMARY KEY (id);
 
-ALTER TABLE title_memorial_additional_text OWNER TO bde_dba;
+ALTER TABLE lds.title_memorial_additional_text OWNER TO bde_dba;
 
-REVOKE ALL ON TABLE title_memorial_additional_text FROM PUBLIC;
-GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE title_memorial_additional_text TO bde_admin;
-GRANT SELECT ON TABLE title_memorial_additional_text TO bde_user;
+REVOKE ALL ON TABLE lds.title_memorial_additional_text FROM PUBLIC;
+GRANT SELECT, UPDATE, INSERT, DELETE ON TABLE lds.title_memorial_additional_text TO bde_admin;
+GRANT SELECT ON TABLE lds.title_memorial_additional_text TO bde_user;
 
 END;
 $SCHEMA$;
