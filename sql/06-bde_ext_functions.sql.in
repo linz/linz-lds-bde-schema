@@ -16,8 +16,6 @@
 
 BEGIN;
 
-SET SEARCH_PATH = bde_ext, bde, bde_control, public;
-
 DO $$
 DECLARE
    v_pcid    TEXT;
@@ -28,7 +26,7 @@ BEGIN
         FROM pg_proc
         WHERE pronamespace=(SELECT oid FROM pg_namespace WHERE nspname = v_schema)
     LOOP
-        EXECUTE 'DROP FUNCTION ' || v_pcid;
+        EXECUTE 'DROP FUNCTION bde_ext.' || v_pcid;
     END LOOP;
 END;
 $$;
@@ -42,7 +40,7 @@ $$;
 -- SELECT bde_CompleteDatasetRevision({{id}});
 -- EOT"""
 
-CREATE OR REPLACE FUNCTION LDS_MaintainAllFBDELayers(
+CREATE OR REPLACE FUNCTION bde_ext.LDS_MaintainAllFBDELayers(
     p_upload_id INTEGER
 )
 RETURNS
@@ -65,11 +63,11 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE STRICT SECURITY DEFINER;
 
-ALTER FUNCTION LDS_MaintainAllFBDELayers(integer) SET search_path=bde_ext, lds, bde, bde_control, public;
-ALTER FUNCTION LDS_MaintainAllFBDELayers(integer) OWNER TO bde_dba;
+ALTER FUNCTION bde_ext.LDS_MaintainAllFBDELayers(integer) SET search_path=bde_ext, lds, bde, bde_control, public;
+ALTER FUNCTION bde_ext.LDS_MaintainAllFBDELayers(integer) OWNER TO bde_dba;
 
 
-CREATE OR REPLACE FUNCTION LDS_MaintainFBDELayers(
+CREATE OR REPLACE FUNCTION bde_ext.LDS_MaintainFBDELayers(
     p_upload INTEGER
 )
 RETURNS
@@ -2568,7 +2566,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql;
 
-ALTER FUNCTION LDS_MaintainFBDELayers(INTEGER) OWNER TO bde_dba;
+ALTER FUNCTION bde_ext.LDS_MaintainFBDELayers(INTEGER) OWNER TO bde_dba;
 
 DO $$
 DECLARE
