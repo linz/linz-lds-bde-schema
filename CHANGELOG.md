@@ -3,6 +3,8 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.3.0dev - 2018-MM-DD
+
 ## 1.2.0 - 2018-04-09
 ### Added
 - Table comments (#57)
