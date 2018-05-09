@@ -105,22 +105,40 @@ installcheck:
 
 	createdb linz-lds-bde-schema-test-db
 	linz-bde-schema-load linz-lds-bde-schema-test-db
+    # Load schema
 	linz-lds-bde-schema-load linz-lds-bde-schema-test-db
 	export PGDATABASE=linz-lds-bde-schema-test-db; \
 	V=`psql -XtAc 'select lds.lds_version()'` && \
 	echo $$V && test "$$V" = "$(VERSION)" && \
 	V=`linz-lds-bde-schema-load --version` && \
 	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+    # Load schema again (upgrade)
+	linz-lds-bde-schema-load linz-lds-bde-schema-test-db
+	export PGDATABASE=linz-lds-bde-schema-test-db; \
+	V=`psql -XtAc 'select lds.lds_version()'` && \
+	echo $$V && test "$$V" = "$(VERSION)" && \
+	V=`linz-lds-bde-schema-load --version` && \
+	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+    # Drop DB
 	dropdb linz-lds-bde-schema-test-db
 
 	createdb linz-lds-bde-schema-test-db
 	linz-bde-schema-load --noextension linz-lds-bde-schema-test-db
+    # Load schema
 	linz-lds-bde-schema-load --noextension linz-lds-bde-schema-test-db
 	export PGDATABASE=linz-lds-bde-schema-test-db; \
 	V=`psql -XtAc 'select lds.lds_version()'` && \
 	echo $$V && test "$$V" = "$(VERSION)" && \
 	V=`linz-lds-bde-schema-load --version` && \
 	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+    # Load schema again (upgrade)
+	linz-lds-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	export PGDATABASE=linz-lds-bde-schema-test-db; \
+	V=`psql -XtAc 'select lds.lds_version()'` && \
+	echo $$V && test "$$V" = "$(VERSION)" && \
+	V=`linz-lds-bde-schema-load --version` && \
+	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+    # Drop DB
 	dropdb linz-lds-bde-schema-test-db
 
 docs: $(DOCS_built)
