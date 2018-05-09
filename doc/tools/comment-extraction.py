@@ -94,7 +94,7 @@ mappings={
 'Title_Hierarchy':'bde_ext.ttl_hierarchy',
 'Title_Instrument':'bde_ext.ttl_inst',
 'Title_Instrument_Title':'bde_ext.ttl_inst_title',
-'Title_Memorial':'title_memorial',
+'Title_Memorial':'bde_ext.title_memorial',
 'Title_Memorial_Text':'bde_ext.title_mem_text',
 'Title_Parcel_Association':'bde_ext.title_parcel_association',
 'Transaction_Type':'bde_ext.transact_type',
@@ -130,15 +130,15 @@ nextline_seen = False
 
 notes_column = 3
 
-if len(sys.argv) != 2: 
+if len(sys.argv) != 2:
   sys.stderr.write('Syntax comment-extraction.py <input_file>\n')
   sys.exit(1)
 
 with open(sys.argv[1]) as fp:
   line = fp.readline()
-  
+
   while line:
-    # Remove bold and italic markdown 
+    # Remove bold and italic markdown
     line = line.replace(bold1,'').replace(bold2, '').replace(
            italic, '').replace(newline, '\n')
     # If Description in line, means that next lines are table description.
@@ -147,7 +147,7 @@ with open(sys.argv[1]) as fp:
       col_name_col_two = False
       line = fp.readline()
       while '|' not in line:
-        line = line.replace(bold1, '').replace(bold2, '').replace(            
+        line = line.replace(bold1, '').replace(bold2, '').replace(
                italic, '').replace(newline, '\n')
         ## Wrap lines to 80 characters
         if len(line) < 80:
@@ -170,12 +170,12 @@ with open(sys.argv[1]) as fp:
         line = fp.readline()
       sys.stdout.write('$comment$;\n\n')
       line = fp.readline()
-      
+
       # Following description is table to retrieve column comments.
       while '|' not in line:
         line = fp.readline()
-        
-      # Use count of '|' to find the last column in table, 
+
+      # Use count of '|' to find the last column in table,
       # which will contain notes/description about row.
       notes_column = line.count('|')
       line = fp.readline()
@@ -222,7 +222,7 @@ with open(sys.argv[1]) as fp:
         sys.stdout.write('\n$comment$;\n\n')
 
         line = fp.readline()
-    
+
     # If is a subheading then update table name
     elif subheading in line:
       nextline = fp.readline()
@@ -243,7 +243,7 @@ with open(sys.argv[1]) as fp:
           table_name = name.lower()
           sys.stderr.write("Unkown Mappings for " + table_name + '\n')
           sys.exit(1)
-      line = nextline      
+      line = nextline
 
     if not nextline_seen:
       line = fp.readline()
