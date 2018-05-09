@@ -26,7 +26,7 @@ BEGIN
         FROM pg_proc
         WHERE pronamespace=(SELECT oid FROM pg_namespace WHERE nspname = v_schema)
     LOOP
-        EXECUTE 'DROP FUNCTION bde_ext.' || v_pcid;
+        EXECUTE 'DROP FUNCTION ' || v_pcid;
     END LOOP;
 END;
 $$;
