@@ -12,7 +12,7 @@ Package: linz-lds-bde-schema
 Architecture: all
 Depends: ${misc:Depends},
          postgresql-9.3-tableversion (>= 1.4.0) | postgresql-9.4-tableversion (>= 1.4.0) | postgresql-9.5-tableversion (>= 1.4.0) | postgresql-9.6-tableversion (>= 1.4.0),
-         postgresql-9.3-dbpatch (>= 1.2.0) | postgresql-9.4-dbpatch (>= 1.2.0) | postgresql-9.5-dbpatch (>= 1.2.0) | postgresql-9.6-dbpatch (>= 1.2.0)
+         postgresql-9.3-dbpatch (>= 1.2.0) | postgresql-9.4-dbpatch (>= 1.2.0) | postgresql-9.5-dbpatch (>= 1.2.0) | postgresql-9.6-dbpatch (>= 1.2.0),
          linz-bde-uploader (>= 2.4.0),
          linz-bde-schema
 Description: Provides the schemas and functions to generate the Landonline
