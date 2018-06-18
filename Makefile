@@ -85,13 +85,18 @@ install: $(SQLSCRIPTS) $(SCRIPTS_built)
 uninstall:
 	rm -rf ${datadir}
 
-check test: $(SQLSCRIPTS) check-docs
+check test: $(SQLSCRIPTS) check-docs check-generic check-noextension
+
+check-generic:
 	export PGDATABASE=regress_linz_lds_bde_schema; \
 	dropdb --if-exists $$PGDATABASE; \
 	createdb $$PGDATABASE; \
-	linz-bde-schema-load $$PGDATABASE; \
-	linz-bde-uploader-schema-load $$PGDATABASE; \
+	linz-bde-schema-load $$SCHEMA_LOAD_OPTS $$PGDATABASE; \
+	linz-bde-uploader-schema-load $$SCHEMA_LOAD_OPTS $$PGDATABASE; \
 	pg_prove test/
+
+check-noextension:
+	SCHEMA_LOAD_OPTS="--noextension" make check-generic
 
 clean:
 	rm -f regression.diffs
