@@ -23,7 +23,12 @@ DECLARE
    v_rev_table TEXT;
 BEGIN
 
-    IF NOT EXISTS (SELECT * FROM pg_extension WHERE extname = 'table_version') THEN
+    IF NOT EXISTS (SELECT p.oid FROM pg_catalog.pg_proc p,
+                                 pg_catalog.pg_namespace n
+                            WHERE p.proname = 'ver_create_revision'
+                            AND n.oid = p.pronamespace
+                            AND n.nspname = 'table_version')
+    THEN
         RETURN;
     END IF;
 
