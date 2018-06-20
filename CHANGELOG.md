@@ -3,6 +3,10 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.2.1 - 2018-06-??
+## Fixed
+- Fix support for extension-less `table_version` usage (#102)
+
 ## 1.2.0 - 2018-04-09
 ### Added
 - Table comments (#57)
