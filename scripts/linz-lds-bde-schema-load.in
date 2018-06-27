@@ -72,6 +72,7 @@ echo ")"
 export PGDATABASE=$DB_NAME
 (
 cat << EOF
+BEGIN;
 SET client_min_messages TO WARNING;
 CREATE EXTENSION IF NOT EXISTS unaccent SCHEMA public;
 EOF
@@ -82,7 +83,7 @@ for file in $SQLSCRIPTS; do
     fi
     echo "Loading $file" >&2
     file=${SCRIPTSDIR}/`echo $file | sed 's|sql/||'`
-    cat ${file}
+    cat ${file} | sed 's/^BEGIN;//;s/^COMMIT;//'
 done
 
 if test "${ADD_REVISIONS}" = "yes"; then
@@ -90,9 +91,10 @@ if test "${ADD_REVISIONS}" = "yes"; then
         if test `dirname $file` = 'sql/versioning'; then
             echo "Loading (versioning) $file" >&2
             file=${SCRIPTSDIR}/`echo $file | sed 's|sql/||'`
-            cat ${file}
+            cat ${file} | sed 's/^BEGIN;//;s/^COMMIT;//'
         fi
     done
 fi
+echo "COMMIT;"
 
 ) | $PSQL -tA --set ON_ERROR_STOP=1 > /dev/null
