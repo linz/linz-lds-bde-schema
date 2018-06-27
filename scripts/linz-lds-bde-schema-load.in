@@ -63,6 +63,7 @@ ${LOADER} ${OPTS} $DB_NAME || {
 export PGDATABASE=$DB_NAME
 (
 cat << EOF
+SET client_min_messages TO WARNING;
 CREATE EXTENSION IF NOT EXISTS unaccent SCHEMA public;
 EOF
 
@@ -88,4 +89,4 @@ if test "${ADD_REVISIONS}" = "yes"; then
     cat ${file} || exit 1
 fi
 
-) | $PSQL -tA --set ON_ERROR_STOP=1
+) | $PSQL -tA --set ON_ERROR_STOP=1 > /dev/null
