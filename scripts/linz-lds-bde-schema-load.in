@@ -6,7 +6,8 @@ export EXTENSION_MODE=on
 export PSQL=psql
 export SCRIPTSDIR=/usr/share/linz-lds-bde-schema/sql/
 
-SQLSCRIPTS="@@SQLSCRIPTS@@"
+ADD_REVISION=yes # always enable table revisioning
+SQLSCRIPTS=`echo "@@SQLSCRIPTS@@" | tr ' ' '\n' | LANG=C sort | tr '\n' ' '`
 
 if test -n "${LDSBDESCHEMA_SQLDIR}"; then
     SCRIPTSDIR=${LDSBDESCHEMA_SQLDIR}

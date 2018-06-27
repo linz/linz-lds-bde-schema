@@ -16,7 +16,7 @@ SQLSCRIPTS = \
   sql/01-lds_layer_tables.sql \
   sql/02-lds_bde_schema_index.sql \
   sql/05-bde_ext_schema.sql \
-  sql/99-patches.sql \
+  sql/90-patches.sql \
   sql/versioning/01-version_tables.sql \
   $(END)
 
@@ -24,7 +24,7 @@ SQLSCRIPTS_built = \
     sql/04-lds_layer_functions.sql \
     sql/06-bde_ext_functions.sql \
     sql/07-lds_version.sql \
-    sql/08-lds_comments.sql \
+    sql/95-lds_comments.sql \
     $(END)
 
 SCRIPTS_built = \
@@ -67,10 +67,10 @@ scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.in Makefile
            $< > $@
 	chmod +x $@
 
-sql/08-lds_comments.sql: doc/tools/comment-extraction.py \
+sql/95-lds_comments.sql: doc/tools/comment-extraction.py \
 		      doc/lds-full-landonline-data-dictionary-and-models.md \
 		      doc/property-and-ownership-simplified-tables-data-dictionary.md
-	rm -f sql/08-lds_comments.sql
+	rm -f sql/95-lds_comments.sql
 	python $< doc/lds-full-landonline-data-dictionary-and-models.md > $@
 	python $< doc/property-and-ownership-simplified-tables-data-dictionary.md >> $@
 

@@ -26,7 +26,7 @@ CREATE EXTENSION unaccent;
 \i sql/05-bde_ext_schema.sql
 \i sql/06-bde_ext_functions.sql
 \i sql/07-lds_version.sql
-\i sql/99-patches.sql
+\i sql/90-patches.sql
 
 BEGIN;
 
