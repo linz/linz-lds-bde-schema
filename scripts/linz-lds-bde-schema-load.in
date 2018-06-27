@@ -93,9 +93,6 @@ if test "${ADD_REVISIONS}" = "yes"; then
             cat ${file}
         fi
     done
-
-    file=${SCRIPTSDIR}/versioning/01-version_tables.sql
-    cat ${file} || exit 1
 fi
 
 ) | $PSQL -tA --set ON_ERROR_STOP=1 > /dev/null
