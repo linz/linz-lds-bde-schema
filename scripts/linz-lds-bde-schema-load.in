@@ -56,10 +56,18 @@ OPTS=
 if test "${EXTENSION_MODE}" = "off"; then
     OPTS="--noextension"
 fi
-${LOADER} ${OPTS} $DB_NAME || {
+${LOADER} ${OPTS} $DB_NAME > /dev/null || {
     echo "${LOADER} exited with an error" >&2
     exit 1
 }
+
+echo -n "Loading LDS DBE schema in database $DB_NAME (extension mode "
+if test "${EXTENSION_MODE}" = "off"; then
+    echo "off"
+else
+    echo "on"
+fi
+echo ")"
 
 export PGDATABASE=$DB_NAME
 (
@@ -72,7 +80,7 @@ for file in $SQLSCRIPTS; do
     if test `dirname $file` = 'sql/versioning'; then
         continue
     fi
-    #echo "DOING $file" >&2
+    echo "Loading $file" >&2
     file=${SCRIPTSDIR}/`echo $file | sed 's|sql/||'`
     cat ${file}
 done
@@ -80,7 +88,7 @@ done
 if test "${ADD_REVISIONS}" = "yes"; then
     for file in $SQLSCRIPTS; do
         if test `dirname $file` = 'sql/versioning'; then
-            #echo "DOING (versioning) $file" >&2
+            echo "Loading (versioning) $file" >&2
             file=${SCRIPTSDIR}/`echo $file | sed 's|sql/||'`
             cat ${file}
         fi
