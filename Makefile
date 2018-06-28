@@ -4,6 +4,9 @@ VERSION=1.3.0dev
 REVISION=$(shell test -d .git && which git > /dev/null && git describe --always)
 
 SED = sed
+TEST_DB=linz-lds-bde-schema-test-db
+LDS_TABLES=45
+BDE_EXT_TABLES=47
 
 datadir=${DESTDIR}/usr/share/linz-lds-bde-schema
 bindir=${DESTDIR}/usr/bin
@@ -104,46 +107,93 @@ clean:
 	rm -rf results
 	rm -f $(EXTRA_CLEAN)
 
+loader-version-test:
+
+	export PGDATABASE=$(TEST_DB); \
+	V=`linz-lds-bde-schema-load --version` && \
+	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+
+prepared-db-simple-test:
+
+	export PGDATABASE=$(TEST_DB); \
+	V=`psql -XtAc 'select lds.lds_version()'` && \
+	echo $$V && test "$$V" = "$(VERSION)"
+
+
+prepared-db-revision-test:
+
+	@export PGDATABASE=$(TEST_DB); \
+	V=`psql -XtAc "select count(*) from \
+        table_version.versioned_tables where schema_name = 'lds'"` && \
+	test "$$V" = "$(LDS_TABLES)" || { \
+        echo "Versioned tables in LDS schema are $$V, expected $(LDS_TABLES)" >&2; \
+        false; \
+    }
+
+	@export PGDATABASE=$(TEST_DB); \
+	V=`psql -XtAc "select count(*) from \
+        table_version.versioned_tables where schema_name = 'bde_ext'"` && \
+	test "$$V" = "$(BDE_EXT_TABLES)" || { \
+        echo "Versioned tables in BDE_EXT schema are $$V, expected $(BDE_EXT_TABLES)" >&2; \
+        false; \
+    }
+
 installcheck:
+
+	$(MAKE) loader-version-test
 
 	dropdb --if-exists linz-lds-bde-schema-test-db
 
+    #
+    # Default install
+    #
 	createdb linz-lds-bde-schema-test-db
 	linz-bde-schema-load linz-lds-bde-schema-test-db
     # Load schema
 	linz-lds-bde-schema-load linz-lds-bde-schema-test-db
-	export PGDATABASE=linz-lds-bde-schema-test-db; \
-	V=`psql -XtAc 'select lds.lds_version()'` && \
-	echo $$V && test "$$V" = "$(VERSION)" && \
-	V=`linz-lds-bde-schema-load --version` && \
-	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+	$(MAKE) prepared-db-simple-test
     # Load schema again (upgrade)
 	linz-lds-bde-schema-load linz-lds-bde-schema-test-db
-	export PGDATABASE=linz-lds-bde-schema-test-db; \
-	V=`psql -XtAc 'select lds.lds_version()'` && \
-	echo $$V && test "$$V" = "$(VERSION)" && \
-	V=`linz-lds-bde-schema-load --version` && \
-	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+	$(MAKE) prepared-db-simple-test
+	$(MAKE) prepared-db-revision-test LDS_TABLES=0 BDE_EXT_TABLES=0
     # Drop DB
 	dropdb linz-lds-bde-schema-test-db
 
+    #
+    # Default revisioned install
+    #
+	createdb linz-lds-bde-schema-test-db
+	linz-bde-schema-load linz-lds-bde-schema-test-db
+    # Load schema
+	linz-lds-bde-schema-load --revision linz-lds-bde-schema-test-db
+	$(MAKE) prepared-db-simple-test
+	$(MAKE) prepared-db-revision-test
+    # Drop DB
+	dropdb linz-lds-bde-schema-test-db
+
+    #
+    # Extension-less install
+    #
 	createdb linz-lds-bde-schema-test-db
 	linz-bde-schema-load --noextension linz-lds-bde-schema-test-db
     # Load schema
 	linz-lds-bde-schema-load --noextension linz-lds-bde-schema-test-db
-	export PGDATABASE=linz-lds-bde-schema-test-db; \
-	V=`psql -XtAc 'select lds.lds_version()'` && \
-	echo $$V && test "$$V" = "$(VERSION)" && \
-	V=`linz-lds-bde-schema-load --version` && \
-	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+	$(MAKE) prepared-db-simple-test
     # Load schema again (upgrade)
 	linz-lds-bde-schema-load --noextension linz-lds-bde-schema-test-db
-	export PGDATABASE=linz-lds-bde-schema-test-db; \
-	V=`psql -XtAc 'select lds.lds_version()'` && \
-	echo $$V && test "$$V" = "$(VERSION)" && \
-	V=`linz-lds-bde-schema-load --version` && \
-	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
-    # Drop DB
+	$(MAKE) prepared-db-simple-test
+	$(MAKE) prepared-db-revision-test LDS_TABLES=0 BDE_EXT_TABLES=0
+	dropdb linz-lds-bde-schema-test-db
+
+    #
+    # Extension-less revisioned install
+    #
+	createdb linz-lds-bde-schema-test-db
+	linz-bde-schema-load --noextension linz-lds-bde-schema-test-db
+    # Load schema
+	linz-lds-bde-schema-load --noextension --revision linz-lds-bde-schema-test-db
+	$(MAKE) prepared-db-simple-test
+	$(MAKE) prepared-db-revision-test
 	dropdb linz-lds-bde-schema-test-db
 
 docs: $(DOCS_built)
