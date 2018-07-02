@@ -3,7 +3,7 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.3.0dev - 2018-MM-DD
+## 1.3.0 - 2018-07-04
 ### Added
 - New --revision switch to schema loader, to enable versioning (#109)
 ### Changed
