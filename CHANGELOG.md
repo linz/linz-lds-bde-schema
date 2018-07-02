@@ -4,6 +4,8 @@ All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
 ## 1.3.0dev - 2018-MM-DD
+### Added
+- New --revision switch to schema loader, to enable versioning (#109)
 ### Changed
 - Stop changing `search_path` in the session loading enabler
   scripts (#95)
