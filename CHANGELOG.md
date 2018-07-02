@@ -9,6 +9,8 @@ this file.
 ### Changed
 - Stop changing `search_path` in the session loading enabler
   scripts (#95)
+- Make schema loader less noisy
+- Make schema loader use a single transaction
 
 ## 1.2.0 - 2018-04-09
 ### Added
