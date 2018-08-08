@@ -12,6 +12,10 @@ this file.
 - Make schema loader less noisy
 - Make schema loader use a single transaction
 
+## 1.2.1 - 2018-06-20
+## Fixed
+- Fix support for extension-less `table_version` usage (#102)
+
 ## 1.2.0 - 2018-04-09
 ### Added
 - Table comments (#57)
