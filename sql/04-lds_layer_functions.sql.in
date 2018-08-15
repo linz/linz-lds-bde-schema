@@ -2498,7 +2498,7 @@ BEGIN
         corporate_name
     )
     SELECT
-        PRP.id,
+        (select min(id) from tmp_title_owners_aspatial) - row_number() over (),
         TTS.id,
         TTS.title_no,
         TTS.land_district,
