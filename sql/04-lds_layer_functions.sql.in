@@ -2486,6 +2486,39 @@ BEGIN
         PRO.title_no IS NULL;
 
 
+
+    -- Following subquery picks unused identifiers among
+    -- the lowest 1000. If there aren't enough entries
+    -- among those tables there will be a problem, so
+    -- we'd better first check how many we need, using
+    -- a temporary table. There might still be not enough
+    -- entries but in that case we'll use higher
+    -- identifiers.
+    --
+    -- TODO: create a temporary table instead, trying
+    --       best effort to find at least the required
+    --       number of identifiers
+    --
+    WITH unused_ids AS (
+        SELECT
+            row_number() over (ORDER BY id) ser,
+            id
+        FROM (
+            SELECT
+                id
+            FROM (
+                SELECT
+                    generate_series( MIN(id), MIN(id)+1000 ) id
+                FROM
+                    lds.title_owners_aspatial
+            ) gs
+            EXCEPT
+            SELECT
+                id
+            FROM
+                lds.title_owners_aspatial
+         ) bar
+    )
     INSERT INTO tmp_title_owners_aspatial(
         id,
         tte_id,
@@ -2498,7 +2531,14 @@ BEGIN
         corporate_name
     )
     SELECT
-        (select min(id) from tmp_title_owners_aspatial) - row_number() over (),
+        COALESCE(
+            UNS.id,
+            -- If no unused ID was found, use future IDs.
+            -- These will be logged as UPDATEs once used,
+            -- but only the old value will be recognizable
+            --
+            max(PRP.id) over () + ROW_NUMBER() over ()
+        ),
         TTS.id,
         TTS.title_no,
         TTS.land_district,
@@ -2510,11 +2550,15 @@ BEGIN
     FROM
         tmp_title_estates TTS
         JOIN bde.crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
-        JOIN bde.crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
+        JOIN (
+            SELECT row_number() over (order by id) ser, *
+            FROM bde.crs_proprietor
+        ) PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
         LEFT JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no
         LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
         LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
         LEFT JOIN bde.crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
+        LEFT JOIN unused_ids UNS ON PRP.ser = UNS.ser
     WHERE
         PRO.title_no IS NOT NULL;
 
