@@ -646,13 +646,18 @@ BEGIN
 	ALTER TABLE tmp_protected_titles ADD PRIMARY KEY (title_no);
 	ANALYSE tmp_protected_titles;
 
-	CREATE TEMP TABLE tmp_unregistered_proprietors AS
+	CREATE TEMP TABLE tmp_unused_proprietor_ids AS
 	SELECT row_number() over (order by id) ser, id
-	FROM bde.crs_proprietor
-	WHERE status <> 'REGD';
+	FROM (
+		SELECT generate_series( MIN(id), MIN(id)+1000 ) id
+		FROM bde.crs_proprietor
+        EXCEPT
+        SELECT id FROM bde.crs_proprietor
+	) foo
+    ;
 
-	ALTER TABLE tmp_unregistered_proprietors ADD PRIMARY KEY (ser);
-	ANALYSE tmp_unregistered_proprietors;
+	ALTER TABLE tmp_unused_proprietor_ids ADD PRIMARY KEY (ser);
+	ANALYSE tmp_unused_proprietor_ids;
 
 	RETURN TRUE;
 END;
@@ -670,7 +675,7 @@ DECLARE
 BEGIN
 	DROP TABLE tmp_excluded_titles;
 	DROP TABLE tmp_protected_titles;
-	DROP TABLE tmp_unregistered_proprietors;
+	DROP TABLE tmp_unused_proprietor_ids;
 	DROP TABLE tmp_training_titles;
 	RETURN TRUE;
 EXCEPTION
@@ -2534,7 +2539,7 @@ BEGIN
         LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
         LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
         LEFT JOIN bde.crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
-        LEFT JOIN tmp_unregistered_proprietors UNS ON PRP.ser = UNS.ser
+        LEFT JOIN tmp_unused_proprietor_ids UNS ON PRP.ser = UNS.ser
     WHERE
         PRO.title_no IS NOT NULL;
 
