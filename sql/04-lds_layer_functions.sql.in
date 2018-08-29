@@ -568,6 +568,9 @@ CREATE OR REPLACE FUNCTION lds.LDS_CreateTitleExclusionTables(
 )
 RETURNS
 	BOOLEAN AS $$
+DECLARE
+	num_protected_titles int;
+	found_unused_ids int;
 BEGIN
 	IF (
 		SELECT
@@ -623,7 +626,9 @@ BEGIN
 
 	CREATE TEMP TABLE tmp_protected_titles AS
 	SELECT
-		TTL.title_no
+		TTL.title_no,
+		ROW_NUMBER() over (order by TTL.title_no) as ser,
+		NULL::int as prp_id
 	FROM
 		bde.crs_title TTL
 	LEFT JOIN tmp_excluded_titles EXL ON TTL.title_no = EXL.title_no
@@ -643,21 +648,46 @@ BEGIN
 	) AND
 	EXL.title_no IS NULL;
 
+	GET DIAGNOSTICS num_protected_titles = ROW_COUNT;
+
 	ALTER TABLE tmp_protected_titles ADD PRIMARY KEY (title_no);
 	ANALYSE tmp_protected_titles;
 
+	RAISE INFO 'Started creating temp table tmp_unused_proprietor_ids';
+
+	-- Need to extract `num_protected_titles` unused identifiers now
 	CREATE TEMP TABLE tmp_unused_proprietor_ids AS
-	SELECT row_number() over (order by id) ser, id
-	FROM (
-		SELECT generate_series( MIN(id), MIN(id)+1000 ) id
-		FROM bde.crs_proprietor
-        EXCEPT
-        SELECT id FROM bde.crs_proprietor
-	) foo
-    ;
+	SELECT
+		row_number() over (order by id) ser,
+		id + 1 id
+	FROM bde.crs_proprietor p1
+	WHERE NOT EXISTS (
+		SELECT NULL
+		FROM bde.crs_proprietor p2
+		WHERE p2.id = p1.id + 1
+	) LIMIT num_protected_titles;
+
+	GET DIAGNOSTICS found_unused_ids = ROW_COUNT;
+
+	RAISE INFO 'Found %/% unused ids', found_unused_ids, num_protected_titles;
 
 	ALTER TABLE tmp_unused_proprietor_ids ADD PRIMARY KEY (ser);
 	ANALYSE tmp_unused_proprietor_ids;
+
+	RAISE INFO 'Assign unused proprietor ids to protected titles';
+
+	UPDATE tmp_protected_titles t SET prp_id = u.id
+	FROM tmp_unused_proprietor_ids u
+	WHERE u.ser = t.ser;
+
+	IF found_unused_ids < num_protected_titles THEN
+		UPDATE tmp_protected_titles t
+		SET prp_id = (SELECT max(id) FROM bde.crs_proprietor) + ROW_NUMBER() over (order by ser)
+		WHERE prp_id IS NULL;
+	END IF;
+
+	-- This table is not needed anymore, drop it
+	DROP TABLE tmp_unused_proprietor_ids;
 
 	RETURN TRUE;
 END;
@@ -675,7 +705,6 @@ DECLARE
 BEGIN
 	DROP TABLE tmp_excluded_titles;
 	DROP TABLE tmp_protected_titles;
-	DROP TABLE tmp_unused_proprietor_ids;
 	DROP TABLE tmp_training_titles;
 	RETURN TRUE;
 EXCEPTION
@@ -2512,14 +2541,7 @@ BEGIN
         corporate_name
     )
     SELECT
-        COALESCE(
-            UNS.id,
-            -- If no unused ID was found, use future IDs.
-            -- These will be logged as UPDATEs once used,
-            -- but only the old value will be recognizable
-            --
-            max(PRP.id) over () + ROW_NUMBER() over ()
-        ),
+        PRO.prp_id,
         TTS.id,
         TTS.title_no,
         TTS.land_district,
@@ -2531,15 +2553,11 @@ BEGIN
     FROM
         tmp_title_estates TTS
         JOIN bde.crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
-        JOIN (
-            SELECT row_number() over (order by id) ser, *
-            FROM bde.crs_proprietor
-        ) PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
+        JOIN bde.crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
         LEFT JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no
         LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
         LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
         LEFT JOIN bde.crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
-        LEFT JOIN tmp_unused_proprietor_ids UNS ON PRP.ser = UNS.ser
     WHERE
         PRO.title_no IS NOT NULL;
 
