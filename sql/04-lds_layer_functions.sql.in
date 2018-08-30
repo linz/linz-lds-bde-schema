@@ -2510,7 +2510,6 @@ BEGIN
         TTS.title_no,
         TTS.land_district::VARCHAR(100),
         TSDS.char_value AS status,
-        PRP.status AS status_code,
         ETS.share::VARCHAR(100) AS estate_share,
         PRPT.char_value::VARCHAR(10) AS owner_type,
         PRP.prime_surname,
@@ -2535,7 +2534,6 @@ BEGIN
         title_no,
         land_district,
         status,
-        status_code,
         estate_share,
         owner_type,
         corporate_name
@@ -2545,21 +2543,14 @@ BEGIN
         TTS.id,
         TTS.title_no,
         TTS.land_district,
-        TSDS.char_value AS status,
-        PRP.status AS status_code,
+        'Registered',
         ETS.share,
         'Corporate',
         LDS_GetProtectedText(PRO.title_no)
     FROM
         tmp_title_estates TTS
         JOIN bde.crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
-        JOIN bde.crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
-        LEFT JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no
-        LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
-        LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
-        LEFT JOIN bde.crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
-    WHERE
-        PRO.title_no IS NOT NULL;
+        JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no;
 
     RAISE INFO 'Finished creating temp table tmp_title_owners_aspatial';
 
