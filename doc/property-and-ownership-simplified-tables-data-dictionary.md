@@ -25,12 +25,12 @@ The LDS provides two sets of [simplified data](https://data.linz.govt.nz/data/ca
 *Simplified spatial layers* <br>
 The simplified layers combine the most commonly used spatial and tabular information. While this provides easy access and reuse, the process of combining datasets necessarily leaves out data. The simplified layers are: <br>
 
-- [NZ Property Titles](https://data.linz.govt.nz/data/category/property-ownership-boundaries/) 
-- [NZ Property Title Owners](https://data.linz.govt.nz/layer/50806-nz-property-title-owners/) 
+- [NZ Property Titles](https://data.linz.govt.nz/data/category/property-ownership-boundaries/)
+- [NZ Property Title Owners](https://data.linz.govt.nz/layer/50806-nz-property-title-owners/)
 - [NZ Property Titles Including Owners](http://data.linz.govt.nz/layer/50805-nz-property-titles-including-owners/) <br>
 
 *Simplified tables* <br>
-If you require additional data than provided in the simplified layers above, you may need to access the simplified tabular data. 
+If you require additional data than provided in the simplified layers above, you may need to access the simplified tabular data.
 These tables have been created to enable the relationships to be better modelled rather than relying entirely on aggregation, or duplication as is the case for the spatial layers. <br>
 If you require more complex, property and titles data, please see the [Full Landonline Dataset](https://data.linz.govt.nz/data/category/full-landonline-dataset/) on the LINZ Data Service.
 
@@ -69,7 +69,7 @@ survey_area | decimal(20,4)|The total area of combined sub parcels if recorded, 
 calc_area | decimal(20,0)| An area calculated on a Transverse Mercator projection of the parcel geometric object. For parcels on the NZ mainland, the NZTM projection is used, for parcels on the Chatham Islands the CITM2000 projection is used. It is not an official area and has been produced for the convenience of users.
 shape |geometry |Spatial definition of parcel. Multi-polygon or Multi-linestring geometric object.
 
-### Relationships 
+### Relationships
 
 __Parent table__ | __Child table__ | __Relating Parent Attribute__ | __Relating Child Attribute__ | __Cardinality__
 :---------------|:---------------------|:----------------------------|:---------------------------|:--------------
@@ -87,11 +87,11 @@ __Column Name__ | __Type__ | __Description__
 :-------|:-------|:------------------------------
 __id__ |__integer__| The unique identifier for the title (Primary Key). Sourced from crs_title.audit_id
 __title_no__ |__varchar(20)__ |The title number that uniquely identifies each title.<br> Pre Landonline title numbers will usually be in the form of "nnnx/nn" (Eg, "203B/12" or "1A/1"). They will be converted with the land district prefix at the beginning to make them unique egg “OT1A/1”. <br> New title numbers created in Landonline will be numbers only.
-status |vvarchar(50) |The status of the title. Live or Part-Cancelled 
+status |vvarchar(50) |The status of the title. Live or Part-Cancelled
 register_type |varchar(50) |Indicates the register the title is contained in (e.g. the Computer Freehold Register, Computer Interest Register)
 type|varchar(100)|Indicates the type of title. Examples of title type include Freehold, Leasehold, Composite and Supplementary Record Sheet.
-land_district|varchar(100)|The name of the land district the title is in. e.g. “North Auckland”, “Southland” See [http://data.linz.govt.nz/layer/50785-nz-land-districts/](http://data.linz.govt.nz/layer/50785-nz-land-districts/) for more details <br> A Land District is an administrative area that all titles and surveys were registered against prior to Landonline. 
-issue_date |datetime |The date on which the title was issued. 
+land_district|varchar(100)|The name of the land district the title is in. e.g. “North Auckland”, “Southland” See [http://data.linz.govt.nz/layer/50785-nz-land-districts/](http://data.linz.govt.nz/layer/50785-nz-land-districts/) for more details <br> A Land District is an administrative area that all titles and surveys were registered against prior to Landonline.
+issue_date |datetime |The date on which the title was issued.
 guarantee_status |varchar(100) |The status of the State guarantees relating to a title. <br> A title may be fully guaranteed or "Limited as to parcels" which means that a fully guaranteed title will not be issued for the land until a survey plan of the land has been deposited.
 provisional |char(1)| A flag indicating if the title is provisional. A provisional title is a type of computer interest register that is used to record transactions against land where the requirements to have a normal computer freehold register issued have not been met. e.g. For Maori land, to deal with delays in the registration of dealings between the date of the order of the Maori Land Court declaring the land to be held in freehold tenure and the issue of the Crown grant.
 title_no_srs|varchar(20)|Unit titles are linked to a single Supplementary Record Sheet title. <br> This contains the SRS title number if the current title is a unit title.
@@ -119,7 +119,7 @@ A small number of memorials records recorded on a title have additional text whi
 __Important Notes:__ <br>
 
 - The Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)  <br>
-- When Landonline was developed (circa 2000), only current memorials (i.e. those shown on live titles) were converted from paper to digital format. Therefore any historic memorial contained in this dataset has only become historic since the development of Landonline. 
+- When Landonline was developed (circa 2000), only current memorials (i.e. those shown on live titles) were converted from paper to digital format. Therefore any historic memorial contained in this dataset has only become historic since the development of Landonline.
 
 __Column Name__ | __Type__ | __Description__
 :------------|:-------|:------------------------------
@@ -160,7 +160,7 @@ __Memorial Type__ | __Column Name__ | __Type__ | __Description__
 ||  __id__ | __integer__ | A unique identifier for the memorial text (Primary Key). Sourced from crs_title_mem_text.audit_id.
 ||  __ttm_id__ | __integer__ | The title memorial id.
 __Cancellation of Title__ | new_title_legal_description | varchar(2048) | Legal description of a new title issued from the cancelation of the title related to this memorial.
-||  new_title_reference | varchar(2048) | Title reference of a new title issued from the cancelation of the title related to this memorial. 
+||  new_title_reference | varchar(2048) | Title reference of a new title issued from the cancelation of the title related to this memorial.
 __Cancellation of Head Title for a Unit Development__ | principal_unit | varchar(2048) |New principal units issued from the cancelation of the title related to this memorial.
 || future_development_unit | varchar(2048) | New future development units issued from the cancelation of the title related to this memorial.
 || assessory_unit | varchar(2048) | New assessory units issued from the cancelation of the title related to this memorial.
@@ -189,7 +189,7 @@ __id__ | __integer__ | The unique identifier for the title estate (Primary Key).
 __title_no__ | __varchar(20)__ | The number of the title that this title estate belongs to.
 type | varchar(100) | Defines the type of the estate for which the title was issued. E.g. 'Fee Simple', 'Stratum in Freehold', 'Leasehold'
 land_district | varchar(100) | The name of the land district the title is in. e.g. “North Auckland”, “Southland” See [http://data.linz.govt.nz/layer/50785-nz-land-districts/](http://data.linz.govt.nz/layer/50785-nz-land-districts/) for more details
-status| varchar(25)| The status of the estate within the context of the title estate. Can be only be ‘Registered’
+status| varchar(25)| The status of the estate within the context of the title estate. Can only be ‘Registered’
 share| varchar(100)| The share of the estate held by this title. This field will normally be a whole share, however, it is possible for two different titles to contain a half (or other) share of the same area of land (e.g., for access lots or composite cross-lease titles).
 purpose |varchar(255)| The description of the purpose that the land is held for (if applicable). E.g., a piece of land vested in the council during a subdivision may have a purpose "Local purpose recreation reserve". The purpose restricts the use of the land and the title. Used for display in the title view.
 timeshare_week_no | varchar(20)| If the title is a timeshare title, this contains the timeshare week that the title is for.
@@ -217,7 +217,7 @@ __id__            | __integer__   | The unique identifier for the title owner. (
 __tte_id__        | __integer__   | The identifier of the title estate that the proprietor owns. If there are joint tenants on a title, there will be more than one proprietor for the same title estate.
 title_no          | varchar(20)   | The number of the title that this owner belongs to.
 land_district     | varchar(100)  | The name of the land district the title is in. e.g. “North Auckland”, “Southland” See [http://data.linz.govt.nz/layer/50785-nz-land-districts/](http://data.linz.govt.nz/layer/50785-nz-land-districts/) for more details. <br> A Land District is an administrative area that all titles and surveys were registered against prior to Landonline.
-status            | varchar(25)   | The status of the owner within the context of the title estate. Can be only be ‘Registered’
+status            | varchar(25)   | The status of the owner within the context of the title estate. Can only be ‘Registered’
 estate_share      | varchar(100)  | The title estate share that owner has. If tenants in common exist on a title, they will be recorded as separate estate shares. A value needs to be given to each of the shares. Generally the value of all the estate shares in an estate will add up to one (but this is not always the case with Maori titles).
 owner_type        | varchar(10)   | Indicates whether this owner is an individual or corporation.
 prime_surname     | varchar(100)  | If this owner is an individual, the surname of the owner is stored here, otherwise this should be blank.
@@ -255,7 +255,7 @@ NZ Property Titles List | NZ Title Parcel Association List | title_no | title_no
 ## NZ Survey Plans
 ### Description:
 [https://data.linz.govt.nz/layer/50794-nz-survey-plans/](https://data.linz.govt.nz/layer/50794-nz-survey-plans/) <br>
-This layer provides metadata about cadastral surveys along with reference points indicating the location of the survey. A cadastral survey determines and describes the spatial extent (including boundaries) of interest of land within New Zealand. Each survey is allocated a unique reference number (that prior to Landonline included reference to the land district. Survey provides details that identify the type of survey, the purpose, and who is involved with giving authorisation, preparation and taking responsibility for work when it is lodged with LINZ <br> 
+This layer provides metadata about cadastral surveys along with reference points indicating the location of the survey. A cadastral survey determines and describes the spatial extent (including boundaries) of interest of land within New Zealand. Each survey is allocated a unique reference number (that prior to Landonline included reference to the land district. Survey provides details that identify the type of survey, the purpose, and who is involved with giving authorisation, preparation and taking responsibility for work when it is lodged with LINZ <br>
 For example: The Surveyor who generates a survey dataset is responsible for the accuracy, definition and completeness and provides the details of the purpose for carrying out the work.
 
 __Column Name__ | __Type__ | __Description__
@@ -284,7 +284,7 @@ NZ Survey Plans | NZ Survey Affected Parcels List | id | sur_wrk_id | Zero or mo
 [https://data.linz.govt.nz/table/51568-nz-survey-affected-parcels-list/](https://data.linz.govt.nz/table/51568-nz-survey-affected-parcels-list/) <br>
 This table is used to describe the many to many relationship between surveys and parcels. <br>
 An affected parcel is a parcel which is affected by the approval of a survey dataset. A parcel may be affected, created or extinguished. For example, a survey can affect extinguish parcels by rendering them historical and at the same time may create new parcels (subdivision). Parcels may be affected by a survey but remain current (definition of an easement etc). <br>
-The same relationships and attributes exist for the NZ survey Affected Parcels List (Pending Approval) dataset (for Council only).<br> 
+The same relationships and attributes exist for the NZ survey Affected Parcels List (Pending Approval) dataset (for Council only).<br>
 
 __Column Name__ | __Type__ | __Description__
 :--------|:------|:---------------------------------------
