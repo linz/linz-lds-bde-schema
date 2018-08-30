@@ -3,6 +3,10 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.3.1 - 2018-07-04
+### Enhanced
+- Create no revision when versioning empty tables (#117)
+
 ## 1.3.0 - 2018-07-04
 ### Added
 - New --revision switch to schema loader, to enable versioning (#109)
