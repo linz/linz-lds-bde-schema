@@ -395,13 +395,14 @@ BEGIN
 
     DROP TABLE IF EXISTS dvl_prp;
     CREATE TEMPORARY TABLE dvl_prp
-    (title_no VARCHAR, prp_id INTEGER)
+    (title_no VARCHAR, prp_id INTEGER, dvl_prp_id INTEGER)
     ON COMMIT DROP;
 
     INSERT INTO dvl_prp
     SELECT
         DVL.title_no AS title_no,
-        PRP.id AS prp_id
+        PRP.id AS prp_id,
+        DVL.prp_id AS dvl_prp_id
     FROM
         tmp_protected_titles DVL
     JOIN crs_title_estate ETT ON DVL.title_no = ETT.ttl_title_no
@@ -439,15 +440,17 @@ BEGIN
             ALS.id,
             ALS.prp_id,
             -- Mask protected titles
-            CASE WHEN D2P.title_no IS NOT NULL THEN lds.LDS_GetProtectedText(D2P.title_no) ELSE ALS.surname END AS surname,
-            CASE WHEN D2P.title_no IS NOT NULL THEN NULL ELSE ALS.other_names END AS other_names
+            ALS.surname,
+            ALS.other_names
         FROM crs_alias ALS
         JOIN crs_proprietor PRP ON ALS.prp_id = PRP.id
         LEFT JOIN DVL_PRP D2P ON PRP.id = D2P.prp_id
         WHERE PRP.status <> 'LDGE'
+        AND D2P.title_no IS NULL
         -- Completely exclude training titles and pending titles
         AND PRP.id NOT IN (SELECT prp_id FROM exclude_prp)
         ORDER BY id;
+
     $sql$;
 
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
