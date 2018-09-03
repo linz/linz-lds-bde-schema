@@ -437,17 +437,18 @@ BEGIN
         )
         SELECT
             ALS.id,
-            ALS.prp_id,
             -- Mask protected titles
+            CASE WHEN D2P.title_no IS NOT NULL THEN PRPM.target_dvl_id ELSE PRPM.target_id END AS id,
             CASE WHEN D2P.title_no IS NOT NULL THEN lds.LDS_GetProtectedText(D2P.title_no) ELSE ALS.surname END AS surname,
             CASE WHEN D2P.title_no IS NOT NULL THEN NULL ELSE ALS.other_names END AS other_names
         FROM crs_alias ALS
         JOIN crs_proprietor PRP ON ALS.prp_id = PRP.id
+        JOIN tmp_proprietors_map PRPM ON PRP.id = PRPM.source_id
         LEFT JOIN DVL_PRP D2P ON PRP.id = D2P.prp_id
         WHERE PRP.status <> 'LDGE'
         -- Completely exclude training titles and pending titles
         AND PRP.id NOT IN (SELECT prp_id FROM exclude_prp)
-        ORDER BY id;
+        ORDER BY ALS.id;
     $sql$;
 
     RAISE NOTICE '*** PERFORM TABLE UPDATE % - % ***',v_table,clock_timestamp();
@@ -519,7 +520,12 @@ BEGIN
                 name_suffix,
                 original_flag
         )
-        SELECT prp.id, prp.ets_id, prp.status, prp.type,
+        SELECT
+                CASE
+                    WHEN d2p.title_no IS NOT NULL THEN prpm.target_dvl_id
+                    ELSE prpm.target_id
+                END AS id,
+                prp.ets_id, prp.status, prp.type,
                 CASE
                     WHEN d2p.title_no IS NOT NULL THEN NULL::VARCHAR
                     ELSE prp.prime_surname
@@ -533,6 +539,7 @@ BEGIN
                     ELSE prp.corporate_name
                 END AS corporate_name, prp.name_suffix, prp.original_flag
         FROM crs_proprietor prp
+        JOIN tmp_proprietors_map prpm ON prp.id = prpm.source_id
         LEFT JOIN dvl_prp d2p ON prp.id = d2p.prp_id
         WHERE prp.status <> 'LDGE'
         AND prp.id NOT IN ( SELECT exclude_prp.prp_id FROM exclude_prp)
@@ -668,7 +675,9 @@ BEGIN
         )
         SELECT
             NMI.ttl_title_no,
-            NMI.prp_id,
+            CASE
+                WHEN DVL.title_no IS NOT NULL THEN PRPM.target_dvl_id
+                ELSE PRPM.target_id END AS prp_id,
             NMI.id,
             NMI.status,
             NMI.name_type,
@@ -676,6 +685,7 @@ BEGIN
             CASE WHEN DVL.title_no IS NOT NULL THEN NULL ELSE NMI.other_names END AS other_names,
             CASE WHEN DVL.title_no IS NOT NULL THEN lds.LDS_GetProtectedText(DVL.title_no) ELSE NMI.corporate_name END as corporate_name
         FROM crs_nominal_index NMI
+        JOIN tmp_proprietors_map PRPM ON NMI.prp_id = PRPM.source_id
         LEFT JOIN tmp_protected_titles DVL
         ON NMI.ttl_title_no = DVL.title_no
         WHERE NMI.status <> 'LDGE'
