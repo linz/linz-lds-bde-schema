@@ -651,43 +651,27 @@ BEGIN
 
 	RAISE INFO 'Started creating temp table tmp_protected_proprietors';
 
-	-- Extract protected proprietors
-	CREATE TEMP TABLE tmp_protected_proprietors AS
-	SELECT
-		ROW_NUMBER() over (order by PRP.id) as ser,
-		PRP.id as prp_id,
-		NULL::integer as dvl_prp_id
-	FROM bde.crs_proprietor PRP
-	JOIN bde.crs_estate_share SHA ON SHA.id = PRP.ets_id
-	JOIN bde.crs_title_estate EST ON SHA.ett_id = EST.id
-	JOIN tmp_protected_titles TTL ON EST.ttl_title_no = TTL.title_no;
+    -- Create a mapping between original proprietor identifiers
+    -- and virtual ones (those being published)
 
-	GET DIAGNOSTICS num_protected_proprietors = ROW_COUNT;
+    CREATE TEMP SEQUENCE tmp_proprietor_seq;
 
-	-- Map to unused proprietors
-	WITH unused_ids AS (
-		SELECT
-			row_number() over (order by id) ser,
-			id + 1 id
-		FROM bde.crs_proprietor p1
-		WHERE NOT EXISTS (
-			SELECT NULL
-			FROM bde.crs_proprietor p2
-			WHERE p2.id = p1.id + 1
-		) LIMIT num_protected_proprietors
-	)
-	UPDATE tmp_protected_proprietors PRO
-	SET dvl_prp_id = UNS.id
-	FROM unused_ids UNS
-	WHERE PRO.ser = UNS.ser;
+    CREATE TEMP TABLE tmp_proprietors_map AS
+    SELECT
+        p.id source_id,
+        nextval('tmp_proprietor_seq') target_id,
+        nextval('tmp_proprietor_seq') target_dvl_id
+    FROM bde.crs_proprietor p
+    ORDER BY p.id;
 
-	GET DIAGNOSTICS found_unused_ids = ROW_COUNT;
+    DROP SEQUENCE tmp_proprietor_seq;
 
-	IF found_unused_ids < num_protected_proprietors THEN
-		UPDATE tmp_protected_proprietor t
-		SET dvl_prp_id = (SELECT max(id) FROM bde.crs_proprietor) + ROW_NUMBER() over (order by ser)
-		WHERE dvl_prp_id IS NULL;
-	END IF;
+    -- Shuffle mapping
+    UPDATE tmp_proprietors_map
+    SET
+        target_id = target_dvl_id,
+        target_dvl_id = target_id
+    WHERE source_id % 2 = 0;
 
 	RETURN TRUE;
 END;
@@ -705,7 +689,7 @@ DECLARE
 BEGIN
 	DROP TABLE tmp_excluded_titles;
 	DROP TABLE tmp_protected_titles;
-	DROP TABLE tmp_protected_proprietors;
+	DROP TABLE tmp_proprietors_map;
 	DROP TABLE tmp_training_titles;
 	RETURN TRUE;
 EXCEPTION
@@ -2506,7 +2490,7 @@ BEGIN
 
     CREATE TEMP TABLE tmp_title_owners_aspatial AS
     SELECT
-        PRP.id,
+        PRPM.target_id AS id,
         TTS.id AS tte_id,
         TTS.title_no,
         TTS.land_district::VARCHAR(100),
@@ -2522,6 +2506,7 @@ BEGIN
         tmp_title_estates TTS
         JOIN bde.crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
         JOIN bde.crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
+        LEFT JOIN tmp_proprietors_map PRPM ON PRPM.source_id = PRP.id
         LEFT JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no
         LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
         LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
@@ -2542,7 +2527,7 @@ BEGIN
         corporate_name
     )
     SELECT
-        PPRP.dvl_prp_id,
+        PRPM.target_dvl_id,
         TTS.id,
         TTS.title_no,
         TTS.land_district,
@@ -2556,7 +2541,7 @@ BEGIN
         JOIN bde.crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
         JOIN bde.crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
         LEFT JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no
-        LEFT JOIN tmp_protected_proprietors PPRP ON PRP.id = PPRP.prp_id
+        LEFT JOIN tmp_proprietors_map PRPM ON PRPM.source_id = PRP.id
         LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
         LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
         LEFT JOIN bde.crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
