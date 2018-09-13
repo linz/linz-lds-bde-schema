@@ -569,8 +569,8 @@ CREATE OR REPLACE FUNCTION lds.LDS_CreateTitleExclusionTables(
 RETURNS
 	BOOLEAN AS $$
 DECLARE
-	num_protected_proprietors INTEGER;
-	found_unused_ids INTEGER;
+    proprietor_stats RECORD;
+	missing_gaps INTEGER;
 BEGIN
 	IF (
 		SELECT
@@ -654,24 +654,49 @@ BEGIN
     -- Create a mapping between original proprietor identifiers
     -- and virtual ones (those being published)
 
-    CREATE TEMP SEQUENCE tmp_proprietor_seq;
+    -- Step 1. find all gaps
 
-    CREATE TEMP TABLE tmp_proprietors_map AS
+    SELECT max(id), count(id) FROM bde.crs_proprietor
+    INTO proprietor_stats;
+
+    CREATE TEMP TABLE tmp_proprietors_dvl_map AS
+    WITH gaps AS (
+        SELECT ROW_NUMBER() OVER (ORDER BY gap) ser, gap
+        FROM (
+            SELECT id, LEAD(id) OVER (ORDER BY id)
+            FROM bde.crs_proprietor
+        ) foo
+        JOIN LATERAL
+        generate_series(id + 1, lead - 1) gap
+        ON lead > id + 1
+        LIMIT proprietor_stats.count
+    ), source AS (
+        SELECT ROW_NUMBER() OVER (ORDER BY id) ser, id
+        FROM bde.crs_proprietor p
+    )
     SELECT
-        p.id source_id,
-        nextval('tmp_proprietor_seq') target_id,
-        nextval('tmp_proprietor_seq') target_dvl_id
-    FROM bde.crs_proprietor p
-    ORDER BY p.id;
+        s.id source_id,
+        g.gap target_dvl_id
+    FROM source s
+    LEFT JOIN gaps g
+    ON (g.ser = s.ser)
+    ;
 
-    DROP SEQUENCE tmp_proprietor_seq;
+    -- Add missing dvl identifiers, if any
+    UPDATE tmp_proprietors_dvl_map t
+    SET target_dvl_id = -target_dvl_id
+    WHERE target_dvl_id IS NULL;
 
-    -- Shuffle mapping
-    UPDATE tmp_proprietors_map
-    SET
-        target_id = target_dvl_id,
-        target_dvl_id = target_id
-    WHERE source_id % 2 = 0;
+    GET DIAGNOSTICS missing_gaps = ROW_COUNT;
+    IF missing_gaps != 0 THEN
+	    RAISE WARNING 'Lack of gaps in proprietor table '
+                      'resulted in using % negative identifiers',
+                      missing_gaps;
+    END IF;
+
+    CREATE TEMP VIEW tmp_proprietors_map AS
+    SELECT source_id, source_id as target_id, target_dvl_id
+    FROM tmp_proprietors_dvl_map;
 
 	RETURN TRUE;
 END;
@@ -689,7 +714,8 @@ DECLARE
 BEGIN
 	DROP TABLE tmp_excluded_titles;
 	DROP TABLE tmp_protected_titles;
-	DROP TABLE tmp_proprietors_map;
+	DROP VIEW tmp_proprietors_map;
+	DROP TABLE tmp_proprietors_dvl_map;
 	DROP TABLE tmp_training_titles;
 	RETURN TRUE;
 EXCEPTION
