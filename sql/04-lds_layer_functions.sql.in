@@ -694,6 +694,9 @@ BEGIN
                       missing_gaps;
     END IF;
 
+    CREATE INDEX ON tmp_proprietors_dvl_map (source_id);
+    ANALYSE tmp_proprietors_dvl_map;
+
     CREATE TEMP VIEW tmp_proprietors_map AS
     SELECT source_id, source_id as target_id, target_dvl_id
     FROM tmp_proprietors_dvl_map;
