@@ -3,6 +3,9 @@
 -- Test lds schema {
 
 SELECT has_schema('lds'::name);
+SELECT schema_owner_is('lds'::name, 'bde_dba'::name);
+SELECT schema_privs_are('lds'::name, 'bde_admin'::name, ARRAY['USAGE']);
+SELECT schema_privs_are('lds'::name, 'bde_user'::name, ARRAY['USAGE']);
 
 SELECT has_table('lds'::name, 'affected_parcel_surveys'::name);
 SELECT table_owner_is('lds'::name, 'affected_parcel_surveys'::name, 'bde_dba'::name);
@@ -799,6 +802,9 @@ SELECT columns_are('lds'::name, 'waca_adjustments'::name,
 -- Test bde_ext schema {
 
 SELECT has_schema('bde_ext'::name);
+SELECT schema_owner_is('bde_ext'::name, 'bde_dba'::name);
+SELECT schema_privs_are('bde_ext'::name, 'bde_admin'::name, ARRAY['USAGE']);
+SELECT schema_privs_are('bde_ext'::name, 'bde_user'::name, ARRAY['USAGE']);
 
 SELECT has_table('bde_ext'::name, 'adjustment_run'::name);
 SELECT table_owner_is('bde_ext'::name, 'adjustment_run'::name, 'bde_dba'::name);
