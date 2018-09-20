@@ -5,6 +5,9 @@
 SELECT has_schema('lds'::name);
 
 SELECT has_table('lds'::name, 'affected_parcel_surveys'::name);
+SELECT table_owner_is('lds'::name, 'affected_parcel_surveys'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'affected_parcel_surveys'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'affected_parcel_surveys'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'affected_parcel_surveys'::name,
   ARRAY[
   'id',
@@ -14,6 +17,9 @@ SELECT columns_are('lds'::name, 'affected_parcel_surveys'::name,
   ]);
 
 SELECT has_table('lds'::name, 'affected_parcel_surveys_pend'::name);
+SELECT table_owner_is('lds'::name, 'affected_parcel_surveys_pend'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'affected_parcel_surveys_pend'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'affected_parcel_surveys_pend'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'affected_parcel_surveys_pend'::name,
   ARRAY[
   'id',
@@ -23,6 +29,9 @@ SELECT columns_are('lds'::name, 'affected_parcel_surveys_pend'::name,
   ]);
 
 SELECT has_table('lds'::name, 'all_linear_parcels'::name);
+SELECT table_owner_is('lds'::name, 'all_linear_parcels'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'all_linear_parcels'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'all_linear_parcels'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'all_linear_parcels'::name,
   ARRAY[
   'calc_area',
@@ -40,6 +49,9 @@ SELECT columns_are('lds'::name, 'all_linear_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'all_parcels'::name);
+SELECT table_owner_is('lds'::name, 'all_parcels'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'all_parcels'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'all_parcels'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'all_parcels'::name,
   ARRAY[
   'land_district',
@@ -57,6 +69,9 @@ SELECT columns_are('lds'::name, 'all_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'all_parcels_pend'::name);
+SELECT table_owner_is('lds'::name, 'all_parcels_pend'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'all_parcels_pend'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'all_parcels_pend'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'all_parcels_pend'::name,
   ARRAY[
   'land_district',
@@ -74,6 +89,9 @@ SELECT columns_are('lds'::name, 'all_parcels_pend'::name,
   ]);
 
 SELECT has_table('lds'::name, 'cadastral_adjustments'::name);
+SELECT table_owner_is('lds'::name, 'cadastral_adjustments'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'cadastral_adjustments'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'cadastral_adjustments'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'cadastral_adjustments'::name,
   ARRAY[
   'survey_reference',
@@ -84,6 +102,9 @@ SELECT columns_are('lds'::name, 'cadastral_adjustments'::name,
   ]);
 
 SELECT has_table('lds'::name, 'geodetic_antarctic_marks'::name);
+SELECT table_owner_is('lds'::name, 'geodetic_antarctic_marks'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'geodetic_antarctic_marks'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'geodetic_antarctic_marks'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'geodetic_antarctic_marks'::name,
   ARRAY[
   'current_mark_name',
@@ -119,6 +140,9 @@ SELECT columns_are('lds'::name, 'geodetic_antarctic_vertical_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'geodetic_marks'::name);
+SELECT table_owner_is('lds'::name, 'geodetic_marks'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'geodetic_marks'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'geodetic_marks'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'geodetic_marks'::name,
   ARRAY[
   'geodetic_code',
@@ -137,6 +161,9 @@ SELECT columns_are('lds'::name, 'geodetic_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'geodetic_network_marks'::name);
+SELECT table_owner_is('lds'::name, 'geodetic_network_marks'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'geodetic_network_marks'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'geodetic_network_marks'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'geodetic_network_marks'::name,
   ARRAY[
   'shape',
@@ -157,6 +184,9 @@ SELECT columns_are('lds'::name, 'geodetic_network_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'geodetic_vertical_marks'::name);
+SELECT table_owner_is('lds'::name, 'geodetic_vertical_marks'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'geodetic_vertical_marks'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'geodetic_vertical_marks'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'geodetic_vertical_marks'::name,
   ARRAY[
   'shape',
@@ -175,6 +205,9 @@ SELECT columns_are('lds'::name, 'geodetic_vertical_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'hydro_parcels'::name);
+SELECT table_owner_is('lds'::name, 'hydro_parcels'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'hydro_parcels'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'hydro_parcels'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'hydro_parcels'::name,
   ARRAY[
   'titles',
@@ -191,6 +224,9 @@ SELECT columns_are('lds'::name, 'hydro_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'land_districts'::name);
+SELECT table_owner_is('lds'::name, 'land_districts'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'land_districts'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'land_districts'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'land_districts'::name,
   ARRAY[
   'id',
@@ -199,6 +235,9 @@ SELECT columns_are('lds'::name, 'land_districts'::name,
   ]);
 
 SELECT has_table('lds'::name, 'land_parcels'::name);
+SELECT table_owner_is('lds'::name, 'land_parcels'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'land_parcels'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'land_parcels'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'land_parcels'::name,
   ARRAY[
   'topology_type',
@@ -215,6 +254,9 @@ SELECT columns_are('lds'::name, 'land_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'mesh_blocks'::name);
+SELECT table_owner_is('lds'::name, 'mesh_blocks'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'mesh_blocks'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'mesh_blocks'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'mesh_blocks'::name,
   ARRAY[
   'shape',
@@ -223,6 +265,9 @@ SELECT columns_are('lds'::name, 'mesh_blocks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'non_primary_linear_parcels'::name);
+SELECT table_owner_is('lds'::name, 'non_primary_linear_parcels'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'non_primary_linear_parcels'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'non_primary_linear_parcels'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'non_primary_linear_parcels'::name,
   ARRAY[
   'shape',
@@ -239,6 +284,9 @@ SELECT columns_are('lds'::name, 'non_primary_linear_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'non_primary_parcels'::name);
+SELECT table_owner_is('lds'::name, 'non_primary_parcels'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'non_primary_parcels'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'non_primary_parcels'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'non_primary_parcels'::name,
   ARRAY[
   'shape',
@@ -255,6 +303,9 @@ SELECT columns_are('lds'::name, 'non_primary_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'parcel_stat_actions'::name);
+SELECT table_owner_is('lds'::name, 'parcel_stat_actions'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'parcel_stat_actions'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'parcel_stat_actions'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'parcel_stat_actions'::name,
   ARRAY[
   'statutory_action',
@@ -265,6 +316,9 @@ SELECT columns_are('lds'::name, 'parcel_stat_actions'::name,
   ]);
 
 SELECT has_table('lds'::name, 'parcel_vectors'::name);
+SELECT table_owner_is('lds'::name, 'parcel_vectors'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'parcel_vectors'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'parcel_vectors'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'parcel_vectors'::name,
   ARRAY[
   'shape',
@@ -277,6 +331,9 @@ SELECT columns_are('lds'::name, 'parcel_vectors'::name,
   ]);
 
 SELECT has_table('lds'::name, 'primary_parcels'::name);
+SELECT table_owner_is('lds'::name, 'primary_parcels'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'primary_parcels'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'primary_parcels'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'primary_parcels'::name,
   ARRAY[
   'survey_area',
@@ -293,6 +350,9 @@ SELECT columns_are('lds'::name, 'primary_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'railway_centre_line'::name);
+SELECT table_owner_is('lds'::name, 'railway_centre_line'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'railway_centre_line'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'railway_centre_line'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'railway_centre_line'::name,
   ARRAY[
   'shape',
@@ -302,6 +362,9 @@ SELECT columns_are('lds'::name, 'railway_centre_line'::name,
   ]);
 
 SELECT has_table('lds'::name, 'road_centre_line'::name);
+SELECT table_owner_is('lds'::name, 'road_centre_line'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'road_centre_line'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'road_centre_line'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'road_centre_line'::name,
   ARRAY[
   'shape',
@@ -314,6 +377,9 @@ SELECT columns_are('lds'::name, 'road_centre_line'::name,
   ]);
 
 SELECT has_table('lds'::name, 'road_centre_line_subsection'::name);
+SELECT table_owner_is('lds'::name, 'road_centre_line_subsection'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'road_centre_line_subsection'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'road_centre_line_subsection'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'road_centre_line_subsection'::name,
   ARRAY[
   'shape',
@@ -329,6 +395,9 @@ SELECT columns_are('lds'::name, 'road_centre_line_subsection'::name,
   ]);
 
 SELECT has_table('lds'::name, 'road_parcels'::name);
+SELECT table_owner_is('lds'::name, 'road_parcels'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'road_parcels'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'road_parcels'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'road_parcels'::name,
   ARRAY[
   'calc_area',
@@ -345,6 +414,9 @@ SELECT columns_are('lds'::name, 'road_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'spi_adjustments'::name);
+SELECT table_owner_is('lds'::name, 'spi_adjustments'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'spi_adjustments'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'spi_adjustments'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'spi_adjustments'::name,
   ARRAY[
   'shape',
@@ -355,6 +427,9 @@ SELECT columns_are('lds'::name, 'spi_adjustments'::name,
   ]);
 
 SELECT has_table('lds'::name, 'strata_parcels'::name);
+SELECT table_owner_is('lds'::name, 'strata_parcels'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'strata_parcels'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'strata_parcels'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'strata_parcels'::name,
   ARRAY[
   'titles',
@@ -371,6 +446,9 @@ SELECT columns_are('lds'::name, 'strata_parcels'::name,
   ]);
 
 SELECT has_table('lds'::name, 'street_address'::name);
+SELECT table_owner_is('lds'::name, 'street_address'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'street_address'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'street_address'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'street_address'::name,
   ARRAY[
   'road_name',
@@ -384,6 +462,9 @@ SELECT columns_are('lds'::name, 'street_address'::name,
   ]);
 
 SELECT has_table('lds'::name, 'street_address2'::name);
+SELECT table_owner_is('lds'::name, 'street_address2'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'street_address2'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'street_address2'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'street_address2'::name,
   ARRAY[
   'house_number',
@@ -403,6 +484,9 @@ SELECT columns_are('lds'::name, 'street_address2'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_arc_observations'::name);
+SELECT table_owner_is('lds'::name, 'survey_arc_observations'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'survey_arc_observations'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'survey_arc_observations'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'survey_arc_observations'::name,
   ARRAY[
   'survey_reference',
@@ -428,6 +512,9 @@ SELECT columns_are('lds'::name, 'survey_arc_observations'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_bdy_marks'::name);
+SELECT table_owner_is('lds'::name, 'survey_bdy_marks'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'survey_bdy_marks'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'survey_bdy_marks'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'survey_bdy_marks'::name,
   ARRAY[
   'shape',
@@ -439,6 +526,9 @@ SELECT columns_are('lds'::name, 'survey_bdy_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_network_marks'::name);
+SELECT table_owner_is('lds'::name, 'survey_network_marks'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'survey_network_marks'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'survey_network_marks'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'survey_network_marks'::name,
   ARRAY[
   'id',
@@ -454,6 +544,9 @@ SELECT columns_are('lds'::name, 'survey_network_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_non_bdy_marks'::name);
+SELECT table_owner_is('lds'::name, 'survey_non_bdy_marks'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'survey_non_bdy_marks'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'survey_non_bdy_marks'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'survey_non_bdy_marks'::name,
   ARRAY[
   'nominal_accuracy',
@@ -465,6 +558,9 @@ SELECT columns_are('lds'::name, 'survey_non_bdy_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_observations'::name);
+SELECT table_owner_is('lds'::name, 'survey_observations'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'survey_observations'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'survey_observations'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'survey_observations'::name,
   ARRAY[
   'value',
@@ -485,6 +581,9 @@ SELECT columns_are('lds'::name, 'survey_observations'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_plans'::name);
+SELECT table_owner_is('lds'::name, 'survey_plans'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'survey_plans'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'survey_plans'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'survey_plans'::name,
   ARRAY[
   'authorised_date',
@@ -502,6 +601,9 @@ SELECT columns_are('lds'::name, 'survey_plans'::name,
   ]);
 
 SELECT has_table('lds'::name, 'survey_protected_marks'::name);
+SELECT table_owner_is('lds'::name, 'survey_protected_marks'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'survey_protected_marks'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'survey_protected_marks'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'survey_protected_marks'::name,
   ARRAY[
   'mark_condition',
@@ -517,6 +619,9 @@ SELECT columns_are('lds'::name, 'survey_protected_marks'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_estates'::name);
+SELECT table_owner_is('lds'::name, 'title_estates'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'title_estates'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'title_estates'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'title_estates'::name,
   ARRAY[
   'id',
@@ -533,6 +638,9 @@ SELECT columns_are('lds'::name, 'title_estates'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_memorial_additional_text'::name);
+SELECT table_owner_is('lds'::name, 'title_memorial_additional_text'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'title_memorial_additional_text'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'title_memorial_additional_text'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'title_memorial_additional_text'::name,
   ARRAY[
   'new_title_reference',
@@ -551,6 +659,9 @@ SELECT columns_are('lds'::name, 'title_memorial_additional_text'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_memorials'::name);
+SELECT table_owner_is('lds'::name, 'title_memorials'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'title_memorials'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'title_memorials'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'title_memorials'::name,
   ARRAY[
   'id',
@@ -565,6 +676,9 @@ SELECT columns_are('lds'::name, 'title_memorials'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_owners'::name);
+SELECT table_owner_is('lds'::name, 'title_owners'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'title_owners'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'title_owners'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'title_owners'::name,
   ARRAY[
   'owner',
@@ -577,6 +691,9 @@ SELECT columns_are('lds'::name, 'title_owners'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_owners_aspatial'::name);
+SELECT table_owner_is('lds'::name, 'title_owners_aspatial'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'title_owners_aspatial'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'title_owners_aspatial'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'title_owners_aspatial'::name,
   ARRAY[
   'tte_id',
@@ -593,6 +710,9 @@ SELECT columns_are('lds'::name, 'title_owners_aspatial'::name,
   ]);
 
 SELECT has_table('lds'::name, 'title_parcel_associations'::name);
+SELECT table_owner_is('lds'::name, 'title_parcel_associations'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'title_parcel_associations'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'title_parcel_associations'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'title_parcel_associations'::name,
   ARRAY[
   'id',
@@ -602,6 +722,9 @@ SELECT columns_are('lds'::name, 'title_parcel_associations'::name,
   ]);
 
 SELECT has_table('lds'::name, 'titles'::name);
+SELECT table_owner_is('lds'::name, 'titles'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'titles'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'titles'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'titles'::name,
   ARRAY[
   'title_no',
@@ -618,6 +741,9 @@ SELECT columns_are('lds'::name, 'titles'::name,
   ]);
 
 SELECT has_table('lds'::name, 'titles_aspatial'::name);
+SELECT table_owner_is('lds'::name, 'titles_aspatial'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'titles_aspatial'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'titles_aspatial'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'titles_aspatial'::name,
   ARRAY[
   'register_type',
@@ -637,6 +763,9 @@ SELECT columns_are('lds'::name, 'titles_aspatial'::name,
   ]);
 
 SELECT has_table('lds'::name, 'titles_plus'::name);
+SELECT table_owner_is('lds'::name, 'titles_plus'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'titles_plus'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'titles_plus'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'titles_plus'::name,
   ARRAY[
   'owners',
@@ -653,6 +782,9 @@ SELECT columns_are('lds'::name, 'titles_plus'::name,
   ]);
 
 SELECT has_table('lds'::name, 'waca_adjustments'::name);
+SELECT table_owner_is('lds'::name, 'waca_adjustments'::name, 'bde_dba'::name);
+SELECT table_privs_are('lds'::name, 'waca_adjustments'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('lds'::name, 'waca_adjustments'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('lds'::name, 'waca_adjustments'::name,
   ARRAY[
   'date_adjusted',
@@ -669,6 +801,9 @@ SELECT columns_are('lds'::name, 'waca_adjustments'::name,
 SELECT has_schema('bde_ext'::name);
 
 SELECT has_table('bde_ext'::name, 'adjustment_run'::name);
+SELECT table_owner_is('bde_ext'::name, 'adjustment_run'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'adjustment_run'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'adjustment_run'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'adjustment_run'::name,
   ARRAY[
     'id',
@@ -685,6 +820,9 @@ SELECT columns_are('bde_ext'::name, 'adjustment_run'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'alias'::name);
+SELECT table_owner_is('bde_ext'::name, 'alias'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'alias'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'alias'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'alias'::name,
   ARRAY[
     'id',
@@ -694,6 +832,9 @@ SELECT columns_are('bde_ext'::name, 'alias'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'coordinate'::name);
+SELECT table_owner_is('bde_ext'::name, 'coordinate'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'coordinate'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'coordinate'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'coordinate'::name,
   ARRAY[
     'id',
@@ -714,6 +855,9 @@ SELECT columns_are('bde_ext'::name, 'coordinate'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'enc_share'::name);
+SELECT table_owner_is('bde_ext'::name, 'enc_share'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'enc_share'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'enc_share'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'enc_share'::name,
   ARRAY[
     'id',
@@ -728,6 +872,9 @@ SELECT columns_are('bde_ext'::name, 'enc_share'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'encumbrance'::name);
+SELECT table_owner_is('bde_ext'::name, 'encumbrance'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'encumbrance'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'encumbrance'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'encumbrance'::name,
   ARRAY[
     'id',
@@ -740,6 +887,9 @@ SELECT columns_are('bde_ext'::name, 'encumbrance'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'encumbrancee'::name);
+SELECT table_owner_is('bde_ext'::name, 'encumbrancee'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'encumbrancee'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'encumbrancee'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'encumbrancee'::name,
   ARRAY[
     'id',
@@ -749,6 +899,9 @@ SELECT columns_are('bde_ext'::name, 'encumbrancee'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'estate_share'::name);
+SELECT table_owner_is('bde_ext'::name, 'estate_share'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'estate_share'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'estate_share'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'estate_share'::name,
   ARRAY[
     'id',
@@ -764,6 +917,9 @@ SELECT columns_are('bde_ext'::name, 'estate_share'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'feature_name_poly'::name);
+SELECT table_owner_is('bde_ext'::name, 'feature_name_poly'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'feature_name_poly'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'feature_name_poly'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'feature_name_poly'::name,
   ARRAY[
     'id',
@@ -777,6 +933,9 @@ SELECT columns_are('bde_ext'::name, 'feature_name_poly'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'feature_name_pt'::name);
+SELECT table_owner_is('bde_ext'::name, 'feature_name_pt'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'feature_name_pt'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'feature_name_pt'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'feature_name_pt'::name,
   ARRAY[
     'id',
@@ -790,6 +949,9 @@ SELECT columns_are('bde_ext'::name, 'feature_name_pt'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'legal_desc'::name);
+SELECT table_owner_is('bde_ext'::name, 'legal_desc'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'legal_desc'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'legal_desc'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'legal_desc'::name,
   ARRAY[
     'id',
@@ -802,6 +964,9 @@ SELECT columns_are('bde_ext'::name, 'legal_desc'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'line'::name);
+SELECT table_owner_is('bde_ext'::name, 'line'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'line'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'line'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'line'::name,
   ARRAY[
     'boundary',
@@ -821,6 +986,9 @@ SELECT columns_are('bde_ext'::name, 'line'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'maintenance'::name);
+SELECT table_owner_is('bde_ext'::name, 'maintenance'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'maintenance'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'maintenance'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'maintenance'::name,
   ARRAY[
     'mrk_id',
@@ -832,6 +1000,9 @@ SELECT columns_are('bde_ext'::name, 'maintenance'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'mark'::name);
+SELECT table_owner_is('bde_ext'::name, 'mark'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'mark'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'mark'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'mark'::name,
   ARRAY[
     'id',
@@ -856,6 +1027,9 @@ SELECT columns_are('bde_ext'::name, 'mark'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'mark_name'::name);
+SELECT table_owner_is('bde_ext'::name, 'mark_name'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'mark_name'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'mark_name'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'mark_name'::name,
   ARRAY[
     'mrk_id',
@@ -865,6 +1039,9 @@ SELECT columns_are('bde_ext'::name, 'mark_name'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'mark_phys_state'::name);
+SELECT table_owner_is('bde_ext'::name, 'mark_phys_state'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'mark_phys_state'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'mark_phys_state'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'mark_phys_state'::name,
   ARRAY[
     'mrk_id',
@@ -891,6 +1068,9 @@ SELECT columns_are('bde_ext'::name, 'mark_phys_state'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'node'::name);
+SELECT table_owner_is('bde_ext'::name, 'node'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'node'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'node'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'node'::name,
   ARRAY[
     'id',
@@ -907,6 +1087,9 @@ SELECT columns_are('bde_ext'::name, 'node'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'node_prp_order'::name);
+SELECT table_owner_is('bde_ext'::name, 'node_prp_order'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'node_prp_order'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'node_prp_order'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'node_prp_order'::name,
   ARRAY[
     'dtm_id',
@@ -916,6 +1099,9 @@ SELECT columns_are('bde_ext'::name, 'node_prp_order'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'nominal_index'::name);
+SELECT table_owner_is('bde_ext'::name, 'nominal_index'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'nominal_index'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'nominal_index'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'nominal_index'::name,
   ARRAY[
     'id',
@@ -929,6 +1115,9 @@ SELECT columns_are('bde_ext'::name, 'nominal_index'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'office'::name);
+SELECT table_owner_is('bde_ext'::name, 'office'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'office'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'office'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'office'::name,
   ARRAY[
     'code',
@@ -940,6 +1129,9 @@ SELECT columns_are('bde_ext'::name, 'office'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'parcel'::name);
+SELECT table_owner_is('bde_ext'::name, 'parcel'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'parcel'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'parcel'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'parcel'::name,
   ARRAY[
     'id',
@@ -961,6 +1153,9 @@ SELECT columns_are('bde_ext'::name, 'parcel'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'parcel_dimen'::name);
+SELECT table_owner_is('bde_ext'::name, 'parcel_dimen'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'parcel_dimen'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'parcel_dimen'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'parcel_dimen'::name,
   ARRAY[
     'obn_id',
@@ -969,6 +1164,9 @@ SELECT columns_are('bde_ext'::name, 'parcel_dimen'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'parcel_label'::name);
+SELECT table_owner_is('bde_ext'::name, 'parcel_label'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'parcel_label'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'parcel_label'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'parcel_label'::name,
   ARRAY[
     'id',
@@ -979,6 +1177,9 @@ SELECT columns_are('bde_ext'::name, 'parcel_label'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'parcel_ls'::name);
+SELECT table_owner_is('bde_ext'::name, 'parcel_ls'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'parcel_ls'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'parcel_ls'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'parcel_ls'::name,
   ARRAY[
     'id',
@@ -1000,6 +1201,9 @@ SELECT columns_are('bde_ext'::name, 'parcel_ls'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'parcel_ring'::name);
+SELECT table_owner_is('bde_ext'::name, 'parcel_ring'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'parcel_ring'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'parcel_ring'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'parcel_ring'::name,
   ARRAY[
     'id',
@@ -1010,6 +1214,9 @@ SELECT columns_are('bde_ext'::name, 'parcel_ring'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'proprietor'::name);
+SELECT table_owner_is('bde_ext'::name, 'proprietor'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'proprietor'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'proprietor'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'proprietor'::name,
   ARRAY[
     'id',
@@ -1024,6 +1231,9 @@ SELECT columns_are('bde_ext'::name, 'proprietor'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'stat_version'::name);
+SELECT table_owner_is('bde_ext'::name, 'stat_version'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'stat_version'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'stat_version'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'stat_version'::name,
   ARRAY[
     'version',
@@ -1036,6 +1246,9 @@ SELECT columns_are('bde_ext'::name, 'stat_version'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'statist_area'::name);
+SELECT table_owner_is('bde_ext'::name, 'statist_area'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'statist_area'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'statist_area'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'statist_area'::name,
   ARRAY[
     'id',
@@ -1051,6 +1264,9 @@ SELECT columns_are('bde_ext'::name, 'statist_area'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'street_address_ext'::name);
+SELECT table_owner_is('bde_ext'::name, 'street_address_ext'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'street_address_ext'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'street_address_ext'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'street_address_ext'::name,
   ARRAY[
     'house_number',
@@ -1069,6 +1285,9 @@ SELECT columns_are('bde_ext'::name, 'street_address_ext'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'survey'::name);
+SELECT table_owner_is('bde_ext'::name, 'survey'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'survey'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'survey'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'survey'::name,
   ARRAY[
     'wrk_id',
@@ -1097,6 +1316,9 @@ SELECT columns_are('bde_ext'::name, 'survey'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'survey_plan_image_revision'::name);
+SELECT table_owner_is('bde_ext'::name, 'survey_plan_image_revision'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'survey_plan_image_revision'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'survey_plan_image_revision'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'survey_plan_image_revision'::name,
   ARRAY[
     'id',
@@ -1109,6 +1331,9 @@ SELECT columns_are('bde_ext'::name, 'survey_plan_image_revision'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'title'::name);
+SELECT table_owner_is('bde_ext'::name, 'title'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'title'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'title'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'title'::name,
   ARRAY[
     'title_no',
@@ -1128,6 +1353,9 @@ SELECT columns_are('bde_ext'::name, 'title'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'title_action'::name);
+SELECT table_owner_is('bde_ext'::name, 'title_action'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'title_action'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'title_action'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'title_action'::name,
   ARRAY[
     'ttl_title_no',
@@ -1137,6 +1365,9 @@ SELECT columns_are('bde_ext'::name, 'title_action'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'title_doc_ref'::name);
+SELECT table_owner_is('bde_ext'::name, 'title_doc_ref'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'title_doc_ref'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'title_doc_ref'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'title_doc_ref'::name,
   ARRAY[
     'id',
@@ -1146,6 +1377,9 @@ SELECT columns_are('bde_ext'::name, 'title_doc_ref'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'title_estate'::name);
+SELECT table_owner_is('bde_ext'::name, 'title_estate'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'title_estate'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'title_estate'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'title_estate'::name,
   ARRAY[
     'id',
@@ -1164,6 +1398,9 @@ SELECT columns_are('bde_ext'::name, 'title_estate'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'title_mem_text'::name);
+SELECT table_owner_is('bde_ext'::name, 'title_mem_text'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'title_mem_text'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'title_mem_text'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'title_mem_text'::name,
   ARRAY[
     'ttm_id',
@@ -1181,6 +1418,9 @@ SELECT columns_are('bde_ext'::name, 'title_mem_text'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'title_memorial'::name);
+SELECT table_owner_is('bde_ext'::name, 'title_memorial'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'title_memorial'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'title_memorial'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'title_memorial'::name,
   ARRAY[
     'id',
@@ -1210,6 +1450,9 @@ SELECT columns_are('bde_ext'::name, 'title_memorial'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'title_parcel_association'::name);
+SELECT table_owner_is('bde_ext'::name, 'title_parcel_association'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'title_parcel_association'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'title_parcel_association'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'title_parcel_association'::name,
   ARRAY[
     'id',
@@ -1219,6 +1462,9 @@ SELECT columns_are('bde_ext'::name, 'title_parcel_association'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'transact_type'::name);
+SELECT table_owner_is('bde_ext'::name, 'transact_type'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'transact_type'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'transact_type'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'transact_type'::name,
   ARRAY[
     'grp',
@@ -1228,6 +1474,9 @@ SELECT columns_are('bde_ext'::name, 'transact_type'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'ttl_enc'::name);
+SELECT table_owner_is('bde_ext'::name, 'ttl_enc'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'ttl_enc'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'ttl_enc'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'ttl_enc'::name,
   ARRAY[
     'id',
@@ -1239,6 +1488,9 @@ SELECT columns_are('bde_ext'::name, 'ttl_enc'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'ttl_hierarchy'::name);
+SELECT table_owner_is('bde_ext'::name, 'ttl_hierarchy'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'ttl_hierarchy'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'ttl_hierarchy'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'ttl_hierarchy'::name,
   ARRAY[
     'id',
@@ -1251,6 +1503,9 @@ SELECT columns_are('bde_ext'::name, 'ttl_hierarchy'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'ttl_inst'::name);
+SELECT table_owner_is('bde_ext'::name, 'ttl_inst'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'ttl_inst'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'ttl_inst'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'ttl_inst'::name,
   ARRAY[
     'id',
@@ -1267,6 +1522,9 @@ SELECT columns_are('bde_ext'::name, 'ttl_inst'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'ttl_inst_cmplte'::name);
+SELECT table_owner_is('bde_ext'::name, 'ttl_inst_cmplte'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'ttl_inst_cmplte'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'ttl_inst_cmplte'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'ttl_inst_cmplte'::name,
   ARRAY[
     'id',
@@ -1284,6 +1542,9 @@ SELECT columns_are('bde_ext'::name, 'ttl_inst_cmplte'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'ttl_inst_title'::name);
+SELECT table_owner_is('bde_ext'::name, 'ttl_inst_title'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'ttl_inst_title'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'ttl_inst_title'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'ttl_inst_title'::name,
   ARRAY[
     'tin_id',
@@ -1292,6 +1553,9 @@ SELECT columns_are('bde_ext'::name, 'ttl_inst_title'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'user'::name);
+SELECT table_owner_is('bde_ext'::name, 'user'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'user'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'user'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'user'::name,
   ARRAY[
     'id',
@@ -1305,6 +1569,9 @@ SELECT columns_are('bde_ext'::name, 'user'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'vector_ls'::name);
+SELECT table_owner_is('bde_ext'::name, 'vector_ls'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'vector_ls'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'vector_ls'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'vector_ls'::name,
   ARRAY[
     'type',
@@ -1319,6 +1586,9 @@ SELECT columns_are('bde_ext'::name, 'vector_ls'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'vector_pt'::name);
+SELECT table_owner_is('bde_ext'::name, 'vector_pt'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'vector_pt'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'vector_pt'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'vector_pt'::name,
   ARRAY[
     'type',
@@ -1333,6 +1603,9 @@ SELECT columns_are('bde_ext'::name, 'vector_pt'::name,
   ]);
 
 SELECT has_table('bde_ext'::name, 'work'::name);
+SELECT table_owner_is('bde_ext'::name, 'work'::name, 'bde_dba'::name);
+SELECT table_privs_are('bde_ext'::name, 'work'::name, 'bde_admin'::name, ARRAY['DELETE','INSERT','SELECT','UPDATE']);
+SELECT table_privs_are('bde_ext'::name, 'work'::name, 'bde_user'::name, ARRAY['SELECT']);
 SELECT columns_are('bde_ext'::name, 'work'::name,
   ARRAY[
     'id',
