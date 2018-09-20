@@ -1648,28 +1648,30 @@ SELECT columns_are('bde_ext'::name, 'work'::name,
 
 -- Test functions existance {
 
-SELECT has_function('lds'::name, 'lds_applyprimarykeyfrom'::name);
-SELECT has_function('lds'::name, 'lds_applytabledifferences'::name);
-SELECT has_function('lds'::name, 'lds_createsurveyplanstable'::name);
-SELECT has_function('lds'::name, 'lds_createtempcopy'::name);
-SELECT has_function('lds'::name, 'lds_createtitleexclusiontables'::name);
-SELECT has_function('lds'::name, 'lds_deg_dms'::name);
-SELECT has_function('lds'::name, 'lds_dropsurveyplanstable'::name);
-SELECT has_function('lds'::name, 'lds_droptablecontrainstsandindexes'::name);
-SELECT has_function('lds'::name, 'lds_droptitleexclusiontables'::name);
-SELECT has_function('lds'::name, 'lds_getlanddistict'::name);
-SELECT has_function('lds'::name, 'lds_getprotectedtext'::name);
-SELECT has_function('lds'::name, 'lds_gettablecontrainstsandindexes'::name);
-SELECT has_function('lds'::name, 'lds_gettable'::name);
-SELECT has_function('lds'::name, 'lds_istablesufiunique'::name);
-SELECT has_function('lds'::name, 'lds_maintainsimplifiedgeodeticlayers'::name);
-SELECT has_function('lds'::name, 'lds_maintainsimplifiedlayers'::name);
-SELECT has_function('lds'::name, 'lds_maintainsimplifiedparcellayers'::name);
-SELECT has_function('lds'::name, 'lds_maintainsimplifiedsurveylayers'::name);
-SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
-SELECT has_function('lds'::name, 'lds_tablehasdata'::name);
-SELECT has_function('lds'::name, 'lds_updatesimplifiedtable'::name);
-SELECT has_function('lds'::name, 'lds_version'::name);
+SELECT has_function('bde_ext', 'lds_maintainallfbdelayers', ARRAY['integer']);
+SELECT has_function('bde_ext', 'lds_maintainfbdelayers', ARRAY['integer']);
+SELECT has_function('lds', 'lds_applyprimarykeyfrom', ARRAY['regclass', 'regclass']);
+SELECT has_function('lds', 'lds_applytabledifferences', ARRAY['integer', 'regclass', 'regclass', 'name']);
+SELECT has_function('lds', 'lds_createsurveyplanstable', ARRAY['integer']);
+SELECT has_function('lds', 'lds_createtempcopy', ARRAY['regclass']);
+SELECT has_function('lds', 'lds_createtitleexclusiontables', ARRAY['integer']);
+SELECT has_function('lds', 'lds_deg_dms', ARRAY['double precision', 'integer', 'character']);
+SELECT has_function('lds', 'lds_dropsurveyplanstable', ARRAY['integer']);
+SELECT has_function('lds', 'lds_droptablecontrainstsandindexes', ARRAY['regclass']);
+SELECT has_function('lds', 'lds_droptitleexclusiontables', ARRAY['integer']);
+SELECT has_function('lds', 'lds_getlanddistict', ARRAY['geometry']);
+SELECT has_function('lds', 'lds_getprotectedtext', ARRAY['character varying']);
+SELECT has_function('lds', 'lds_gettable', ARRAY['name', 'name']);
+SELECT has_function('lds', 'lds_gettablecontrainstsandindexes', ARRAY['regclass']);
+SELECT has_function('lds', 'lds_istablesufiunique', ARRAY['integer', 'regclass']);
+SELECT has_function('lds', 'lds_maintainsimplifiedgeodeticlayers', ARRAY['integer']);
+SELECT has_function('lds', 'lds_maintainsimplifiedlayers', ARRAY['integer']);
+SELECT has_function('lds', 'lds_maintainsimplifiedparcellayers', ARRAY['integer']);
+SELECT has_function('lds', 'lds_maintainsimplifiedsurveylayers', ARRAY['integer']);
+SELECT has_function('lds', 'lds_tablehasdata', ARRAY['name', 'name']);
+SELECT has_function('lds', 'lds_tablehasdata', ARRAY['regclass']);
+SELECT has_function('lds', 'lds_updatesimplifiedtable', ARRAY['integer', 'regclass', 'text', 'text']);
+SELECT has_function('lds', 'lds_version', ARRAY['']);
 
 -- }
 
