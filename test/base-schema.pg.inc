@@ -1649,29 +1649,53 @@ SELECT columns_are('bde_ext'::name, 'work'::name,
 -- Test functions existance {
 
 SELECT has_function('bde_ext', 'lds_maintainallfbdelayers', ARRAY['integer']);
+SELECT function_owner_is('bde_ext', 'lds_maintainallfbdelayers', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('bde_ext', 'lds_maintainfbdelayers', ARRAY['integer']);
+SELECT function_owner_is('bde_ext', 'lds_maintainfbdelayers', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_applyprimarykeyfrom', ARRAY['regclass', 'regclass']);
+SELECT function_owner_is('lds', 'lds_applyprimarykeyfrom', ARRAY['regclass', 'regclass'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_applytabledifferences', ARRAY['integer', 'regclass', 'regclass', 'name']);
+SELECT function_owner_is('lds', 'lds_applytabledifferences', ARRAY['integer', 'regclass', 'regclass', 'name'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_createsurveyplanstable', ARRAY['integer']);
+SELECT function_owner_is('lds', 'lds_createsurveyplanstable', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_createtempcopy', ARRAY['regclass']);
+SELECT function_owner_is('lds', 'lds_createtempcopy', ARRAY['regclass'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_createtitleexclusiontables', ARRAY['integer']);
+SELECT function_owner_is('lds', 'lds_createtitleexclusiontables', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_deg_dms', ARRAY['double precision', 'integer', 'character']);
+SELECT function_owner_is('lds', 'lds_deg_dms', ARRAY['double precision', 'integer', 'character'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_dropsurveyplanstable', ARRAY['integer']);
+SELECT function_owner_is('lds', 'lds_dropsurveyplanstable', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_droptablecontrainstsandindexes', ARRAY['regclass']);
+SELECT function_owner_is('lds', 'lds_droptablecontrainstsandindexes', ARRAY['regclass'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_droptitleexclusiontables', ARRAY['integer']);
+SELECT function_owner_is('lds', 'lds_droptitleexclusiontables', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_getlanddistict', ARRAY['geometry']);
+SELECT function_owner_is('lds', 'lds_getlanddistict', ARRAY['geometry'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_getprotectedtext', ARRAY['character varying']);
+SELECT function_owner_is('lds', 'lds_getprotectedtext', ARRAY['character varying'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_gettable', ARRAY['name', 'name']);
+SELECT function_owner_is('lds', 'lds_gettable', ARRAY['name', 'name'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_gettablecontrainstsandindexes', ARRAY['regclass']);
+SELECT function_owner_is('lds', 'lds_gettablecontrainstsandindexes', ARRAY['regclass'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_istablesufiunique', ARRAY['integer', 'regclass']);
+SELECT function_owner_is('lds', 'lds_istablesufiunique', ARRAY['integer', 'regclass'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_maintainsimplifiedgeodeticlayers', ARRAY['integer']);
+SELECT function_owner_is('lds', 'lds_maintainsimplifiedgeodeticlayers', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_maintainsimplifiedlayers', ARRAY['integer']);
+SELECT function_owner_is('lds', 'lds_maintainsimplifiedlayers', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_maintainsimplifiedparcellayers', ARRAY['integer']);
+SELECT function_owner_is('lds', 'lds_maintainsimplifiedparcellayers', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_maintainsimplifiedsurveylayers', ARRAY['integer']);
+SELECT function_owner_is('lds', 'lds_maintainsimplifiedsurveylayers', ARRAY['integer'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_tablehasdata', ARRAY['name', 'name']);
+SELECT function_owner_is('lds', 'lds_tablehasdata', ARRAY['name', 'name'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_tablehasdata', ARRAY['regclass']);
+SELECT function_owner_is('lds', 'lds_tablehasdata', ARRAY['regclass'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_updatesimplifiedtable', ARRAY['integer', 'regclass', 'text', 'text']);
+SELECT function_owner_is('lds', 'lds_updatesimplifiedtable', ARRAY['integer', 'regclass', 'text', 'text'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_version', ARRAY['']);
+SELECT function_owner_is('lds', 'lds_version', ARRAY[''], 'bde_dba'::name);
 
 -- }
 
