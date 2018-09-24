@@ -107,6 +107,8 @@ SELECT pg_temp.check_versioned(nam, false) from pg_temp.lds_tables;
 -- Table X should be versioned
 SELECT pg_temp.check_versioned(nam, true) from pg_temp.lds_tables;
 
+\i test/base-revision-tables.pg.inc
+
 -- }
 
 -- Test lds_deg_dms {
