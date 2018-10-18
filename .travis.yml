@@ -54,14 +54,14 @@ before_install:
   # test and production repositories
   - curl -s https://packagecloud.io/install/repositories/linz/test/script.deb.sh | sudo bash
   - curl -s https://packagecloud.io/install/repositories/linz/prod/script.deb.sh | sudo bash
+  # Install postgresql-tableversion
+  - sudo apt-get install postgresql-`echo $PG | cut -d/ -f1`-tableversion
   # Install dbpatch
   - sudo apt-get install postgresql-`echo $PG | cut -d/ -f1`-dbpatch
   # Install linz-bde-schema
   - sudo apt-get install linz-bde-schema
   # Install linz-bde-uploader
   - sudo apt-get install linz-bde-uploader
-  # Install postgresql-tableversion
-  - sudo apt-get install postgresql-`echo $PG | cut -d/ -f1`-tableversion
 script:
   - make
   - make check || { cat regression.diffs; false; }
