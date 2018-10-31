@@ -2678,7 +2678,7 @@ BEGIN
         TTL.status,
         TTLS.char_value,
         TTLR.char_value,
-        TTLT.char_value,
+        TTLT."desc",
         LOC.name,
         TTL.issue_date,
         TTLG.char_value,
