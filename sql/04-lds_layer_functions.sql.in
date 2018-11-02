@@ -1620,7 +1620,7 @@ BEGIN
             END
         AS VARCHAR(8) ) AS source
     FROM
-        cbe_title_parcel_association
+        bde.cbe_title_parcel_association
     WHERE
         status = 'VALD' AND
         ttl_title_no NOT IN (SELECT title_no FROM tmp_excluded_titles);
