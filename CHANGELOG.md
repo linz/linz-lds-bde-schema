@@ -5,8 +5,8 @@ this file.
 
 ## 1.3.1dev - 2018-11-DD
 ### Fixed
-- Fixed the `type` field of `lds.title` table to use `desc` field
-  instead of `char_value` from `bde.crs_sys_code` (#125)
+- Fixed `bde_TablesAffected` function to drop schema qualification from
+  table names (#130)
 
 ## 1.3.0 - 2018-07-04
 ### Added
