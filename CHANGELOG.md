@@ -3,6 +3,8 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.3.2dev - YYYY-MM-DD
+
 ## 1.3.1 - 2018-11-05
 ### Fixed
 - Fixed `bde_TablesAffected` function to drop schema qualification from
