@@ -2630,7 +2630,7 @@ BEGIN
         TTL.status AS status_code, -- TODO: remove once old spatial schema is realigned with aspatial.
         TTLS.char_value::VARCHAR(50) AS status,
         TTLR.char_value::VARCHAR(50) AS register_type,
-        TTLT."desc" AS type,
+        TTLT.char_value AS type,
         LOC.name AS land_district,
         TTL.issue_date,
         TTLG.char_value AS guarantee_status,
@@ -2678,7 +2678,7 @@ BEGIN
         TTL.status,
         TTLS.char_value,
         TTLR.char_value,
-        TTLT."desc",
+        TTLT.char_value,
         LOC.name,
         TTL.issue_date,
         TTLG.char_value,
