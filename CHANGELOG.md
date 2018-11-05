@@ -6,9 +6,11 @@ this file.
 ## 1.4.0dev - 2018-11-dd
 ### Changed
 - Change `tmp_titles` table to use `desc` field instead of `char_value`
-  from `bde`.`crs_sys_code`. Affects all "lds.title*" tables. (#125)
+  from `bde`.`crs_sys_code`. Affects all `lds.title*` tables. (#125)
 ### Enhanced
 - Create no revision when versioning empty tables (#117)
+- Use full table path for table used in `tmp_title_parcel_associations`
+  table population
 
 ## 1.3.0 - 2018-07-04
 ### Added
