@@ -7,8 +7,6 @@ this file.
 ### Changed
 - Change `tmp_titles` table to use `desc` field instead of `char_value`
   from `bde`.`crs_sys_code`. Affects all "title" tables. (#125)
-
-## 1.3.1 - 2018-07-04
 ### Enhanced
 - Create no revision when versioning empty tables (#117)
 
