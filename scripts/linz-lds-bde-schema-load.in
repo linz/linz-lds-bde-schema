@@ -45,37 +45,70 @@ if test -z "$DB_NAME"; then
     exit 1
 fi
 
-# Load linz-bde-uploader schema
-# guess where linz-bde-uploader-schema-load could be
+export PGDATABASE=$DB_NAME
+
+rollback()
+{
+    echo "ROLLBACK;"
+    exit 1
+}
+
+# Find linz-bde-uploader-schema-load
 PATH="$PATH:$HOME/perl5/bin";
-LOADER=linz-bde-uploader-schema-load
-which $LOADER > /dev/null || {
-    echo "$0 depends on $LOADER, which cannot be found in current PATH." >&2
+UPLOADER_LOADER=linz-bde-uploader-schema-load
+which $UPLOADER_LOADER > /dev/null || {
+    echo "$0 depends on $UPLOADER_LOADER, which cannot be found in current PATH." >&2
     echo "Did you install linz-bde-uploader ? (2.4.0 or later needed)" >&2
     exit 1
 }
 
-OPTS=
-if test "${EXTENSION_MODE}" = "off"; then
-    OPTS="--noextension"
-fi
-${LOADER} ${OPTS} $DB_NAME > /dev/null || {
-    echo "${LOADER} exited with an error" >&2
+# Check if linz-bde-uploader-schema-load supports stdout
+${UPLOADER_LOADER} - > /dev/null &&
+    UPLOADER_SUPPORTS_STDOUT=yes ||
+    UPLOADER_SUPPORTS_STDOUT=no
+
+if test $PGDATABASE = "-" -a $UPLOADER_SUPPORTS_STDOUT != yes; then
+    echo "ERROR: linz-bde-uploader-schema-load does not support stdout mode, cannot proceed." >&2
+    echo "HINT: install linz-bde-uploader 2.5.0 or higher to fix this." >&2
     exit 1
-}
-
-echo -n "Loading LDS DBE schema in database $DB_NAME (extension mode "
-if test "${EXTENSION_MODE}" = "off"; then
-    echo "off"
-else
-    echo "on"
 fi
-echo ")"
 
-export PGDATABASE=$DB_NAME
+# Load linz-bde-uploader schema
+
+echo "Loading linz-bde-uploader schema in database $PGDATABASE" >&2
+
+UPLOADER_OPTS=
+if test "${EXTENSION_MODE}" = "off"; then
+    UPLOADER_OPTS="--noextension"
+fi
+
+if test $UPLOADER_SUPPORTS_STDOUT != yes; then
+    echo "WARNING: linz-bde-uploader-schema-load does not support stdout mode, working in non-transactional mode" >&2
+    echo "HINT: install linz-bde-uploader 2.5.0 or higher to fix this." >&2
+    ${UPLOADER_LOADER} ${UPLOADER_OPTS} ${PGDATABASE} > /dev/null || {
+        echo "${UPLOADER_LOADER} exited with an error" >&2
+        exit 1
+    }
+fi
+
+
+{
+    echo -n "Loading LDS DBE schema in database $DB_NAME (extension mode "
+    if test "${EXTENSION_MODE}" = "off"; then
+        echo "off"
+    else
+        echo "on"
+    fi
+    echo ")"
+} >&2
+
 (
+
+if test $UPLOADER_SUPPORTS_STDOUT = yes; then
+    ${UPLOADER_LOADER} ${UPLOADER_OPTS} - || rollback
+fi
+
 cat << EOF
-BEGIN;
 SET client_min_messages TO WARNING;
 CREATE EXTENSION IF NOT EXISTS unaccent SCHEMA public;
 EOF
@@ -98,6 +131,12 @@ if test "${ADD_REVISIONS}" = "yes"; then
         fi
     done
 fi
-echo "COMMIT;"
 
-) | $PSQL -tA --set ON_ERROR_STOP=1 > /dev/null
+) |
+grep -v "^\(BEGIN\|COMMIT\);" |
+( echo "BEGIN;"; cat; echo "COMMIT;"; ) |
+if test $PGDATABASE = "-"; then
+    cat
+else
+    $PSQL -XtA --set ON_ERROR_STOP=1 -o /dev/null
+fi
