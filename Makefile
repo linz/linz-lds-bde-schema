@@ -138,63 +138,76 @@ prepared-db-revision-test:
         false; \
     }
 
+load-schema:
+
+	if test "${SCHEMA_LOAD_USE_STDOUT}" = 1; then \
+	    linz-lds-bde-schema-load $(SCHEMA_LOAD_OPTS) - | \
+            psql --set ON_ERROR_STOP=1 -Xo /dev/null $(TEST_DB); \
+    else \
+        linz-lds-bde-schema-load $(SCHEMA_LOAD_OPTS) $(TEST_DB); \
+    fi
+
+installcheck-stdout:
+	$(MAKE) installcheck SCHEMA_LOAD_USE_STDOUT=1
+
 installcheck:
 
 	$(MAKE) loader-version-test
 
-	dropdb --if-exists linz-lds-bde-schema-test-db
+	dropdb --if-exists $(TEST_DB)
 
     #
     # Default install
     #
-	createdb linz-lds-bde-schema-test-db
-	linz-bde-schema-load linz-lds-bde-schema-test-db
+	createdb $(TEST_DB)
+	linz-bde-schema-load $(TEST_DB)
     # Load schema
-	linz-lds-bde-schema-load linz-lds-bde-schema-test-db
+	$(MAKE) load-schema
 	$(MAKE) prepared-db-simple-test
     # Load schema again (upgrade)
-	linz-lds-bde-schema-load linz-lds-bde-schema-test-db
+	linz-lds-bde-schema-load $(TEST_DB)
 	$(MAKE) prepared-db-simple-test
 	$(MAKE) prepared-db-revision-test LDS_TABLES=0 BDE_EXT_TABLES=0
     # Drop DB
-	dropdb linz-lds-bde-schema-test-db
+	dropdb $(TEST_DB)
 
     #
     # Default revisioned install
     #
-	createdb linz-lds-bde-schema-test-db
-	linz-bde-schema-load linz-lds-bde-schema-test-db
+	createdb $(TEST_DB)
+	linz-bde-schema-load $(TEST_DB)
     # Load schema
-	linz-lds-bde-schema-load --revision linz-lds-bde-schema-test-db
+	$(MAKE) load-schema SCHEMA_LOAD_OPTS="--revision"
+	#linz-lds-bde-schema-load --revision $(TEST_DB)
 	$(MAKE) prepared-db-simple-test
 	$(MAKE) prepared-db-revision-test
     # Drop DB
-	dropdb linz-lds-bde-schema-test-db
+	dropdb $(TEST_DB)
 
     #
     # Extension-less install
     #
-	createdb linz-lds-bde-schema-test-db
-	linz-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	createdb $(TEST_DB)
+	linz-bde-schema-load --noextension $(TEST_DB)
     # Load schema
-	linz-lds-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	$(MAKE) load-schema SCHEMA_LOAD_OPTS="--noextension"
 	$(MAKE) prepared-db-simple-test
     # Load schema again (upgrade)
-	linz-lds-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	linz-lds-bde-schema-load --noextension $(TEST_DB)
 	$(MAKE) prepared-db-simple-test
 	$(MAKE) prepared-db-revision-test LDS_TABLES=0 BDE_EXT_TABLES=0
-	dropdb linz-lds-bde-schema-test-db
+	dropdb $(TEST_DB)
 
     #
     # Extension-less revisioned install
     #
-	createdb linz-lds-bde-schema-test-db
-	linz-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	createdb $(TEST_DB)
+	linz-bde-schema-load --noextension $(TEST_DB)
     # Load schema
-	linz-lds-bde-schema-load --noextension --revision linz-lds-bde-schema-test-db
+	$(MAKE) load-schema SCHEMA_LOAD_OPTS="--noextension --revision"
 	$(MAKE) prepared-db-simple-test
 	$(MAKE) prepared-db-revision-test
-	dropdb linz-lds-bde-schema-test-db
+	dropdb $(TEST_DB)
 
 docs: $(DOCS_built)
 
