@@ -70,7 +70,9 @@ script:
   # stdout support requires:
   #   - dbpatch-1.4.0
   #   - linz-bde-uploader-2.5.0
-  - make installcheck-stdout
+  - if test -n "${STDOUT_SCHEMA_LOADING_SUPPORTED}"; then
+        make installcheck-stdout;
+    fi
   # Build docs
   ## Install docs generation dependencies
   - sudo apt-get install -y wkhtmltopdf xvfb
