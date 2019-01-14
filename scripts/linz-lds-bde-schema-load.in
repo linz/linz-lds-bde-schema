@@ -95,9 +95,9 @@ fi
 {
     echo -n "Loading LDS DBE schema in database $DB_NAME (extension mode "
     if test "${EXTENSION_MODE}" = "off"; then
-        echo "off"
+        echo -n "off"
     else
-        echo "on"
+        echo -n "on"
     fi
     echo ")"
 } >&2
