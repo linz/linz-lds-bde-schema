@@ -3,6 +3,10 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.5.0dev - 2019-MM-DD
+### Enhanced
+- Standard output support for schema loader (#139)
+
 ## 1.4.0 - 2018-11-05
 ### Changed
 - Change `tmp_titles` table to use `desc` field instead of `char_value`
