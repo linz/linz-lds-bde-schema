@@ -1,76 +1,74 @@
 sudo: required
+dist: trusty
 language: C++
 
 matrix:
 
   include:
 
-  - env: PG=9.3/2.3
-    addons:
-      postgresql: 9.3
-      apt:
-        packages:
-        - postgresql-9.3
-        - postgresql-9.3-pgtap
-        - postgresql-server-dev-9.3
-        - postgresql-9.3-postgis-2.3
-
-  - env: PG=9.4/2.3
-    addons:
-      postgresql: 9.4
-      apt:
-        packages:
-        - postgresql-9.4
-        - postgresql-9.4-pgtap
-        - postgresql-server-dev-9.4
-        - postgresql-9.4-postgis-2.3
-
-  - env: PG=9.5/2.3
-    addons:
-      postgresql: 9.5
-      apt:
-        packages:
-        - postgresql-9.5
-        - postgresql-9.5-pgtap
-        - postgresql-server-dev-9.5
-        - postgresql-9.5-postgis-2.3
-
-  - env: PG=9.6/2.3
-    addons:
-      postgresql: 9.6
-      apt:
-        packages:
-        - postgresql-9.6
-        - postgresql-9.6-pgtap
-        - postgresql-server-dev-9.6
-        - postgresql-9.6-postgis-2.3
+  - env:
+    - PG=9.3
+    - PGIS=2.3
+  - env:
+    - PG=9.4
+    - PGIS=2.3
+  - env:
+    - PG=9.5
+    - PGIS=2.3
+  - env:
+    - PG=9.6
+    - PGIS=2.3
+  - env:
+    - PG=10
+    - PGIS=2.4
 
 before_install:
-  # Install common packages
-  - sudo apt-get -qq update
-  - sudo apt-get install -y pgtap
-    debhelper fakeroot
+  # Purge PostgreSQL packages
+  - sudo apt-get -y --purge remove postgresql libpq-dev libpq5
+    postgresql-client-common postgresql-common
+  - sudo rm -rf /var/lib/postgresql
   # Enable fetching packages from packagecloud
   # test and production repositories
   - curl -s https://packagecloud.io/install/repositories/linz/test/script.deb.sh | sudo bash
   - curl -s https://packagecloud.io/install/repositories/linz/prod/script.deb.sh | sudo bash
-  # Install postgresql-tableversion
-  - sudo apt-get install postgresql-`echo $PG | cut -d/ -f1`-tableversion
-  # Install dbpatch
-  - sudo apt-get install postgresql-`echo $PG | cut -d/ -f1`-dbpatch
-  # Install linz-bde-schema
-  - sudo apt-get install linz-bde-schema
-  # Install linz-bde-uploader
-  - sudo apt-get install linz-bde-uploader
+  # Install packages
+  - sudo apt-get -qq update
+  - sudo apt-get install -y --no-install-recommends
+    pgtap
+    debhelper fakeroot
+    postgresql-${PG}
+    postgresql-server-dev-${PG}
+    postgresql-contrib-${PG}
+    postgresql-${PG}-pgtap
+    postgresql-${PG}-postgis-${PGIS}
+    postgresql-${PG}-postgis-${PGIS}-scripts
+    postgresql-${PG}-tableversion
+    postgresql-${PG}-dbpatch
+    linz-bde-schema
+    linz-bde-uploader
+
+before_script:
+  # Set PATH as in presence of multiple PostgreSQL packages
+  # we may otherwise target the wrong one
+  - export PATH=/usr/lib/postgresql/${PG}/bin:${PATH}
+  # Set PGPORT as in presence of multiple running PostgreSQL packages
+  # we may otherwise target the wrong one
+  - export PGPORT=`pg_lsclusters ${PG} | grep online | awk '{print $3}'`
+  - sudo -u postgres createuser -s "$USER"
+  - sudo -u postgres createuser -s root
+
 script:
+  # Set PATH as in presence of multiple PostgreSQL packages
+  # we may otherwise target the wrong one
+  - export PATH=/usr/lib/postgresql/${PG}/bin:${PATH}
   - make
   - make check || { cat regression.diffs; false; }
-  - sudo env "PATH=$PATH" make install
+  - sudo env "PATH=$PATH" env "PGPORT=$PGPORT" make install
   - make installcheck
   # stdout support requires:
   #   - dbpatch-1.4.0
   #   - linz-bde-uploader-2.5.0
-  - make installcheck-stdout;
+  - make installcheck-stdout
   # Build docs
   ## Install docs generation dependencies
   - sudo apt-get install -y wkhtmltopdf xvfb
