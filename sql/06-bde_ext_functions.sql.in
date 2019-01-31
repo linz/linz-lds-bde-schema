@@ -60,11 +60,11 @@ BEGIN
         INTO v_dataset;
     END IF;
 
-    RAISE INFO 'Maintaining FBDE layers for dataset %', v_dataset;
+    RAISE NOTICE 'Maintaining FBDE layers for dataset %', v_dataset;
 
     PERFORM LDS_MaintainFBDELayers(p_upload_id);
 
-    RAISE INFO 'Finished maintaining FBDE layers %', v_dataset;
+    RAISE NOTICE 'Finished maintaining FBDE layers %', v_dataset;
 
     RETURN 1;
 END;
@@ -87,7 +87,7 @@ DECLARE
     v_data_diff_sql    TEXT;
     v_data_insert_sql  TEXT;
 BEGIN
-    RAISE INFO 'Starting maintenance on titles FBDE layers';
+    RAISE NOTICE 'Starting maintenance on titles FBDE layers';
 
     IF p_upload != 0 THEN
     -- Skip maintainance of the functions if source data
@@ -198,7 +198,7 @@ BEGIN
         AND LDS.LDS_TableHasData('bde_ext', 'survey_plan_image_revision')
     )
     THEN
-        RAISE INFO
+        RAISE NOTICE
             'Maintain FBDE layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
@@ -2567,7 +2567,7 @@ BEGIN
 
     PERFORM LDS_DropTitleExclusionTables(p_upload);
 
-    RAISE INFO 'Finished maintenance on FBDE layers';
+    RAISE NOTICE 'Finished maintenance on FBDE layers';
 
     RETURN 1;
 
