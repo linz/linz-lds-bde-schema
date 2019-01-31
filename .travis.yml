@@ -1,5 +1,5 @@
 sudo: required
-dist: trusty
+dist: bionic
 language: C++
 
 matrix:
@@ -8,19 +8,22 @@ matrix:
 
   - env:
     - PG=9.3
-    - PGIS=2.3
+    - PGIS=2.4
   - env:
     - PG=9.4
-    - PGIS=2.3
+    - PGIS=2.4
   - env:
     - PG=9.5
-    - PGIS=2.3
+    - PGIS=2.4
   - env:
     - PG=9.6
-    - PGIS=2.3
+    - PGIS=2.4
   - env:
     - PG=10
     - PGIS=2.4
+  - env:
+    - PG=11
+    - PGIS=2.5
 
 before_install:
   # Purge PostgreSQL packages
