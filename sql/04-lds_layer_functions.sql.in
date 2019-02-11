@@ -3507,33 +3507,43 @@ BEGIN
             adjusted_nodes,
             shape
         )
+        WITH adjustments AS (
+            SELECT
+                ADJ.id,
+                ADJ.adjust_datetime AS date_adjusted,
+                SUR.survey_reference,
+                count(*) AS adjusted_nodes,
+                St_ConvexHull(ST_Collect(NOD.shape ORDER BY NOD.shape ASC)) as hull
+            FROM
+                bde.crs_adjustment_run ADJ
+                JOIN bde.crs_adjust_method ADM ON ADJ.adm_id = ADM.id
+                LEFT JOIN tmp_survey_plans SUR ON ADJ.wrk_id = SUR.wrk_id
+                JOIN bde.crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
+                JOIN bde.crs_coordinate COO ON ORJ.coo_id_output = COO.id
+                JOIN bde.crs_node NOD ON COO.nod_id = NOD.id
+            WHERE
+                ADJ.status = 'AUTH' AND
+                ADM.software_used = 'LNZC' AND
+                NOD.cos_id_official = 109
+            GROUP BY
+                ADJ.id,
+                ADJ.adjust_datetime,
+                SUR.survey_reference
+        )
         SELECT
-            ADJ.id,
-            ADJ.adjust_datetime AS date_adjusted,
-            SUR.survey_reference,
-            count(*) AS adjusted_nodes,
-            CASE WHEN count(*) < 3 THEN
-                ST_Buffer(St_ConvexHull(ST_Collect(NOD.shape ORDER BY NOD.shape ASC)), 0.00001, 4)
+            id,
+            date_adjusted,
+            survey_reference,
+            adjusted_nodes,
+            CASE WHEN ST_Dimension(hull) < 2 THEN
+                ST_Buffer(hull, 0.00001, 4)
             ELSE
-                St_ConvexHull(ST_Collect(NOD.shape ORDER BY NOD.shape ASC))
-            END  AS shape
+                hull
+            END AS shape
         FROM
-            bde.crs_adjustment_run ADJ
-            JOIN bde.crs_adjust_method ADM ON ADJ.adm_id = ADM.id
-            LEFT JOIN tmp_survey_plans SUR ON ADJ.wrk_id = SUR.wrk_id
-            JOIN bde.crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
-            JOIN bde.crs_coordinate COO ON ORJ.coo_id_output = COO.id
-            JOIN bde.crs_node NOD ON COO.nod_id = NOD.id
-        WHERE
-            ADJ.status = 'AUTH' AND
-            ADM.software_used = 'LNZC' AND
-            NOD.cos_id_official = 109
-        GROUP BY
-            ADJ.id,
-            ADJ.adjust_datetime,
-            SUR.survey_reference
+            adjustments
         ORDER BY
-            ADJ.id;
+            id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
