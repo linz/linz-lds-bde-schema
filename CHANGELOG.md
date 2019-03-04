@@ -12,6 +12,7 @@ this file.
 - Allow forcing simplified layers population (#154)
 ## Fixed
 - Presence of lines in the cadastral adjustment polygon layer (#146)
+- Support for legal description in SRS typed title records (#150)
 
 ## 1.4.0 - 2018-11-05
 ### Changed

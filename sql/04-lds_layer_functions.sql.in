@@ -2703,6 +2703,16 @@ BEGIN
 
     DROP TABLE IF EXISTS tmp_title_polygon;
 
+    RAISE NOTICE 'Updating temp table tmp_titles with SRS descriptions';
+
+    UPDATE tmp_titles TTL SET estate_description = LGDSRS.legal_desc_text
+    FROM bde.crs_legal_desc LGDSRS
+    WHERE TTL.estate_description IS NULL
+        AND TTL.title_no = LGDSRS.ttl_title_no
+        AND TTL.type = 'Supplementary Record Sheet'
+        AND LGDSRS.status = 'REGD';
+
+
     RAISE NOTICE 'Finished creating temp table tmp_titles';
 
     ----------------------------------------------------------------------------
