@@ -128,6 +128,14 @@ $$, 'lds_deg_dms behaves as expected');
 
 -- Test lds.LDS_MaintainSimplifiedLayers {
 
+SELECT throws_like('SELECT lds.LDS_MaintainSimplifiedLayers(1234)',
+    '% does not exist%',
+	'LDS_MaintainSimplifiedLayers(1234) throws not finding upload id');
+
+SELECT throws_like('SELECT bde_ext.LDS_MaintainAllFBDELayers(1234)',
+    '% does not exist%',
+	'LDS_MaintainAllFBDELayers (1234) throws not finding upload id');
+
 -- Pretend an upload run 1234 is in progress
 CREATE SCHEMA bde_upload_1234;
 CREATE TABLE bde_upload_1234._options
@@ -170,6 +178,12 @@ SELECT is(lds.LDS_MaintainSimplifiedLayers(1234), 1,
 
 SELECT is(bde_ext.LDS_MaintainAllFBDELayers(1234), 1,
 	'LDS_MaintainAllFBDELayers (1234) succeeds');
+
+SELECT is(lds.LDS_MaintainSimplifiedLayers(0), 1,
+	'LDS_MaintainSimplifiedLayers(0) succeeds');
+
+SELECT is(bde_ext.LDS_MaintainAllFBDELayers(0), 1,
+	'LDS_MaintainAllFBDELayers (0) succeeds');
 
 -- Switch back
 RESET SESSION AUTHORIZATION;
