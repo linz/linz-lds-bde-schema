@@ -1694,8 +1694,8 @@ SELECT has_function('lds', 'lds_tablehasdata', ARRAY['regclass']);
 SELECT function_owner_is('lds', 'lds_tablehasdata', ARRAY['regclass'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_updatesimplifiedtable', ARRAY['integer', 'regclass', 'text', 'text']);
 SELECT function_owner_is('lds', 'lds_updatesimplifiedtable', ARRAY['integer', 'regclass', 'text', 'text'], 'bde_dba'::name);
-SELECT has_function('lds', 'lds_version', ARRAY['']);
-SELECT function_owner_is('lds', 'lds_version', ARRAY[''], 'bde_dba'::name);
+SELECT has_function('lds', 'lds_version', ARRAY[]::text[]);
+SELECT function_owner_is('lds', 'lds_version', ARRAY[]::text[], 'bde_dba'::name);
 
 -- }
 
