@@ -4,6 +4,8 @@ All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
 ## 1.5.0dev - 2019-MM-DD
+### Changed
+- Use NOTICE for progress report, rather than INFO (#144)
 ### Enhanced
 - Standard output support for schema loader (#139)
 - Allow forcing simplified layers population (#154)
