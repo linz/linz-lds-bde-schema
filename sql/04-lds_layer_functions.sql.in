@@ -86,10 +86,16 @@ RETURNS
 DECLARE
     v_dataset        TEXT;
 BEGIN
-    v_dataset := COALESCE(
-        bde_control.bde_GetOption(p_upload_id, '_dataset'),
-        '(undefined dataset)'
-    );
+    IF p_upload_id != 0 THEN
+        v_dataset := COALESCE(
+            bde_control.bde_GetOption(p_upload_id, '_dataset'),
+            '(undefined dataset)'
+        );
+    ELSE
+        SELECT max(last_upload_dataset) || ' (latest)'
+        FROM bde_control.upload_table
+        INTO v_dataset;
+    END IF;
 
     RAISE INFO 'Maintaining simplified layers for dataset %', v_dataset;
 
@@ -687,6 +693,10 @@ DECLARE
 BEGIN
     RAISE INFO 'Starting maintenance on geodetic simplified layers';
 
+    IF p_upload != 0 THEN
+    -- Skip maintainance of the functions if source data
+    -- was not changed by given upload and target tables
+    -- are already populated (unless forced)
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
@@ -724,6 +734,7 @@ BEGIN
             'Maintain geodetic simplified layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
+    END IF; -- p_upload != 0
 
     -- Upper is used on the mark type to
     -- force the planner to do a seq scan on bde.crs_mark_name.
@@ -1550,6 +1561,10 @@ BEGIN
     RAISE INFO
         'Starting maintenance on cadastral parcel and title simplified layers';
 
+    IF p_upload != 0 THEN
+    -- Skip maintainance of the functions if source data
+    -- was not changed by given upload and target tables
+    -- are already populated (unless forced)
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
@@ -1602,6 +1617,7 @@ BEGIN
             'Maintain cadastral parcel simplified layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
+    END IF; -- p_upload != 0
 
 	PERFORM LDS_CreateTitleExclusionTables(p_upload);
 
@@ -3311,6 +3327,10 @@ DECLARE
 BEGIN
     RAISE INFO 'Starting maintenance on cadastral survey simplified layers';
 
+    IF p_upload != 0 THEN
+    -- Skip maintainance of the functions if source data
+    -- was not changed by given upload and target tables
+    -- are already populated (unless forced)
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
@@ -3364,6 +3384,7 @@ BEGIN
             'Maintain cadastral survey simplified layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
+    END IF; -- p_upload != 0
 
     ----------------------------------------------------------------------------
     -- land_districts layer
