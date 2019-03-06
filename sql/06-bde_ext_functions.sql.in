@@ -48,10 +48,17 @@ RETURNS
 DECLARE
     v_dataset        TEXT;
 BEGIN
-    v_dataset := COALESCE(
-        bde_control.bde_GetOption(p_upload_id, '_dataset'),
-        '(undefined dataset)'
-    );
+
+    IF p_upload_id != 0 THEN
+        v_dataset := COALESCE(
+            bde_control.bde_GetOption(p_upload_id, '_dataset'),
+            '(undefined dataset)'
+        );
+    ELSE
+        SELECT max(last_upload_dataset) || ' (latest)'
+        FROM bde_control.upload_table
+        INTO v_dataset;
+    END IF;
 
     RAISE INFO 'Maintaining FBDE layers for dataset %', v_dataset;
 
@@ -82,6 +89,10 @@ DECLARE
 BEGIN
     RAISE INFO 'Starting maintenance on titles FBDE layers';
 
+    IF p_upload != 0 THEN
+    -- Skip maintainance of the functions if source data
+    -- was not changed by given upload and target tables
+    -- are already populated (unless forced)
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
@@ -191,6 +202,7 @@ BEGIN
             'Maintain FBDE layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
+    END IF; -- p_upload != 0
 
     ----------------------------------------------------------------------------
     -- temporary titles tables
