@@ -6,6 +6,7 @@ this file.
 ## 1.5.0dev - 2019-MM-DD
 ### Enhanced
 - Standard output support for schema loader (#139)
+- Allow forcing simplified layers population (#154)
 ## Fixed
 - Presence of lines in the cadastral adjustment polygon layer (#146)
 
