@@ -14,23 +14,20 @@
 --------------------------------------------------------------------------------
 BEGIN;
 
-DO $$
+CREATE FUNCTION pg_temp.bless_lds_bde_function(p_pcid regprocedure)
+RETURNS VOID LANGUAGE plpgsql VOLATILE AS $$
 DECLARE
-   v_pcid    TEXT;
-   v_schema  TEXT = 'lds';
+    v_comment TEXT;
 BEGIN
-    FOR v_pcid IN
-        SELECT v_schema || '.' || proname || '(' || pg_get_function_identity_arguments(oid) || ')'
-        FROM pg_proc
-        WHERE pronamespace=(SELECT oid FROM pg_namespace WHERE nspname = v_schema)
-        -- LDS_GetProtectedText is expected to be optionally provided
-        -- by the user
-        AND  proname <> 'lds_getprotectedtext'
-    LOOP
-        EXECUTE 'DROP FUNCTION ' || v_pcid;
-    END LOOP;
-END;
+    v_comment := 'Version: @@VERSION@@ @@REVISION@@'
+                 || E'\n' || 'Installed: ' ||
+                 to_char(current_timestamp,'YYYY-MM-DD HH:MI');
+
+    EXECUTE format('ALTER FUNCTION %s OWNER TO bde_dba', p_pcid);
+    EXECUTE format('COMMENT ON FUNCTION %s IS %L', p_pcid, v_comment);
+END
 $$;
+
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_deg_dms(
@@ -75,7 +72,7 @@ END;
 $$
     LANGUAGE plpgsql IMMUTABLE;
 
-ALTER FUNCTION lds.LDS_deg_dms(DOUBLE PRECISION, INTEGER, CHAR(2)) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_deg_dms(DOUBLE PRECISION, INTEGER, CHAR(2))');
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedLayers(
@@ -111,7 +108,7 @@ $$ LANGUAGE plpgsql VOLATILE STRICT SECURITY DEFINER;
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedLayers(integer) SET search_path=lds, bde, bde_control, public;
 
-ALTER FUNCTION lds.LDS_MaintainSimplifiedLayers(integer) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedLayers(integer)');
 
 CREATE OR REPLACE FUNCTION lds.LDS_GetTable(
     p_schema NAME,
@@ -132,7 +129,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION lds.LDS_GetTable(NAME, NAME) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_GetTable(NAME, NAME)');
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_UpdateSimplifiedTable(
@@ -204,7 +201,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_UpdateSimplifiedTable(INTEGER, REGCLASS, TEXT, TEXT) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_UpdateSimplifiedTable(INTEGER, REGCLASS, TEXT, TEXT)');
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_TableHasData(
@@ -222,7 +219,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION lds.LDS_TableHasData(REGCLASS) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_TableHasData(REGCLASS)');
 
 CREATE OR REPLACE FUNCTION lds.LDS_TableHasData(
     p_schema NAME,
@@ -233,7 +230,7 @@ RETURNS
     SELECT LDS.LDS_TableHasData(LDS.LDS_GetTable($1, $2));
 $$ LANGUAGE sql STABLE;
 
-ALTER FUNCTION lds.LDS_TableHasData(NAME, NAME) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_TableHasData(NAME, NAME)');
 
 CREATE OR REPLACE FUNCTION lds.LDS_CreateTempCopy(
     p_table REGCLASS
@@ -268,7 +265,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_CreateTempCopy(REGCLASS) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_CreateTempCopy(REGCLASS)');
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_ApplyPrimaryKeyFrom(
@@ -313,7 +310,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_ApplyPrimaryKeyFrom(REGCLASS, REGCLASS) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_ApplyPrimaryKeyFrom(REGCLASS, REGCLASS)');
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_GetTableContrainstsAndIndexes(p_table REGCLASS) RETURNS TEXT[] AS $$
@@ -344,7 +341,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_GetTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_GetTableContrainstsAndIndexes(REGCLASS)');
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_DropTableContrainstsAndIndexes(p_table REGCLASS) RETURNS BOOLEAN AS $$
@@ -374,7 +371,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_DropTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_DropTableContrainstsAndIndexes(REGCLASS)');
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_ApplyTableDifferences(
@@ -410,30 +407,28 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME)');
 
 DO $$
 BEGIN
 
--- LDS_GetProtectedText is expected to be optionally provided by the
--- user, so we do not override it if existing.
--- See https://github.com/linz/linz-lds-bde-schema/issues/34
-IF NOT EXISTS(SELECT * from pg_proc where proname = 'lds_getprotectedtext') THEN
+    -- LDS_GetProtectedText is expected to be optionally provided by the
+    -- user, so we do not override it if existing.
+    -- See https://github.com/linz/linz-lds-bde-schema/issues/34
+    IF NOT EXISTS(SELECT * from pg_proc where proname = 'lds_getprotectedtext') THEN
 
-EXECUTE '
-CREATE FUNCTION lds.LDS_GetProtectedText(
-    p_text VARCHAR(20)
-)
-RETURNS
-    TEXT AS
-$FUNC$
-    SELECT ''''::VARCHAR;
-$FUNC$ LANGUAGE sql IMMUTABLE;
-';
+        CREATE FUNCTION lds.LDS_GetProtectedText(
+            p_text VARCHAR(20)
+        )
+        RETURNS
+            TEXT AS
+        $FUNC$
+            SELECT ''::VARCHAR;
+        $FUNC$ LANGUAGE sql IMMUTABLE;
 
-ALTER FUNCTION lds.LDS_GetProtectedText(VARCHAR(20)) OWNER TO bde_dba;
+        PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetProtectedText(VARCHAR(20))');
 
-END IF;
+    END IF;
 END;
 $$;
 
@@ -454,7 +449,7 @@ AS $$
         ST_Distance(LDT.shape, $1) ASC
 $$ LANGUAGE sql STABLE;
 
-ALTER FUNCTION lds.LDS_GetLandDistict(GEOMETRY) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_GetLandDistict(GEOMETRY)');
 
 CREATE OR REPLACE FUNCTION lds.LDS_CreateSurveyPlansTable(
     p_upload INTEGER
@@ -504,7 +499,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_CreateSurveyPlansTable(INTEGER) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_CreateSurveyPlansTable(INTEGER)');
 
 CREATE OR REPLACE FUNCTION lds.LDS_DropSurveyPlansTable(
     p_upload INTEGER
@@ -522,7 +517,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_DropSurveyPlansTable(INTEGER) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_DropSurveyPlansTable(INTEGER)');
 
 CREATE OR REPLACE FUNCTION lds.LDS_IsTableSufiUnique(p_upload INTEGER, p_table REGCLASS)
   RETURNS BOOLEAN AS
@@ -567,7 +562,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION lds.LDS_IsTableSufiUnique(INTEGER, REGCLASS) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_IsTableSufiUnique(INTEGER, REGCLASS)');
 
 CREATE OR REPLACE FUNCTION lds.LDS_CreateTitleExclusionTables(
 	p_upload INTEGER
@@ -656,7 +651,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_CreateTitleExclusionTables(INTEGER) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_CreateTitleExclusionTables(INTEGER)');
 
 CREATE OR REPLACE FUNCTION lds.LDS_DropTitleExclusionTables(
 	p_upload INTEGER
@@ -676,7 +671,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_DropTitleExclusionTables(INTEGER) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_DropTitleExclusionTables(INTEGER)');
 
 CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(
     p_upload INTEGER
@@ -1543,7 +1538,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER)');
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER) SET search_path=bde, bde_control, public;
 
@@ -3311,7 +3306,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_MaintainSimplifiedParcelLayers(INTEGER) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedParcelLayers(INTEGER)');
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedParcelLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
 
@@ -4282,40 +4277,9 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER) OWNER TO bde_dba;
+SELECT pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER)');
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
 
-DO $$
-DECLARE
-    v_comment TEXT;
-    v_pcid    TEXT;
-    v_schema  TEXT = 'lds';
-BEGIN
-    FOR v_comment, v_pcid IN
-        SELECT
-            obj_description(oid, 'pg_proc'),
-            proname || '(' || pg_get_function_identity_arguments(oid) || ')'
-        FROM
-            pg_proc
-        WHERE
-            pronamespace=(SELECT oid FROM pg_namespace WHERE nspname = v_schema)  AND
-            proname NOT ILIKE '_createVersionComment'
-    LOOP
-        IF v_comment IS NULL THEN
-            v_comment := '';
-        ELSE
-            v_comment := E'\n\n' || v_comment;
-        END IF;
-
-        v_comment := 'Version: @@VERSION@@ @@REVISION@@'
-                    || E'\n' || 'Installed: ' ||
-                    to_char(current_timestamp,'YYYY-MM-DD HH:MI') || v_comment;
-
-        EXECUTE 'COMMENT ON FUNCTION ' || v_schema || '.' || v_pcid || ' IS '
-            || quote_literal( v_comment );
-    END LOOP;
-END
-$$;
 
 COMMIT;
