@@ -6,6 +6,7 @@ this file.
 ## 1.5.0dev - 2019-MM-DD
 ### Changed
 - Use NOTICE for progress report, rather than INFO (#144)
+- Do not mass-drop functions during upgades (#138)
 ### Enhanced
 - Standard output support for schema loader (#139)
 - Allow forcing simplified layers population (#154)
