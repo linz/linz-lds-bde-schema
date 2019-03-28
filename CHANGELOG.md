@@ -3,7 +3,7 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.5.0dev - 2019-MM-DD
+## 1.5.0 - 2019-04-01
 ### Changed
 - Use NOTICE for progress report, rather than INFO (#144)
 - Do not mass-drop functions during upgades (#138)
