@@ -1,3 +1,9 @@
+linz-lds-bde-schema (1.5.0-1linz~trusty1) trusty; urgency=medium
+
+  * New upstream version
+
+ -- Ivan Mincik <ivan.mincik@gmail.com>  Mon, 01 Apr 2019 15:35:55 +0200
+
 linz-lds-bde-schema (1.4.0-1linz~trusty1) trusty; urgency=medium
 
   * New upstream version
