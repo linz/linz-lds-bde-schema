@@ -72,7 +72,7 @@ END;
 $$
     LANGUAGE plpgsql IMMUTABLE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_deg_dms(DOUBLE PRECISION, INTEGER, CHAR(2))');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_deg_dms(DOUBLE PRECISION, INTEGER, CHAR(2))'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedLayers(
@@ -108,7 +108,7 @@ $$ LANGUAGE plpgsql VOLATILE STRICT SECURITY DEFINER;
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedLayers(integer) SET search_path=lds, bde, bde_control, public;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedLayers(integer)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedLayers(integer)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_GetTable(
     p_schema NAME,
@@ -129,7 +129,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_GetTable(NAME, NAME)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetTable(NAME, NAME)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_UpdateSimplifiedTable(
@@ -201,7 +201,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_UpdateSimplifiedTable(INTEGER, REGCLASS, TEXT, TEXT)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_UpdateSimplifiedTable(INTEGER, REGCLASS, TEXT, TEXT)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_TableHasData(
@@ -219,7 +219,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_TableHasData(REGCLASS)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_TableHasData(REGCLASS)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_TableHasData(
     p_schema NAME,
@@ -230,7 +230,7 @@ RETURNS
     SELECT LDS.LDS_TableHasData(LDS.LDS_GetTable($1, $2));
 $$ LANGUAGE sql STABLE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_TableHasData(NAME, NAME)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_TableHasData(NAME, NAME)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_CreateTempCopy(
     p_table REGCLASS
@@ -265,7 +265,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_CreateTempCopy(REGCLASS)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_CreateTempCopy(REGCLASS)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_ApplyPrimaryKeyFrom(
@@ -310,7 +310,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_ApplyPrimaryKeyFrom(REGCLASS, REGCLASS)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_ApplyPrimaryKeyFrom(REGCLASS, REGCLASS)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_GetTableContrainstsAndIndexes(p_table REGCLASS) RETURNS TEXT[] AS $$
@@ -341,7 +341,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_GetTableContrainstsAndIndexes(REGCLASS)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetTableContrainstsAndIndexes(REGCLASS)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_DropTableContrainstsAndIndexes(p_table REGCLASS) RETURNS BOOLEAN AS $$
@@ -371,7 +371,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_DropTableContrainstsAndIndexes(REGCLASS)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_DropTableContrainstsAndIndexes(REGCLASS)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_ApplyTableDifferences(
@@ -407,7 +407,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME)'); END; $$;
 
 DO $$
 BEGIN
@@ -449,7 +449,7 @@ AS $$
         ST_Distance(LDT.shape, $1) ASC
 $$ LANGUAGE sql STABLE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_GetLandDistict(GEOMETRY)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetLandDistict(GEOMETRY)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_CreateSurveyPlansTable(
     p_upload INTEGER
@@ -499,7 +499,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_CreateSurveyPlansTable(INTEGER)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_CreateSurveyPlansTable(INTEGER)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_DropSurveyPlansTable(
     p_upload INTEGER
@@ -517,7 +517,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_DropSurveyPlansTable(INTEGER)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_DropSurveyPlansTable(INTEGER)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_IsTableSufiUnique(p_upload INTEGER, p_table REGCLASS)
   RETURNS BOOLEAN AS
@@ -562,7 +562,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_IsTableSufiUnique(INTEGER, REGCLASS)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_IsTableSufiUnique(INTEGER, REGCLASS)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_CreateTitleExclusionTables(
 	p_upload INTEGER
@@ -651,7 +651,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_CreateTitleExclusionTables(INTEGER)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_CreateTitleExclusionTables(INTEGER)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_DropTitleExclusionTables(
 	p_upload INTEGER
@@ -671,7 +671,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_DropTitleExclusionTables(INTEGER)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_DropTitleExclusionTables(INTEGER)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(
     p_upload INTEGER
@@ -1538,7 +1538,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER)'); END; $$;
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER) SET search_path=bde, bde_control, public;
 
@@ -3316,7 +3316,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedParcelLayers(INTEGER)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedParcelLayers(INTEGER)'); END; $$;
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedParcelLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
 
@@ -4287,7 +4287,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-SELECT pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER)');
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER)'); END; $$;
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
 
