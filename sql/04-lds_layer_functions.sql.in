@@ -1566,21 +1566,19 @@ BEGIN
                 p_upload,
                 ARRAY[
                     'crs_affected_parcl',
-                    'crs_appellation',
+                    'crs_appellation', -- needed by bde_get_combined_appellation
                     'crs_estate_share',
                     'crs_legal_desc',
-                    'crs_legal_desc_prl',
                     'crs_locality',
                     'crs_parcel',
                     'crs_proprietor',
                     'crs_stat_act_parcl',
-                    'crs_statute',
-                    'crs_statute_action',
+                    'crs_statute', -- needed by bde_get_par_stat_act
+                    'crs_statute_action', -- bde_get_par_stat_act
                     'crs_survey',
                     'crs_sys_code',
                     'crs_title',
                     'crs_title_estate',
-                    'crs_ttl_hierarchy',
                     'crs_topology_class',
                     'crs_work',
                     'cbe_title_parcel_association'
