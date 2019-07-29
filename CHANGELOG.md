@@ -7,6 +7,7 @@ this file.
 ### Enhanced
 - Reduce list of tables affecting simplified parcel layers (#165)
 - Use a DO block to bless functions, avoiding empty-lines in psql output
+- Deprecate `LDS_GetLandDistict` in favour of `LDS_GetLandDistrict` (#157)
 
 ## 1.5.0 - 2019-04-01
 ### Changed
