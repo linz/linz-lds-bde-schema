@@ -4168,7 +4168,7 @@ BEGIN
             SCO.char_value AS surveyed_type,
             COS.name AS coordinate_system,
             CASE WHEN SUR.wrk_id IS NULL THEN
-                LDS_GetLandDistict(MRKL.shape)
+                LDS_GetLandDistrict(MRKL.shape)
             ELSE
                 SUR.land_district
             END as land_district,
@@ -4246,7 +4246,7 @@ BEGIN
         SCO.char_value,
         COS.name,
         CASE WHEN SUR.wrk_id IS NULL THEN
-            LDS_GetLandDistict(MRKL.shape)
+            LDS_GetLandDistrict(MRKL.shape)
         ELSE
             SUR.land_district
         END as land_district,
