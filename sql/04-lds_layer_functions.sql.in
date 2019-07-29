@@ -432,8 +432,7 @@ BEGIN
 END;
 $$;
 
--- Should this be District ? (missing `r')
-CREATE OR REPLACE FUNCTION lds.LDS_GetLandDistict(p_shape GEOMETRY)
+CREATE OR REPLACE FUNCTION lds.LDS_GetLandDistrict(p_shape GEOMETRY)
 RETURNS
     TEXT
 AS $$
@@ -448,6 +447,18 @@ AS $$
     ORDER BY
         ST_Distance(LDT.shape, $1) ASC
 $$ LANGUAGE sql STABLE;
+
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetLandDistrict(GEOMETRY)'); END; $$;
+
+-- This should be District (missing `r') but is retained for backward
+-- compatibility. The lds.LDS_GetLandDistrict function was introduced
+-- in version 1.6.0, this old one can probably be dropped somewhen
+-- in version 1.8.0 or so...
+CREATE OR REPLACE FUNCTION lds.LDS_GetLandDistict(p_shape GEOMETRY)
+RETURNS TEXT AS $$ BEGIN
+    RAISE WARNING 'Please use LDS_GetLandDistrict instead of LDS_GetLandDistict';
+    SELECT lds.LDS_GetLandDistrict($1);
+END; $$ LANGUAGE 'plpgsql';
 
 DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetLandDistict(GEOMETRY)'); END; $$;
 
