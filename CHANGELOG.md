@@ -3,7 +3,7 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.6.0dev - YYYY-MM-DD
+## 1.6.0 - 2019-07-30
 ### Enhanced
 - Reduce list of tables affecting simplified parcel layers (#165)
 - Use a DO block to bless functions, avoiding empty-lines in psql output
