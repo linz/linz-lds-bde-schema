@@ -7,9 +7,6 @@ matrix:
   include:
 
   - env:
-    - PG=9.3
-    - PGIS=2.4
-  - env:
     - PG=9.4
     - PGIS=2.4
   - env:
