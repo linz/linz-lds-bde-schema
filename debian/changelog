@@ -1,3 +1,9 @@
+linz-lds-bde-schema (1.6.0-1linz~bionic1) bionic; urgency=medium
+
+  * New distribution
+
+ -- Sandro Santilli <strk@kbt.io>  Thu, 08 Aug 2019 15:11:14 +0200
+
 linz-lds-bde-schema (1.6.0-1linz~trusty1) trusty; urgency=medium
 
   * New upstream version
