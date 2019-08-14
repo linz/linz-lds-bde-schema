@@ -3,7 +3,7 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.6.1 - xxxx-xx-xx
+## 1.6.1dev - xxxx-xx-xx
 ### Fixed
 - Survey Observation layer should not contain negative distances
   or bearings (#170)
