@@ -4191,7 +4191,8 @@ BEGIN
             OBN.obt_type = 'REDC' AND
             OBN.obt_sub_type IN ('SLDI', 'BEAR') AND
             OBN.status = 'AUTH' AND
-            OBN.surveyed_class IN ('ADPT', 'CALC', 'MEAS')
+            OBN.surveyed_class IN ('ADPT', 'CALC', 'MEAS') AND
+            OBN.value_1 >= 0
         ORDER BY
             OBN.id;
     $sql$;
