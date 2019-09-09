@@ -6,6 +6,11 @@ this file.
 ## 1.7.0dev - YYYY-MM-DD
 ### Enhanced
 
+## 1.6.1 - 2019-08-14
+### Fixed
+- Survey Observation layer should not contain negative distances
+  or bearings (#170)
+
 ## 1.6.0 - 2019-07-30
 ### Enhanced
 - Reduce list of tables affecting simplified parcel layers (#165)
