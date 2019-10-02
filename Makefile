@@ -32,6 +32,7 @@ SQLSCRIPTS_built = \
 
 SCRIPTS_built = \
     scripts/linz-lds-bde-schema-load \
+    scripts/linz-lds-bde-schema-publish \
     $(END)
 
 
@@ -64,6 +65,13 @@ all: $(SQLSCRIPTS) $(SQLSCRIPTS_built) $(SCRIPTS_built)
 	$(SED) -e 's/@@VERSION@@/$(VERSION)/;s|@@REVISION@@|$(REVISION)|' $< > $@
 
 scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.in Makefile
+	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)$(SQLSCRIPTS_built)|' \
+	       -e 's|@@VERSION@@|$(VERSION)|g' \
+           -e 's|@@REVISION@@|$(REVISION)|g' \
+           $< > $@
+	chmod +x $@
+
+scripts/linz-lds-bde-schema-publish: scripts/linz-lds-bde-schema-publish.in Makefile
 	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)$(SQLSCRIPTS_built)|' \
 	       -e 's|@@VERSION@@|$(VERSION)|g' \
            -e 's|@@REVISION@@|$(REVISION)|g' \

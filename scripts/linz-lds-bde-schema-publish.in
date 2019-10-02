@@ -1,0 +1,69 @@
+#!/bin/sh
+
+DB_NAME=
+export PSQL=psql
+
+if test "$1" = "--version"; then
+    echo "@@VERSION@@ @@REVISION@@"
+    exit 0
+fi
+
+while test -n "$1"; do
+    DB_NAME=$1; shift
+done
+
+if test -z "$DB_NAME"; then
+    echo "Usage: $0 { <database> | - }" >&2
+    echo "       $0 --version" >&2
+    exit 1
+fi
+
+export PGDATABASE=$DB_NAME
+
+rollback()
+{
+    echo "ROLLBACK;"
+    exit 1
+}
+
+{
+cat << EOF
+DO \$PUBLICATION\$
+DECLARE
+    rec RECORD;
+BEGIN
+
+    IF NOT EXISTS ( SELECT 1 FROM pg_catalog.pg_publication
+                    WHERE pubname = 'lds' )
+    THEN
+        CREATE PUBLICATION lds;
+    END IF;
+    ALTER PUBLICATION bde OWNER TO bde_dba;
+
+    FOR rec IN select n.nspname, c.relname
+        FROM pg_class c, pg_namespace n
+        WHERE n.nspname IN ( 'bde_ext', 'lds' )
+        AND c.relnamespace = n.oid
+        AND c.relkind = 'r'
+        AND n.nspname || c.relname NOT IN (
+            SELECT schemaname || tablename
+            FROM pg_catalog.pg_publication_tables
+            WHERE pubname = 'lds'
+        )
+    LOOP
+        EXECUTE format('ALTER PUBLICATION lds ADD TABLE %I.%I',
+            rec.nspname, rec.relname);
+    END LOOP;
+
+END;
+\$PUBLICATION\$;
+
+EOF
+} |
+grep -v "^\(BEGIN\|COMMIT\);" |
+( echo "BEGIN;"; cat; echo "COMMIT;"; ) |
+if test $PGDATABASE = "-"; then
+    cat
+else
+    $PSQL -XtA --set ON_ERROR_STOP=1 -o /dev/null
+fi
