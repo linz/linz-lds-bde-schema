@@ -44,11 +44,11 @@ BEGIN
                 v_schema;
         END IF;
         IF NOT EXISTS ( SELECT 1 FROM pg_catalog.pg_publication
-                        WHERE pubname = v_schema )
+                        WHERE pubname = 'all_' || v_schema )
         THEN
-            EXECUTE format('CREATE PUBLICATION %I', v_schema);
+            EXECUTE format('CREATE PUBLICATION all_%s', v_schema);
         END IF;
-        EXECUTE format('ALTER PUBLICATION %I OWNER TO bde_dba', v_schema);
+        EXECUTE format('ALTER PUBLICATION all_%s OWNER TO bde_dba', v_schema);
 
         FOR v_table IN select c.relname
             FROM pg_class c, pg_namespace n
@@ -58,11 +58,11 @@ BEGIN
             AND c.relname NOT IN (
                 SELECT tablename
                 FROM pg_catalog.pg_publication_tables
-                WHERE pubname = v_schema
+                WHERE pubname = 'all_' || v_schema
                   AND schemaname = v_schema
             )
         LOOP
-            EXECUTE format('ALTER PUBLICATION %I ADD TABLE %I.%I',
+            EXECUTE format('ALTER PUBLICATION all_%s ADD TABLE %I.%I',
                            v_schema, v_schema, v_table);
         END LOOP;
     END LOOP;
