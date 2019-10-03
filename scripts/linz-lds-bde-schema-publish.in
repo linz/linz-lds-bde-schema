@@ -38,7 +38,7 @@ BEGIN
         IF NOT EXISTS ( SELECT 1 FROM pg_catalog.pg_namespace
                         WHERE nspname = v_schema )
         THEN
-            RAISE WARNING
+            RAISE EXCEPTION
                 'Schema % does not exist, '
                 'forgot run linz-lds-bde-schema-load ?',
                 v_schema;
