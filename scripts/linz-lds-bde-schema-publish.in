@@ -31,28 +31,32 @@ cat << EOF
 DO \$PUBLICATION\$
 DECLARE
     rec RECORD;
+    v_schema TEXT;
 BEGIN
 
-    IF NOT EXISTS ( SELECT 1 FROM pg_catalog.pg_publication
-                    WHERE pubname = 'lds' )
-    THEN
-        CREATE PUBLICATION lds;
-    END IF;
-    ALTER PUBLICATION bde OWNER TO bde_dba;
+    FOR v_schema IN VALUES('lds'),('bde_ext') LOOP
+        IF NOT EXISTS ( SELECT 1 FROM pg_catalog.pg_publication
+                        WHERE pubname = v_schema )
+        THEN
+            EXECUTE format('CREATE PUBLICATION %I', v_schema);
+        END IF;
+        EXECUTE format('ALTER PUBLICATION %I OWNER TO bde_dba', v_schema);
 
-    FOR rec IN select n.nspname, c.relname
-        FROM pg_class c, pg_namespace n
-        WHERE n.nspname IN ( 'bde_ext', 'lds' )
-        AND c.relnamespace = n.oid
-        AND c.relkind = 'r'
-        AND n.nspname || c.relname NOT IN (
-            SELECT schemaname || tablename
-            FROM pg_catalog.pg_publication_tables
-            WHERE pubname = 'lds'
-        )
-    LOOP
-        EXECUTE format('ALTER PUBLICATION lds ADD TABLE %I.%I',
-            rec.nspname, rec.relname);
+        FOR rec IN select c.relname
+            FROM pg_class c, pg_namespace n
+            WHERE n.nspname = v_schema
+            AND c.relnamespace = n.oid
+            AND c.relkind = 'r'
+            AND c.relname NOT IN (
+                SELECT tablename
+                FROM pg_catalog.pg_publication_tables
+                WHERE pubname = v_schema
+                  AND schemaname = v_schema
+            )
+        LOOP
+            EXECUTE format('ALTER PUBLICATION %I ADD TABLE %I.%I',
+                           v_schema, v_schema, rec.relname);
+        END LOOP;
     END LOOP;
 
 END;
