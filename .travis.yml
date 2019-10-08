@@ -80,3 +80,5 @@ script:
   # Test build and installation of debian package
   - make deb
   - sudo dpkg -i ../linz-lds-bde-schema*.deb
+  # Test publication
+  - if test `echo $PG | cut -d. -f1` -ge 10; then make check-publisher; fi

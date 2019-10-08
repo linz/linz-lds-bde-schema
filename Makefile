@@ -115,6 +115,14 @@ clean:
 	rm -rf results
 	rm -f $(EXTRA_CLEAN)
 
+check-publisher:
+
+	export PGDATABASE=$(TEST_DB); \
+	V=`linz-lds-bde-schema-publish --version` && \
+	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+
+	test/test-publication.sh
+
 loader-version-test:
 
 	export PGDATABASE=$(TEST_DB); \
