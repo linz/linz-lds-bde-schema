@@ -65,6 +65,10 @@ BEGIN
             EXECUTE format('ALTER PUBLICATION all_%s ADD TABLE %I.%I',
                            v_schema, v_schema, v_table);
         END LOOP;
+
+        RAISE NOTICE
+            'Publication "all_%" setup to contain all tables in schema "%"',
+            v_schema, v_schema;
     END LOOP;
 
 END;
