@@ -6,6 +6,7 @@ this file.
 ## 1.7.0dev - YYYY-MM-DD
 ### Added
 - linz-lds-bde-schema-publish script (#176)
+- Build support for python3 (#181)
 
 ## 1.6.1 - 2019-08-14
 ### Fixed
