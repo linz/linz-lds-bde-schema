@@ -3,7 +3,7 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.7.0dev - YYYY-MM-DD
+## 1.7.0 - 2019-10-09
 ### Added
 - linz-lds-bde-schema-publish script (#176)
 - Build support for python3 (#181)
