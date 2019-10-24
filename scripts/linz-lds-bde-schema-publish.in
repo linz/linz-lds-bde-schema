@@ -66,9 +66,8 @@ BEGIN
                            v_schema, v_schema, v_table);
         END LOOP;
 
-        RAISE INFO
-            'Publication "all_%" setup to contain all tables in schema "%"',
-            v_schema, v_schema;
+        RAISE INFO 'Publication "all_%" ready', v_schema;
+
     END LOOP;
 
 END;
