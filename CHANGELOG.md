@@ -3,6 +3,9 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.7.1dev - 2019-MM-DD
+### Enhanced
+
 ## 1.7.0 - 2019-10-09
 ### Added
 - linz-lds-bde-schema-publish script (#176)
