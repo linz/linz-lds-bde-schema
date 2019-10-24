@@ -5,6 +5,7 @@ this file.
 
 ## 1.7.1dev - 2019-MM-DD
 ### Enhanced
+- Have schema publisher script print a message on output (#186)
 
 ## 1.7.0 - 2019-10-09
 ### Added
