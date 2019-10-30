@@ -1,0 +1,95 @@
+name: test
+
+on: [pull_request]
+
+jobs:
+
+  test:
+
+    name: PostgreSQL ${{ matrix.pg }}, PostGIS ${{ matrix.pgis }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+        matrix:
+            pg: [ '9.4', '9.5', '9.6', '10', '11' ]
+            pgis: [ '2.4', '2.5' ]
+            os: [ ubuntu-18.04 ]
+            exclude:
+              # excludes PostGIS 2.5 on PostgreSQL 9.3
+              - pg: 9.3
+                pgis: 2.5
+              # excludes PostGIS 2.4 on PostgreSQL 11
+              - pg: 11
+                pgis: 2.4
+    env:
+      # Set PATH as postgresql-server-dev-all pretends version is 11
+      PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
+      APT: "apt-get -o Dpkg::Progress=0 -o Dpkg::Use-Pty=0"
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        sudo ${APT} -qq purge \
+            libpq* \
+            *php* \
+            postgresql*
+        sudo rm -rf /var/lib/postgresql
+        sudo ${APT} -qq install curl ca-certificates gnupg
+        distro=`lsb_release -cs`
+        # Enable fetching packages from apt.postgresql repository
+        curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+        echo "deb http://apt.postgresql.org/pub/repos/apt/ ${distro}-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+        # Enable fetching packages from packagecloud test repository
+        curl -Ls https://packagecloud.io/linz/test/gpgkey | sudo apt-key add -
+        echo "deb https://packagecloud.io/linz/test/ubuntu ${distro} main" | sudo tee /etc/apt/sources.list.d/linz-test.list
+        # Enable fetching packages from packagecloud prod repository
+        curl -Ls https://packagecloud.io/linz/prod/gpgkey | sudo apt-key add -
+        echo "deb https://packagecloud.io/linz/prod/ubuntu ${distro} main" | sudo tee /etc/apt/sources.list.d/linz-prod.list
+        # Update apt cache
+        sudo ${APT} -qq update
+        # Install dependencies
+        sudo ${APT} -qq install --no-install-recommends \
+            postgresql-client-${{ matrix.pg }} \
+            postgresql-contrib-${{ matrix.pg }} \
+            postgresql-${{ matrix.pg }} \
+            postgresql-${{ matrix.pg }}-dbpatch \
+            postgresql-${{ matrix.pg }}-pgtap \
+            postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }} \
+            postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }}-scripts \
+            postgresql-${{ matrix.pg }}-tableversion \
+            postgresql-server-dev-${{ matrix.pg }} \
+            libtap-parser-sourcehandler-pgtap-perl \
+            debhelper \
+            fakeroot \
+            linz-bde-schema \
+            linz-bde-uploader
+    - name: Setup PostgreSQL user
+      run: |
+        sudo -u postgres createuser -s "$USER"
+        sudo -u postgres createuser -s root
+    - name: Build
+      run: |
+        # Build
+        make
+    - name: Test build
+      run: |
+        # Pre-install tests
+        make check || { cat regression.diffs; false; }
+    - name: Install
+      run: |
+        sudo -E make install
+    - name: Test installation
+      run: |
+        # Post-install tests
+        make installcheck
+        make installcheck-stdout
+    - name: Test docs building
+      run: |
+        xvfb-run make docs
+    - name: Test packaging
+      run: |
+        make deb
+        sudo dpkg -i ../linz-lds-bde-schema*.deb
+    - name: Test publication
+      run: |
+        make check-publisher
+      if: matrix.pg >= 10
