@@ -82,3 +82,5 @@ script:
   - sudo dpkg -i ../linz-lds-bde-schema*.deb
   # Test publication
   - if test `echo $PG | cut -d. -f1` -ge 10; then make check-publisher; fi
+  # Test upgrades
+  - test/test-upgrades.sh
