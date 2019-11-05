@@ -6,6 +6,8 @@ this file.
 ## 1.8.0dev - 2019-MM-DD
 ### Enhanced
 - Lost tables and permissions now recovered upon schema loading (#190)
+### Added
+- Switch --readonly to schema loader (#187)
 
 ## 1.7.0 - 2019-10-09
 ### Added

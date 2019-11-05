@@ -7,6 +7,7 @@ export PSQL=psql
 export SCRIPTSDIR=/usr/share/linz-lds-bde-schema/sql/
 
 ADD_REVISIONS=no
+READ_ONLY=no
 SQLSCRIPTS=`echo "@@SQLSCRIPTS@@" | tr ' ' '\n' | LANG=C sort | tr '\n' ' '`
 
 if test -n "${LDSBDESCHEMA_SQLDIR}"; then
@@ -21,6 +22,17 @@ EOF
     exit 1
 fi
 
+usage() {
+    cat <<EOF
+Usage: $0 [options] { <database> | - }
+       $0 { --version | --help }
+Options:
+    --revision      enable versioning on tables
+    --noextension   avoid using extension version of dbpatch and tableversion
+    --readonly      revoke write permission on schema from all bde roles
+EOF
+}
+
 while test -n "$1"; do
     if test $1 = "--noindexes"; then
         SKIP_INDEXES=yes
@@ -28,6 +40,11 @@ while test -n "$1"; do
     elif test $1 = "--revision"; then
         ADD_REVISIONS=yes
         shift; continue
+    elif test $1 = "--readonly"; then
+        READ_ONLY=yes
+        shift; continue
+    elif test $1 = "--help"; then
+        usage && exit
     elif test "$1" = "--version"; then
         echo "@@VERSION@@ @@REVISION@@"
         exit 0
@@ -40,8 +57,7 @@ while test -n "$1"; do
 done
 
 if test -z "$DB_NAME"; then
-    echo "Usage: $0 [--noextension] [--revision] <database>" >&2
-    echo "       $0 --version" >&2
+    usage >&2
     exit 1
 fi
 
@@ -130,6 +146,17 @@ if test "${ADD_REVISIONS}" = "yes"; then
             cat ${file} | sed 's/^BEGIN;//;s/^COMMIT;//'
         fi
     done
+fi
+
+if test "${READ_ONLY}" = "yes"; then
+    cat <<EOF
+REVOKE UPDATE, INSERT, DELETE, TRUNCATE
+    ON ALL TABLES IN SCHEMA bde_ext
+    FROM bde_dba, bde_admin, bde_user;
+REVOKE UPDATE, INSERT, DELETE, TRUNCATE
+    ON ALL TABLES IN SCHEMA lds
+    FROM bde_dba, bde_admin, bde_user;
+EOF
 fi
 
 ) |
