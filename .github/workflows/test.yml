@@ -89,6 +89,9 @@ jobs:
       run: |
         make deb
         sudo dpkg -i ../linz-lds-bde-schema*.deb
+    - name: Test upgrades
+      run: |
+        test/test-upgrades.sh
     - name: Test publication
       run: |
         make check-publisher
