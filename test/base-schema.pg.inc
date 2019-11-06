@@ -797,6 +797,20 @@ SELECT columns_are('lds'::name, 'waca_adjustments'::name,
   'id'
   ]);
 
+
+SELECT has_sequence('lds'::name, 'geodetic_vertical_marks_id_seq'::name);
+SELECT sequence_owner_is('lds'::name, 'geodetic_vertical_marks_id_seq'::name, 'bde_dba'::name);
+
+SELECT has_sequence('lds'::name, 'geodetic_antarctic_vertical_marks_id_seq'::name);
+SELECT sequence_owner_is('lds'::name, 'geodetic_antarctic_vertical_marks_id_seq'::name, 'bde_dba'::name);
+
+SELECT has_sequence('lds'::name, 'geodetic_network_marks_id_seq'::name);
+SELECT sequence_owner_is('lds'::name, 'geodetic_network_marks_id_seq'::name, 'bde_dba'::name);
+
+SELECT has_sequence('lds'::name, 'title_owners_id_seq'::name);
+SELECT sequence_owner_is('lds'::name, 'title_owners_id_seq'::name, 'bde_dba'::name);
+
+
 -- } -- lds schema
 
 -- Test bde_ext schema {
