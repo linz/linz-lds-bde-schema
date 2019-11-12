@@ -3,7 +3,7 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.8.0dev - 2019-MM-DD
+## 1.8.0 - 2019-11-13
 ### Changed
 - Schema loader does NOT load bde-uploader schema anymore (#192)
 ### Enhanced
