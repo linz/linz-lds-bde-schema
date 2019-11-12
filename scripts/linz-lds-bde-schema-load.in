@@ -69,40 +69,71 @@ rollback()
     exit 1
 }
 
-# Find linz-bde-uploader-schema-load
-PATH="$PATH:$HOME/perl5/bin";
-UPLOADER_LOADER=linz-bde-uploader-schema-load
-which $UPLOADER_LOADER > /dev/null || {
-    echo "$0 depends on $UPLOADER_LOADER, which cannot be found in current PATH." >&2
-    echo "Did you install linz-bde-uploader ? (2.4.0 or later needed)" >&2
+# table_version-loader and dbpatch-loader used
+# to be installed in PostgreSQL bindir
+PATH="$PATH:`pg_config --bindir`";
+
+# Find table_version-loader
+TABLEVERSION_LOADER=table_version-loader
+which $TABLEVERSION_LOADER > /dev/null || {
+    echo "$0 depends on $TABLEVERSION_LOADER, which cannot be found in current PATH." >&2
+    echo "Is table_version 1.4.0+ installed ?" >&2
     exit 1
 }
 
-# Check if linz-bde-uploader-schema-load supports stdout
-${UPLOADER_LOADER} - > /dev/null &&
-    UPLOADER_SUPPORTS_STDOUT=yes ||
-    UPLOADER_SUPPORTS_STDOUT=no
+# Check if table_version-loader supports stdout
+${TABLEVERSION_LOADER} - > /dev/null &&
+    TABLEVERSION_SUPPORTS_STDOUT=yes ||
+    TABLEVERSION_SUPPORTS_STDOUT=no
 
-if test $PGDATABASE = "-" -a $UPLOADER_SUPPORTS_STDOUT != yes; then
-    echo "ERROR: linz-bde-uploader-schema-load does not support stdout mode, cannot proceed." >&2
-    echo "HINT: install linz-bde-uploader 2.5.0 or higher to fix this." >&2
+if test $PGDATABASE = "-" -a $TABLEVERSION_SUPPORTS_STDOUT != yes; then
+    echo "ERROR: table_version-loader does not support stdout mode, cannot proceed." >&2
+    echo "HINT: install tableversion 1.6.0 or higher to fix this." >&2
     exit 1
 fi
 
-# Load linz-bde-uploader schema
+# Find dbpatch-loader
+DBPATCH_LOADER=dbpatch-loader
+which $DBPATCH_LOADER > /dev/null || {
+    echo "$0 depends on $DBPATCH_LOADER, which cannot be found in current PATH." >&2
+    echo "Is dbpatch 1.6.0+ installed ?" >&2
+    exit 1
+}
 
-echo "Loading linz-bde-uploader schema in database $PGDATABASE" >&2
+# Check if dbpatch-loader supports stdout
+${DBPATCH_LOADER} - testing > /dev/null &&
+    DBPATCH_SUPPORTS_STDOUT=yes ||
+    DBPATCH_SUPPORTS_STDOUT=no
 
-UPLOADER_OPTS=
-if test "${EXTENSION_MODE}" = "off"; then
-    UPLOADER_OPTS="--noextension"
+if test $PGDATABASE = "-" -a $DBPATCH_SUPPORTS_STDOUT != yes; then
+    echo "ERROR: dbpatch-loader does not support stdout mode, cannot proceed." >&2
+    echo "HINT: install dbpatch 1.4.0 or higher to fix this." >&2
+    exit 1
 fi
 
-if test $UPLOADER_SUPPORTS_STDOUT != yes; then
-    echo "WARNING: linz-bde-uploader-schema-load does not support stdout mode, working in non-transactional mode" >&2
-    echo "HINT: install linz-bde-uploader 2.5.0 or higher to fix this." >&2
-    ${UPLOADER_LOADER} ${UPLOADER_OPTS} ${PGDATABASE} > /dev/null || {
-        echo "${UPLOADER_LOADER} exited with an error" >&2
+EXTOPT=
+if test "${EXTENSION_MODE}" = "off"; then
+    EXTOPT="--no-extension"
+fi
+
+# Load tableversion
+
+echo "Loading tableversion schema in database $PGDATABASE" >&2
+
+if test $TABLEVERSION_SUPPORTS_STDOUT != yes; then
+    echo "WARNING: table_version-loader does not support stdout mode, working in non-transactional mode" >&2
+    echo "HINT: install tableversion 1.6.0 or higher to fix this." >&2
+    ${TABLEVERSION_LOADER} ${EXTOPT} ${PGDATABASE} > /dev/null || {
+        echo "${TABLEVERSION_LOADER} exited with an error" >&2
+        exit 1
+    }
+fi
+
+if test $DBPATCH_SUPPORTS_STDOUT != yes; then
+    echo "WARNING: dbpatch-loader does not support stdout mode, working in non-transactional mode" >&2
+    echo "HINT: install dbpatch 1.4.0 or higher to fix this." >&2
+    ${DBPATCH_LOADER} ${EXTOPT} ${PGDATABASE} _patches > /dev/null || {
+        echo "${DBPATCH_LOADER} exited with an error" >&2
         exit 1
     }
 fi
@@ -120,8 +151,12 @@ fi
 
 (
 
-if test $UPLOADER_SUPPORTS_STDOUT = yes; then
-    ${UPLOADER_LOADER} ${UPLOADER_OPTS} - || rollback
+if test $TABLEVERSION_SUPPORTS_STDOUT = yes; then
+    ${TABLEVERSION_LOADER} ${EXTOPT} ${UPLOADER_OPTS} - || rollback
+fi
+
+if test $DBPATCH_SUPPORTS_STDOUT = yes; then
+    ${DBPATCH_LOADER} ${EXTOPT} ${UPLOADER_OPTS} - _patches || rollback
 fi
 
 cat << EOF
