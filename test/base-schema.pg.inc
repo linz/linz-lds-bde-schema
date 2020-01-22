@@ -800,15 +800,19 @@ SELECT columns_are('lds'::name, 'waca_adjustments'::name,
 
 SELECT has_sequence('lds'::name, 'geodetic_vertical_marks_id_seq'::name);
 SELECT sequence_owner_is('lds'::name, 'geodetic_vertical_marks_id_seq'::name, 'bde_dba'::name);
+SELECT is(pg_get_serial_sequence('lds.geodetic_vertical_marks', 'id'), 'lds.geodetic_vertical_marks_id_seq');
 
 SELECT has_sequence('lds'::name, 'geodetic_antarctic_vertical_marks_id_seq'::name);
 SELECT sequence_owner_is('lds'::name, 'geodetic_antarctic_vertical_marks_id_seq'::name, 'bde_dba'::name);
+SELECT is(pg_get_serial_sequence('lds.geodetic_antarctic_vertical_marks', 'id'), 'lds.geodetic_antarctic_vertical_marks_id_seq');
 
 SELECT has_sequence('lds'::name, 'geodetic_network_marks_id_seq'::name);
 SELECT sequence_owner_is('lds'::name, 'geodetic_network_marks_id_seq'::name, 'bde_dba'::name);
+SELECT is(pg_get_serial_sequence('lds.geodetic_network_marks', 'id'), 'lds.geodetic_network_marks_id_seq');
 
 SELECT has_sequence('lds'::name, 'title_owners_id_seq'::name);
 SELECT sequence_owner_is('lds'::name, 'title_owners_id_seq'::name, 'bde_dba'::name);
+SELECT is(pg_get_serial_sequence('lds.title_owners', 'id'), 'lds.title_owners_id_seq');
 
 
 -- } -- lds schema
