@@ -117,6 +117,23 @@ $$
 $PATCH$
 );
 
+-------------------------------------------------------------------------------
+-- 1.8.1 Set proper ownership of serial column sequences
+-------------------------------------------------------------------------------
+PERFORM _patches.apply_patch(
+    'lds - 1.8.1: Set proper ownership of serial column sequences',
+$PATCH$
+DO $$
+BEGIN
+    ALTER SEQUENCE lds.geodetic_network_marks_id_seq OWNED BY lds.geodetic_network_marks.id;
+    ALTER SEQUENCE lds.geodetic_vertical_marks_id_seq OWNED BY lds.geodetic_vertical_marks.id;
+    ALTER SEQUENCE lds.geodetic_antarctic_vertical_marks_id_seq OWNED BY lds.geodetic_antarctic_vertical_marks.id;
+    ALTER SEQUENCE lds.title_owners_id_seq OWNED BY lds.title_owners.id;
+END;
+$$
+$PATCH$
+);
+
 END;
 $PATCHES$;
 
