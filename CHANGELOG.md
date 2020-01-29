@@ -4,7 +4,9 @@ All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
 ## 1.8.1dev - 2020-MM-DD
+### Fixed
 - Restore serial sequence ownership on upgrade (#196)
+- Catch more WACA adjustments (#174)
 
 ## 1.8.0 - 2019-11-13
 ### Changed
