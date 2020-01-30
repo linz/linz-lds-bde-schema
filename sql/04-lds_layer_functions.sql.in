@@ -3672,7 +3672,7 @@ BEGIN
             ADJ.status = 'AUTH' AND
             ADM.software_used = 'LNZC' AND
             NOD.cos_id_official = 109 AND
-            ADM.name ilike '%WACA %'
+            ADM.name like '%WACA%'
         GROUP BY
             ADJ.id,
             ADJ.adjust_datetime,
