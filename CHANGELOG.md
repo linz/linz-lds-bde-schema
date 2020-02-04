@@ -5,6 +5,10 @@ this file.
 
 ## 1.9.0dev - 2020-MM-DD
 
+## 1.8.2 - 2020-02-04
+### Fixed
+- Catch even more WACA adjustments (#174)
+
 ## 1.8.1 - 2020-01-29
 ### Fixed
 - Restore serial sequence ownership on upgrade (#196)
