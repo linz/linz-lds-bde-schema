@@ -3,6 +3,10 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.8.3dev - 2020-MM-DD
+### Fixed
+- ...
+
 ## 1.8.2 - 2020-02-04
 ### Fixed
 - Catch even more WACA adjustments (#174)
