@@ -178,8 +178,6 @@ BEGIN
 
         PERFORM LDS.LDS_DropTableContrainstsAndIndexes(p_table);
 
-        EXECUTE 'TRUNCATE ' || p_table;
-
         v_count := bde_control.bde_ExecuteTemplate(
             p_data_insert_tmpl,
             ARRAY[p_table::TEXT]
