@@ -3,7 +3,9 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.9.0dev - 2020-MM-DD
+## 1.9.0 - 2020-02-11
+### Enhanced
+- Avoid TRUNCATE on empty tables (#206)
 
 ## 1.8.2 - 2020-02-04
 ### Fixed
