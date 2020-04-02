@@ -5,6 +5,10 @@ UPGRADEABLE_VERSIONS="
     1.6.0
     1.6.1
     1.7.0
+    1.8.0
+    1.8.1
+    1.8.2
+    1.9.0
 "
 
 TEST_DATABASE=linz-lds-bde-schema-test-db
