@@ -3,6 +3,11 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.10.0dev - 2020-MM-DD
+### Enhanced
+- Do not hide errors from tableversion/dbpatch loaders (#209)
+
+
 ## 1.9.0 - 2020-02-11
 ### Enhanced
 - Avoid TRUNCATE on empty tables (#206)
