@@ -69,10 +69,6 @@ rollback()
     exit 1
 }
 
-# table_version-loader and dbpatch-loader used
-# to be installed in PostgreSQL bindir
-PATH="$PATH:`pg_config --bindir`";
-
 # Find table_version-loader
 TABLEVERSION_LOADER=table_version-loader
 which $TABLEVERSION_LOADER > /dev/null || {
