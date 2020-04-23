@@ -34,6 +34,21 @@ BEGIN
 END;
 $$;
 
+-- Utility function to change table owner if not already owned by user
+--
+CREATE FUNCTION pg_temp.changeTableOwnerIfNeeded(p_table regclass, p_owner name)
+RETURNS VOID LANGUAGE 'plpgsql' AS $$
+BEGIN
+    IF r.rolname != p_owner
+        FROM pg_class c, pg_roles r
+        WHERE c.oid = p_table
+          AND c.relowner = r.oid
+    THEN
+        EXECUTE format('ALTER TABLE %s OWNER TO %I', p_table, p_owner);
+    END IF;
+END;
+$$;
+
 CREATE SCHEMA IF NOT EXISTS lds;
 ALTER SCHEMA lds OWNER TO bde_dba;
 
@@ -62,7 +77,7 @@ CREATE TABLE IF NOT EXISTS lds.geodetic_marks (
 PERFORM pg_temp.createGistIndexIfNotExists('shx_geo_shape', 'lds',
                                           'geodetic_marks', 'shape');
 
-ALTER TABLE lds.geodetic_marks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.geodetic_marks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table geodetic_network_marks
@@ -91,7 +106,7 @@ CREATE TABLE IF NOT EXISTS lds.geodetic_network_marks (
 PERFORM pg_temp.createGistIndexIfNotExists('shx_geo_net_shape', 'lds',
                                    'geodetic_network_marks', 'shape');
 
-ALTER TABLE lds.geodetic_network_marks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.geodetic_network_marks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table geodetic_vertical_marks
@@ -117,7 +132,7 @@ CREATE TABLE IF NOT EXISTS lds.geodetic_vertical_marks(
 PERFORM pg_temp.createGistIndexIfNotExists('shx_geo_vert_shape', 'lds',
                                           'geodetic_vertical_marks', 'shape');
 
-ALTER TABLE lds.geodetic_vertical_marks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.geodetic_vertical_marks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table geodetic_antarctic_marks
@@ -140,7 +155,7 @@ CREATE TABLE IF NOT EXISTS lds.geodetic_antarctic_marks (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_geo_ant_shape', 'lds', 'geodetic_antarctic_marks', 'shape');
 
-ALTER TABLE lds.geodetic_antarctic_marks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.geodetic_antarctic_marks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table geodetic_antarctic_vertical_marks
@@ -164,7 +179,7 @@ CREATE TABLE IF NOT EXISTS lds.geodetic_antarctic_vertical_marks(
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_geo_ant_vert_shape', 'lds', 'geodetic_antarctic_vertical_marks', 'shape');
 
-ALTER TABLE lds.geodetic_antarctic_vertical_marks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.geodetic_antarctic_vertical_marks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table survey_protected_marks
@@ -185,7 +200,7 @@ CREATE TABLE IF NOT EXISTS lds.survey_protected_marks (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_spm_shape', 'lds', 'survey_protected_marks', 'shape');
 
-ALTER TABLE lds.survey_protected_marks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.survey_protected_marks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table all_parcels
@@ -208,7 +223,7 @@ CREATE TABLE IF NOT EXISTS lds.all_parcels (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_all_par_shape', 'lds', 'all_parcels', 'shape');
 
-ALTER TABLE lds.all_parcels OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.all_parcels'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table all_linear_parcels
@@ -231,7 +246,7 @@ CREATE TABLE IF NOT EXISTS lds.all_linear_parcels (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_all_line_par_shape', 'lds', 'all_linear_parcels', 'shape');
 
-ALTER TABLE lds.all_linear_parcels OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.all_linear_parcels'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table primary_parcels
@@ -253,7 +268,7 @@ CREATE TABLE IF NOT EXISTS lds.primary_parcels (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_all_prim_par_shape', 'lds', 'primary_parcels', 'shape');
 
-ALTER TABLE lds.primary_parcels OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.primary_parcels'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table land_parcels
@@ -275,7 +290,7 @@ CREATE TABLE IF NOT EXISTS lds.land_parcels (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_lnd_par_shape', 'lds', 'land_parcels', 'shape');
 
-ALTER TABLE lds.land_parcels OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.land_parcels'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table hydro_parcels
@@ -297,7 +312,7 @@ CREATE TABLE IF NOT EXISTS lds.hydro_parcels (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_hyd_par_shape', 'lds', 'hydro_parcels', 'shape');
 
-ALTER TABLE lds.hydro_parcels OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.hydro_parcels'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table road_parcels
@@ -319,7 +334,7 @@ CREATE TABLE IF NOT EXISTS lds.road_parcels (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_road_par_shape', 'lds', 'road_parcels', 'shape');
 
-ALTER TABLE lds.road_parcels OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.road_parcels'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table non_primary_parcels
@@ -341,7 +356,7 @@ CREATE TABLE IF NOT EXISTS lds.non_primary_parcels (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_non_prim_par_shape', 'lds', 'non_primary_parcels', 'shape');
 
-ALTER TABLE lds.non_primary_parcels OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.non_primary_parcels'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table non_primary_linear_parcels
@@ -363,7 +378,7 @@ CREATE TABLE IF NOT EXISTS lds.non_primary_linear_parcels (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_non_pril_par_shape', 'lds', 'non_primary_linear_parcels', 'shape');
 
-ALTER TABLE lds.non_primary_linear_parcels OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.non_primary_linear_parcels'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table strata_parcels
@@ -385,7 +400,7 @@ CREATE TABLE IF NOT EXISTS lds.strata_parcels (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_str_par_shape', 'lds', 'strata_parcels', 'shape');
 
-ALTER TABLE lds.strata_parcels OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.strata_parcels'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table all_parcels_pend
@@ -408,7 +423,7 @@ CREATE TABLE IF NOT EXISTS lds.all_parcels_pend (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_all_par_pend_shape', 'lds', 'all_parcels_pend', 'shape');
 
-ALTER TABLE lds.all_parcels_pend OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.all_parcels_pend'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table titles
@@ -430,7 +445,7 @@ CREATE TABLE IF NOT EXISTS lds.titles (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_title_shape', 'lds', 'titles', 'shape');
 
-ALTER TABLE lds.titles OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.titles'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table titles_plus
@@ -452,7 +467,7 @@ CREATE TABLE IF NOT EXISTS lds.titles_plus (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_title_plus_shape', 'lds', 'titles_plus', 'shape');
 
-ALTER TABLE lds.titles_plus OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.titles_plus'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table title_owners
@@ -471,7 +486,7 @@ CREATE TABLE IF NOT EXISTS lds.title_owners (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_owners_shape', 'lds', 'title_owners', 'shape');
 
-ALTER TABLE lds.title_owners OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.title_owners'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table road_centre_line
@@ -489,7 +504,7 @@ CREATE TABLE IF NOT EXISTS lds.road_centre_line (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_rcl_shape', 'lds', 'road_centre_line', 'shape');
 
-ALTER TABLE lds.road_centre_line OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.road_centre_line'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table road_centre_line_subsection
@@ -510,7 +525,7 @@ CREATE TABLE IF NOT EXISTS lds.road_centre_line_subsection (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_rcls_shape', 'lds', 'road_centre_line_subsection', 'shape');
 
-ALTER TABLE lds.road_centre_line_subsection OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.road_centre_line_subsection'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table railway_centre_line
@@ -525,7 +540,7 @@ CREATE TABLE IF NOT EXISTS lds.railway_centre_line (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_rlwy_cl_shape', 'lds', 'railway_centre_line', 'shape');
 
-ALTER TABLE lds.railway_centre_line OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.railway_centre_line'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table street_address (Historic)
@@ -544,7 +559,7 @@ CREATE TABLE IF NOT EXISTS lds.street_address (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_sad_shape', 'lds', 'street_address', 'shape');
 
-ALTER TABLE lds.street_address OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.street_address'::regclass, 'bde_dba');
 
 
 --------------------------------------------------------------------------------
@@ -568,7 +583,7 @@ CREATE TABLE IF NOT EXISTS lds.street_address2 (
     shape geometry(POINT, 4167)
 );
 
-ALTER TABLE lds.street_address2 OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.street_address2'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table mesh_blocks
@@ -582,7 +597,7 @@ CREATE TABLE IF NOT EXISTS lds.mesh_blocks (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_mesh_blocks_shape', 'lds', 'mesh_blocks', 'shape');
 
-ALTER TABLE lds.mesh_blocks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.mesh_blocks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table land_districts
@@ -596,7 +611,7 @@ CREATE TABLE IF NOT EXISTS lds.land_districts (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_land_districts_shape', 'lds', 'land_districts', 'shape');
 
-ALTER TABLE lds.land_districts OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.land_districts'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table survey_plans
@@ -617,7 +632,7 @@ CREATE TABLE IF NOT EXISTS lds.survey_plans (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_sur_shape', 'lds', 'survey_plans', 'shape');
 
-ALTER TABLE lds.survey_plans OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.survey_plans'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table cadastral_adjustments
@@ -633,7 +648,7 @@ CREATE TABLE IF NOT EXISTS lds.cadastral_adjustments (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_cad_adj_shape', 'lds', 'cadastral_adjustments', 'shape');
 
-ALTER TABLE lds.cadastral_adjustments OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.cadastral_adjustments'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table spi_adjustments
@@ -649,7 +664,7 @@ CREATE TABLE IF NOT EXISTS lds.spi_adjustments (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_spi_adj_shape', 'lds', 'spi_adjustments', 'shape');
 
-ALTER TABLE lds.spi_adjustments OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.spi_adjustments'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table waca_adjustments
@@ -665,7 +680,7 @@ CREATE TABLE IF NOT EXISTS lds.waca_adjustments (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_waca_adj_shape', 'lds', 'waca_adjustments', 'shape');
 
-ALTER TABLE lds.waca_adjustments OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.waca_adjustments'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table survey_observations
@@ -691,7 +706,7 @@ CREATE TABLE IF NOT EXISTS lds.survey_observations (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_sur_obs_shape', 'lds', 'survey_observations', 'shape');
 
-ALTER TABLE lds.survey_observations OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.survey_observations'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table survey_arc_observations
@@ -722,7 +737,7 @@ CREATE TABLE IF NOT EXISTS lds.survey_arc_observations (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_sur_arc_obs_shape', 'lds', 'survey_arc_observations', 'shape');
 
-ALTER TABLE lds.survey_arc_observations OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.survey_arc_observations'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table parcel_vectors
@@ -740,7 +755,7 @@ CREATE TABLE IF NOT EXISTS lds.parcel_vectors (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_par_vct_shape', 'lds', 'parcel_vectors', 'shape');
 
-ALTER TABLE lds.parcel_vectors OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.parcel_vectors'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table survey_network_marks
@@ -761,7 +776,7 @@ CREATE TABLE IF NOT EXISTS lds.survey_network_marks (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_csnm_shape', 'lds', 'survey_network_marks', 'shape');
 
-ALTER TABLE lds.survey_network_marks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.survey_network_marks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table survey_bdy_marks
@@ -778,7 +793,7 @@ CREATE TABLE IF NOT EXISTS lds.survey_bdy_marks (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_cad_bdy_mrk_shape', 'lds', 'survey_bdy_marks', 'shape');
 
-ALTER TABLE lds.survey_bdy_marks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.survey_bdy_marks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table survey_non_bdy_marks
@@ -795,7 +810,7 @@ CREATE TABLE IF NOT EXISTS lds.survey_non_bdy_marks (
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_cad_nbdy_mrk_shape', 'lds', 'survey_non_bdy_marks', 'shape');
 
-ALTER TABLE lds.survey_non_bdy_marks OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.survey_non_bdy_marks'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table parcel_stat_actions
@@ -810,7 +825,7 @@ CREATE TABLE IF NOT EXISTS lds.parcel_stat_actions (
 );
 
 
-ALTER TABLE lds.parcel_stat_actions OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.parcel_stat_actions'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table affected_parcel_surveys
@@ -824,7 +839,7 @@ CREATE TABLE IF NOT EXISTS lds.affected_parcel_surveys (
 );
 
 
-ALTER TABLE lds.affected_parcel_surveys OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.affected_parcel_surveys'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table title_parcel_associations
@@ -838,7 +853,7 @@ CREATE TABLE IF NOT EXISTS lds.title_parcel_associations (
 );
 
 
-ALTER TABLE lds.title_parcel_associations OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.title_parcel_associations'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table title_estates
@@ -859,7 +874,7 @@ CREATE TABLE IF NOT EXISTS lds.title_estates (
 );
 
 
-ALTER TABLE lds.title_estates OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.title_estates'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table titles_aspatial
@@ -883,7 +898,7 @@ CREATE TABLE IF NOT EXISTS lds.titles_aspatial (
 );
 
 
-ALTER TABLE lds.titles_aspatial OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.titles_aspatial'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table title_owners_aspatial
@@ -904,7 +919,7 @@ CREATE TABLE IF NOT EXISTS lds.title_owners_aspatial (
 );
 
 
-ALTER TABLE lds.title_owners_aspatial OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.title_owners_aspatial'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table title_memorials
@@ -924,7 +939,7 @@ CREATE TABLE IF NOT EXISTS lds.title_memorials
 );
 
 
-ALTER TABLE lds.title_memorials OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.title_memorials'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- LDS table title_memorial_additional_text
@@ -948,7 +963,7 @@ CREATE TABLE IF NOT EXISTS lds.title_memorial_additional_text
 );
 
 
-ALTER TABLE lds.title_memorial_additional_text OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('lds.title_memorial_additional_text'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- Fix up permissions on schema
@@ -979,6 +994,7 @@ GRANT SELECT
 --------------------------------------------------------------------------------
 
 DROP FUNCTION pg_temp.createGistIndexIfNotExists(name, name, name, name);
+DROP FUNCTION pg_temp.changeTableOwnerIfNeeded(regclass, name);
 
 END;
 $SCHEMA$;

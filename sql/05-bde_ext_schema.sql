@@ -34,6 +34,21 @@ BEGIN
 END;
 $$;
 
+-- Utility function to change table owner if not already owned by user
+--
+CREATE FUNCTION pg_temp.changeTableOwnerIfNeeded(p_table regclass, p_owner name)
+RETURNS VOID LANGUAGE 'plpgsql' AS $$
+BEGIN
+    IF r.rolname != p_owner
+        FROM pg_class c, pg_roles r
+        WHERE c.oid = p_table
+          AND c.relowner = r.oid
+    THEN
+        EXECUTE format('ALTER TABLE %s OWNER TO %I', p_table, p_owner);
+    END IF;
+END;
+$$;
+
 CREATE SCHEMA IF NOT EXISTS bde_ext;
 ALTER SCHEMA bde_ext OWNER TO bde_dba;
 
@@ -59,7 +74,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.adjustment_run
   CONSTRAINT pkey_adjustment_run PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.adjustment_run OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.adjustment_run'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- P R O P R I E T O R
@@ -78,7 +93,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.proprietor
   CONSTRAINT pkey_proprietor PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.proprietor OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.proprietor'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- E N C U M B R A N C E E
@@ -92,7 +107,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.encumbrancee
   CONSTRAINT pkey_encumbrancee PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.encumbrancee OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.encumbrancee'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- N O M I N A L   I N D E X
@@ -110,7 +125,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.nominal_index
   CONSTRAINT pkey_nominal_index PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.nominal_index OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.nominal_index'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- A L I A S
@@ -124,7 +139,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.alias
   CONSTRAINT pkey_alias PRIMARY KEY (id )
 );
 
-ALTER TABLE bde_ext.alias OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.alias'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- E N C   S H A R E
@@ -143,7 +158,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.enc_share
   CONSTRAINT pkey_enc_share PRIMARY KEY (id )
 );
 
-ALTER TABLE bde_ext.enc_share OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.enc_share'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- E N C U M B R A N C E
@@ -160,7 +175,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.encumbrance
   CONSTRAINT pkey_encumbrance PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.encumbrance OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.encumbrance'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- E S T A T E   S H A R E
@@ -180,7 +195,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.estate_share
   CONSTRAINT pkey_estate_share PRIMARY KEY (id )
 );
 
-ALTER TABLE bde_ext.estate_share OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.estate_share'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- L E G A L   D E S C
@@ -197,7 +212,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.legal_desc
   CONSTRAINT pkey_legal_desc PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.legal_desc OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.legal_desc'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- L I N E
@@ -223,7 +238,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.line
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_line_shape', 'bde_ext', 'line', 'shape');
 
-ALTER TABLE bde_ext.line OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.line'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- M A I N T E N A N C E
@@ -240,7 +255,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.maintenance
   CONSTRAINT maintenance_mrk_id_type_key UNIQUE (mrk_id , type)
 );
 
-ALTER TABLE bde_ext.maintenance OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.maintenance'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- M A R K
@@ -269,7 +284,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.mark
   CONSTRAINT pkey_mark PRIMARY KEY (id )
 );
 
-ALTER TABLE bde_ext.mark OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.mark'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- M A R K  N A M E
@@ -284,7 +299,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.mark_name
   CONSTRAINT mark_name_mrk_id_type_key UNIQUE (mrk_id , type )
 );
 
-ALTER TABLE bde_ext.mark_name OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.mark_name'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- M A R K   P H Y S   S T A T E
@@ -316,7 +331,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.mark_phys_state
   CONSTRAINT mark_phys_state_mrk_id_type_wrk_id_key UNIQUE (mrk_id ,type ,wrk_id)
 );
 
-ALTER TABLE bde_ext.mark_phys_state OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.mark_phys_state'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- N O D E
@@ -339,7 +354,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.node
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_node_shape', 'bde_ext', 'node', 'shape');
 
-ALTER TABLE bde_ext.node OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.node'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- N O D E  P R P  O R D E R
@@ -354,7 +369,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.node_prp_order
   CONSTRAINT node_prp_order_dtm_id_nod_id_key UNIQUE (dtm_id , nod_id)
 );
 
-ALTER TABLE bde_ext.node_prp_order OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.node_prp_order'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- P A R C E L
@@ -382,7 +397,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.parcel
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_parcel_shape', 'bde_ext', 'parcel', 'shape');
 
-ALTER TABLE bde_ext.parcel OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.parcel'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- P A R C E L  L S
@@ -410,7 +425,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.parcel_ls
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_parcel_ls_shape', 'bde_ext', 'parcel_ls', 'shape');
 
-ALTER TABLE bde_ext.parcel_ls OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.parcel_ls'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- P A R C E L  L A B E L
@@ -427,7 +442,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.parcel_label
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_parcel_label_shape', 'bde_ext', 'parcel_label', 'shape');
 
-ALTER TABLE bde_ext.parcel_label OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.parcel_label'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- P A R C E L  D I M E N
@@ -441,7 +456,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.parcel_dimen
   CONSTRAINT parcel_dimen_obn_id_par_id_key UNIQUE (obn_id , par_id)
 );
 
-ALTER TABLE bde_ext.parcel_dimen OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.parcel_dimen'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- P A R C E L  R I N G
@@ -456,7 +471,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.parcel_ring
   CONSTRAINT pkey_parcel_ring PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.parcel_ring OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.parcel_ring'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- S T A T   V E R S I O N
@@ -474,7 +489,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.stat_version
   CONSTRAINT stat_version_area_class_version_key UNIQUE (area_class , version)
 );
 
-ALTER TABLE bde_ext.stat_version OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.stat_version'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- S T A T I S T   A R E A
@@ -494,7 +509,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.statist_area
   CONSTRAINT pkey_statist_area PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.statist_area OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.statist_area'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- S U R V E Y
@@ -527,7 +542,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.survey
   CONSTRAINT pkey_survey PRIMARY KEY (wrk_id)
 );
 
-ALTER TABLE bde_ext.survey OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.survey'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T I T L E
@@ -552,7 +567,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.title
   CONSTRAINT title_title_no_key UNIQUE (title_no)
 );
 
-ALTER TABLE bde_ext.title OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.title'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T I T L E   A C T I O N
@@ -567,7 +582,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.title_action
   CONSTRAINT title_action_act_id_act_tin_id_ttl_title_no_key UNIQUE (act_id , act_tin_id , ttl_title_no)
 );
 
-ALTER TABLE bde_ext.title_action OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.title_action'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T I T L E   D O C   R E F
@@ -581,7 +596,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.title_doc_ref
   CONSTRAINT pkey_title_doc_ref PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.title_doc_ref OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.title_doc_ref'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T I T L E   E S T A T E
@@ -604,7 +619,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.title_estate
   CONSTRAINT pkey_title_estate PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.title_estate OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.title_estate'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T I T L E   M E M   T E X T
@@ -627,7 +642,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.title_mem_text
   CONSTRAINT title_mem_text_sequence_no_ttm_id_key UNIQUE (sequence_no , ttm_id)
 );
 
-ALTER TABLE bde_ext.title_mem_text OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.title_mem_text'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T I T L E   M E M O R I A L
@@ -661,7 +676,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.title_memorial
   CONSTRAINT pkey_title_memorial PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.title_memorial OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.title_memorial'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T I T L E   P A R C E L   A S S O C I A T I O N
@@ -675,7 +690,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.title_parcel_association
   CONSTRAINT pkey_title_parcel_association PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.title_parcel_association OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.title_parcel_association'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T I T L E   T R A N S A C T   T Y P E
@@ -690,7 +705,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.transact_type
   CONSTRAINT transact_type_grp_type_key UNIQUE (grp , type)
 );
 
-ALTER TABLE bde_ext.transact_type OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.transact_type'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T T L   E N C
@@ -706,7 +721,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.ttl_enc
   CONSTRAINT pkey_ttl_enc PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.ttl_enc OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.ttl_enc'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T T L   H I E R A R C H Y
@@ -723,7 +738,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.ttl_hierarchy
   CONSTRAINT pkey_ttl_hierarchy PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.ttl_hierarchy OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.ttl_hierarchy'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T T L   I N S T
@@ -744,7 +759,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.ttl_inst
   CONSTRAINT pkey_ttl_inst PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.ttl_inst OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.ttl_inst'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- T T L   I N S T   T I T L E
@@ -758,7 +773,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.ttl_inst_title
   CONSTRAINT ttl_inst_title_tin_id_ttl_title_no_key UNIQUE (tin_id , ttl_title_no)
 );
 
-ALTER TABLE bde_ext.ttl_inst_title OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.ttl_inst_title'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- U S E R
@@ -777,7 +792,7 @@ CREATE TABLE IF NOT EXISTS bde_ext."user"
   CONSTRAINT user_id_key UNIQUE (id)
 );
 
-ALTER TABLE bde_ext."user" OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext."user"'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- V E C T O R   L S
@@ -798,7 +813,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.vector_ls
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_vector_ls_shape', 'bde_ext', 'vector_ls', 'shape');
 
-ALTER TABLE bde_ext.vector_ls OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.vector_ls'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- V E C T O R   P T
@@ -819,7 +834,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.vector_pt
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_vector_pt_shape', 'bde_ext', 'vector_pt', 'shape');
 
-ALTER TABLE bde_ext.vector_pt OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.vector_pt'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- W O R K
@@ -854,7 +869,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.work
   CONSTRAINT pkey_work PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.work OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.work'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- S T R E E T   A D D R E S S   E X T E R N A L
@@ -880,7 +895,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.street_address_ext
 
 PERFORM pg_temp.createGistIndexIfNotExists('shx_street_address_ext_shape', 'bde_ext', 'street_address_ext', 'shape');
 
-ALTER TABLE bde_ext.street_address_ext OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.street_address_ext'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- F E A T U R E   N A M E   P T
@@ -900,7 +915,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.feature_name_pt
 );
 
 
-ALTER TABLE bde_ext.feature_name_pt OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.feature_name_pt'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- F E A T U R E   N A M E   P O L Y
@@ -920,7 +935,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.feature_name_poly
 );
 
 
-ALTER TABLE bde_ext.feature_name_poly OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.feature_name_poly'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- C O O R D I N A T E
@@ -946,7 +961,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.coordinate
   CONSTRAINT pkey_coordinate PRIMARY KEY (id)
 );
 
-ALTER TABLE bde_ext.coordinate OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.coordinate'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- O F F I C E
@@ -962,7 +977,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.office
   CONSTRAINT office_pkey PRIMARY KEY (audit_id),
   CONSTRAINT office_code_key UNIQUE (code)
 );
-ALTER TABLE bde_ext.office OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.office'::regclass, 'bde_dba');
 
 -- =============================================================================
 -- SURVEY PLAN IMAGE REVISION
@@ -977,7 +992,7 @@ CREATE TABLE IF NOT EXISTS bde_ext.survey_plan_image_revision (
     LAST_UPDATED TIMESTAMP,
     CONSTRAINT survey_plan_image_revision_pkey PRIMARY KEY (id)
 );
-ALTER TABLE bde_ext.survey_plan_image_revision OWNER TO bde_dba;
+PERFORM pg_temp.changeTableOwnerIfNeeded('bde_ext.survey_plan_image_revision'::regclass, 'bde_dba');
 
 --------------------------------------------------------------------------------
 -- Fix up permissions on schema
@@ -1008,6 +1023,7 @@ GRANT SELECT
 --------------------------------------------------------------------------------
 
 DROP FUNCTION pg_temp.createGistIndexIfNotExists(name, name, name, name);
+DROP FUNCTION pg_temp.changeTableOwnerIfNeeded(regclass, name);
 
 END
 $SCHEMA$;

@@ -7,6 +7,7 @@ this file.
 ### Enhanced
 - Do not hide errors from tableversion/dbpatch loaders (#209)
 - Do not require `pg_config` from schema loader (#216)
+- Only ALTER table on upgrade if really needed (#218)
 
 
 ## 1.9.0 - 2020-02-11
