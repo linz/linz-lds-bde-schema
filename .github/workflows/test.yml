@@ -92,6 +92,9 @@ jobs:
         # Post-install tests
         make installcheck
         make installcheck-stdout
+    - name: Test uninstall
+      run: |
+        make uninstall
     - name: Test docs building
       run: |
         xvfb-run make docs
