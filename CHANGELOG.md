@@ -3,6 +3,9 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.11.0dev - 2020-MM-DD
+### Added
+
 ## 1.10.0 - 2020-05-05
 ### Enhanced
 - Do not hide errors from tableversion/dbpatch loaders (#209)
