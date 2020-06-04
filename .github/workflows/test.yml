@@ -111,7 +111,7 @@ jobs:
       if: matrix.pg >= 10
 
   package:
-    if: ${{ success() }}
+    needs: test
     name: Package for Debian
     runs-on: ubuntu-18.04
     strategy:
