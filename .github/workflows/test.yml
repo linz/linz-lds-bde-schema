@@ -123,20 +123,21 @@ jobs:
         #       github-action syntax
         echo "GitHub ref: ${{ github.ref }}"
         echo "GitHub event_name: ${{ github.event_name }}"
-        REPO=
+        PACKAGECLOUD_REPOSITORY=
         if test "${{ github.event_name }}" = 'push'; then
           if expr "${{ github.ref }}" : "refs/tags/" > /dev/null; then
-            REPO=test
+            PACKAGECLOUD_REPOSITORY=test
+            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
           elif test "${{ github.ref }}" = 'refs/heads/packagecloud' \
                  -o "${{ github.ref }}" = 'refs/heads/master'
           then
-            REPO=dev
+            PACKAGECLOUD_REPOSITORY=dev
           fi
         fi
-        echo "REPO: $REPO"
-        echo ::set-env name=REPO::"$REPO"
+        echo "PACKAGECLOUD_REPOSITORY: $PACKAGECLOUD_REPOSITORY"
+        echo ::set-env name=PACKAGECLOUD_REPOSITORY::"$PACKAGECLOUD_REPOSITORY"
 
-    - uses: linz/linz-software-repository@v3
+    - uses: linz/linz-software-repository@v4
       with:
         packagecloud_token: ${{ secrets.LINZCI_PACKAGECLOUD_TOKEN }}
-        publish_to_repository: ${{ env.REPO }}
+        packagecloud_repository: ${{ env.PACKAGECLOUD_REPOSITORY }}
