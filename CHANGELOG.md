@@ -3,6 +3,10 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.10.2 - 2020-06-16
+### Fixed
+- Lack of changelog in debian package
+
 ## 1.10.1 - 2020-05-27
 ### Fixed
 - Work around RDS bug with `search_path` (#223)
