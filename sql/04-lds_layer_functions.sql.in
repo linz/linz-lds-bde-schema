@@ -410,10 +410,16 @@ DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_ApplyTableDifference
 DO $$
 BEGIN
 
-    -- LDS_GetProtectedText is expected to be optionally provided by the
+    -- lds.LDS_GetProtectedText is expected to be optionally provided by the
     -- user, so we do not override it if existing.
     -- See https://github.com/linz/linz-lds-bde-schema/issues/34
-    IF NOT EXISTS(SELECT * from pg_proc where proname = 'lds_getprotectedtext') THEN
+    IF NOT EXISTS(
+      SELECT *
+      FROM pg_proc p, pg_namespace n
+      WHERE p.proname = 'lds_getprotectedtext'
+        AND p.pronamespace = n.oid
+        AND n.nspname = 'lds'
+    ) THEN
 
         CREATE FUNCTION lds.LDS_GetProtectedText(
             p_text VARCHAR(20)
@@ -427,6 +433,7 @@ BEGIN
         PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetProtectedText(VARCHAR(20))');
 
     END IF;
+
 END;
 $$;
 
