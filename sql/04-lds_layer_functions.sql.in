@@ -413,6 +413,13 @@ BEGIN
     -- lds.LDS_GetProtectedText is expected to be optionally provided by the
     -- user, so we do not override it if existing.
     -- See https://github.com/linz/linz-lds-bde-schema/issues/34
+    --
+    -- This function is used to determine the value of the following
+    -- columns for protected titles (bde.crs_title.protect_{start,end}):
+    --
+    --  * corporate_name column in the lds.title_owners_aspatial table
+    --  * surname column in the bde_ext.alias table
+    --
     IF NOT EXISTS(
       SELECT *
       FROM pg_proc p, pg_namespace n
