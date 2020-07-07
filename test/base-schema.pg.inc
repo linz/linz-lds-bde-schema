@@ -1688,6 +1688,8 @@ SELECT has_function('lds', 'lds_droptablecontrainstsandindexes', ARRAY['regclass
 SELECT function_owner_is('lds', 'lds_droptablecontrainstsandindexes', ARRAY['regclass'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_droptitleexclusiontables', ARRAY['integer']);
 SELECT function_owner_is('lds', 'lds_droptitleexclusiontables', ARRAY['integer'], 'bde_dba'::name);
+SELECT has_function('lds', 'lds_getencumbranceename', ARRAY['character varying','boolean']);
+SELECT function_owner_is('lds', 'lds_getencumbranceename', ARRAY['character varying','boolean'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_getlanddistict', ARRAY['geometry']);
 SELECT function_owner_is('lds', 'lds_getlanddistict', ARRAY['geometry'], 'bde_dba'::name);
 SELECT has_function('lds', 'lds_getprotectedtext', ARRAY['character varying']);

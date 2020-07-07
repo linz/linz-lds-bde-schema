@@ -441,6 +441,31 @@ BEGIN
 
     END IF;
 
+    -- lds.LDS_GetProtectedEncumbranceeName is expected to be optionally
+    -- provided by the user, so we do not override it if existing.
+    --
+    -- This function is used to write the value of the name
+    -- column for public encumbrancees table (bde_ext.encumbrancee)
+    -- optionally protected by title instruments protection
+    -- (bde.crs_ttl_inst_protect)
+    --
+    IF NOT EXISTS(
+      SELECT *
+      FROM pg_proc p, pg_namespace n
+      WHERE p.proname = 'lds_getencumbranceename'
+        AND p.pronamespace = n.oid
+        AND n.nspname = 'lds'
+    ) THEN
+
+      CREATE OR REPLACE FUNCTION lds.LDS_GetEncumbranceeName(name varchar, protected boolean)
+      RETURNS TEXT AS
+      $FUNC$
+        SELECT $1;
+      $FUNC$ LANGUAGE sql IMMUTABLE;
+      PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetEncumbranceeName(varchar, boolean)');
+
+    END IF;
+
 END;
 $$;
 
