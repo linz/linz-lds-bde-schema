@@ -442,7 +442,7 @@ AS $$
     WHERE
         LDT.loc_id = LOC.id AND
         LDT.shape && $1
-    ORDER BY
+    ORDER BY -- Do we really need this ORDER BY here ? --strk 2020-07-09
         ST_Distance(LDT.shape, $1) ASC
 $$ LANGUAGE sql STABLE;
 
@@ -878,8 +878,6 @@ BEGIN
             tmp_geodetic_marks
         WHERE
             cos_id_official = 109
-        ORDER BY
-            id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -926,8 +924,6 @@ BEGIN
             tmp_geodetic_marks
         WHERE
             cos_id_official = 142
-        ORDER BY
-            id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -1038,7 +1034,7 @@ BEGIN
             LEFT JOIN %2% AS ORG ON (ORG.nod_id = TMP.nod_id AND ORG.coordinate_system = TMP.coordinate_system)
         WHERE
             TMP.cos_id_official = 109
-        ORDER BY
+        ORDER BY -- used for consistent id=nextval()
             TMP.nod_id,
             TMP.coordinate_system
     $sql$;
@@ -1075,9 +1071,6 @@ BEGIN
             tmp_geodetic_vertical_mark
         WHERE
             cos_id_official = 109
-        ORDER BY
-            nod_id,
-            coordinate_system
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -1125,7 +1118,7 @@ BEGIN
             LEFT JOIN %2% AS ORG ON (ORG.nod_id = TMP.nod_id AND ORG.coordinate_system = TMP.coordinate_system)
         WHERE
             TMP.cos_id_official = 142
-        ORDER BY
+        ORDER BY -- used for consistent id=nextval()
             TMP.nod_id,
             TMP.coordinate_system
     $sql$;
@@ -1160,9 +1153,6 @@ BEGIN
             tmp_geodetic_vertical_mark
         WHERE
             cos_id_official = 142
-        ORDER BY
-            nod_id,
-            coordinate_system
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -1333,7 +1323,7 @@ BEGIN
             LEFT JOIN %2% AS ORG ON (ORG.nod_id = TMP.nod_id AND ORG.control_network = TMP.control_network)
         WHERE
             TMP.cos_id_official = 109
-        ORDER BY
+        ORDER BY -- used for consistent id=nextval()
             TMP.nod_id,
             TMP.control_network
     $sql$;
@@ -1374,9 +1364,6 @@ BEGIN
             tmp_geodetic_network_marks
         WHERE
             cos_id_official = 109
-        ORDER BY
-            nod_id,
-            control_network
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -1522,8 +1509,6 @@ BEGIN
             t
         WHERE
             row_number = 1
-        ORDER BY
-            id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -1688,7 +1673,7 @@ BEGIN
         bde.crs_stat_act_parcl SAP
         LEFT JOIN  bde.crs_sys_code SAPA ON SAPA.scg_code ='SAPA' AND SAP.action = SAPA.code
         LEFT JOIN  bde.crs_sys_code SAPS ON SAPS.scg_code ='SAPS' AND SAP.status = SAPS.code
-    ORDER BY SAP.par_id;
+    ;
 
     ANALYSE tmp_par_stat_action;
 
@@ -1900,8 +1885,7 @@ BEGIN
         (ST_Contains(WDR.shape, PAR.shape) OR PAR.shape IS NULL)
     GROUP BY
         1, 2, 4, 5, 6, 7, 8, 10, 11, 12
-    ORDER BY
-        PAR.id;
+    ;
 
     RAISE NOTICE 'Finished creating temp table tmp_parcels';
 
@@ -3106,16 +3090,6 @@ BEGIN
                 encumbrancees
             FROM
                 tmp_title_memorials
-            ORDER BY
-                title_no,
-                instrument_number,
-                memorial_text,
-                instrument_type,
-                land_district,
-                instrument_lodged_datetime,
-                encumbrancees,
-                "current" DESC,
-                id
         )
         SELECT
             id,
@@ -3129,7 +3103,6 @@ BEGIN
             encumbrancees
         FROM
             tmp_title_memorials_nodups
-        ORDER BY id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -3286,22 +3259,6 @@ BEGIN
         FROM
             temp_title_memorial_text TXT
             JOIN title_memorials TTM ON TXT.ttm_id = TTM.id
-        ORDER BY
-            TTM.title_no,
-            TXT.new_title_legal_description,
-            TXT.new_title_reference,
-            TXT.easement_type,
-            TXT.servient_tenement,
-            TXT.easement_area,
-            TXT.dominant_tenement_or_grantee,
-            TXT.statutory_restriction,
-            TXT.principal_unit,
-            TXT.future_development_unit,
-            TXT.assessory_unit,
-            TXT.title_issued,
-            TXT.curr_hist_flag DESC,
-            TXT.ttm_id,
-            TXT.id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -3514,8 +3471,6 @@ BEGIN
             WRK.restricted = 'N'
         GROUP BY
             1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-        ORDER BY
-            WRK.id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -3575,8 +3530,6 @@ BEGIN
             END AS shape
         FROM
             adjustments
-        ORDER BY
-            id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -3625,8 +3578,6 @@ BEGIN
             ADJ.id,
             ADJ.adjust_datetime,
             SUR.survey_reference
-        ORDER BY
-            ADJ.id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -3675,8 +3626,6 @@ BEGIN
             ADJ.id,
             ADJ.adjust_datetime,
             SUR.survey_reference
-        ORDER BY
-            ADJ.id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -3937,8 +3886,6 @@ BEGIN
             t
         WHERE
             row_number = 1
-        ORDER BY
-            id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -4191,8 +4138,6 @@ BEGIN
             OBN.status = 'AUTH' AND
             OBN.surveyed_class IN ('ADPT', 'CALC', 'MEAS') AND
             OBN.value_1 >= 0
-        ORDER BY
-            OBN.id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
