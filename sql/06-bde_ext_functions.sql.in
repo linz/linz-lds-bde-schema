@@ -571,40 +571,19 @@ BEGIN
         status,
         name
     )
-    WITH
-    TTE(ttl_title_no,enc_id)
-    AS (
-        SELECT DISTINCT
-        ttl_title_no,enc_id
-        FROM crs_ttl_enc TE
-        JOIN crs_title T ON TE.ttl_title_no = T.title_no
-        WHERE T.status <> 'PEND'
-    ),
-    TRN_ENC(id)
-    AS (
-        SELECT DISTINCT
-        ENE.id AS id
-        FROM tmp_training_titles TRN
-        JOIN TTE ON TRN.title_no = TTE.ttl_title_no
-        JOIN crs_enc_share ENS ON ENS.enc_id = TTE.enc_id
-        JOIN crs_encumbrancee ENE ON ENE.ens_id = ENS.id
-    ),
-    ENE(id,ens_id,status,name)
-    AS (
-        SELECT
-        id,ens_id,status,name
-        FROM crs_encumbrancee
-        WHERE status <> 'LDGE'
-        AND id NOT IN (SELECT id FROM TRN_ENC)
-    )
     SELECT DISTINCT
         ENE.id,
         ENE.ens_id,
         ENE.status,
         ENE.name
-    FROM ENE
+    FROM crs_encumbrancee ENE
     JOIN crs_enc_share ENS ON ENS.id = ENE.ens_id
-    JOIN TTE ON TTE.enc_id = ENS.enc_id
+    JOIN crs_ttl_enc TE ON TE.enc_id = ENS.enc_id
+    JOIN crs_title T ON T.title_no = TE.ttl_title_no
+    LEFT JOIN tmp_training_titles TRN ON TRN.title_no = T.title_no
+    WHERE TRN.title_no IS NULL
+      AND ENE.status <> 'LDGE'
+      AND T.status <> 'PEND'
     ORDER BY id;
     $sql$;
 
