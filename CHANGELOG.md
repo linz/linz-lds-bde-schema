@@ -3,6 +3,9 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.12.0dev - YYYY-MM-DD
+### Added
+
 ## 1.11.0 - 2020-07-14
 ### Added
 - LOL-3.22b: add support for filtering encumbrancee name
