@@ -460,7 +460,11 @@ BEGIN
       CREATE OR REPLACE FUNCTION lds.LDS_GetEncumbranceeName(name varchar, protected boolean)
       RETURNS TEXT AS
       $FUNC$
-        SELECT $1;
+        SELECT CASE WHEN protected THEN
+            ''
+        ELSE
+            $1
+        END;
       $FUNC$ LANGUAGE sql IMMUTABLE;
       PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetEncumbranceeName(varchar, boolean)');
 
