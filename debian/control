@@ -14,6 +14,6 @@ Depends: ${misc:Depends},
          tableversion,
          dbpatch,
          linz-bde-uploader (>= 2.4.0),
-         linz-bde-schema
+         linz-bde-schema (>= 1.11.0)
 Description: Provides the schemas and functions to generate the Landonline
  layers and tables that are available on the LDS.
