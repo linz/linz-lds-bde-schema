@@ -8,6 +8,7 @@ on:
       - 'release-*'
     tags-ignore:
       - 'debian/*'
+      - '*-start'
   pull_request:
     branches:
       - '*'
