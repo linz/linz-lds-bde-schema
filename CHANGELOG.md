@@ -3,7 +3,7 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.11.1dev - YYYY-MM-DD
+## 1.11.1 - 2020-07-21
 ### Enhanced
 - Encoded dependency on linz-bde-schema-1.11+
 
