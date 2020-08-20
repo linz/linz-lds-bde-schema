@@ -582,7 +582,7 @@ BEGIN
     JOIN crs_title T ON T.title_no = TE.ttl_title_no
     -- Field ACT_TIN_ID_CRT of crs_enc_share is documented
     -- to be "The id of the instrument that created the encumbrance share."
-    LEFT JOIN crs_ttl_inst_protect PRO ON PRO.id = ENS.act_tin_id_crt
+    LEFT JOIN crs_ttl_inst_protect PRO ON PRO.tin_id = ENS.act_tin_id_crt
     LEFT JOIN tmp_training_titles TRN ON TRN.title_no = T.title_no
     WHERE TRN.title_no IS NULL
       AND ENE.status <> 'LDGE'
