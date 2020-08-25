@@ -3,6 +3,10 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.11.3dev - YYYY-MM-DD
+### Fixed
+- ...
+
 ## 1.11.2 - 2020-08-25
 ### Fixed
 - Foreign key use in encumbrancee name filtering (#240)
