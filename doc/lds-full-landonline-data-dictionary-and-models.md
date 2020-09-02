@@ -1,7 +1,7 @@
 ---
 title: "LINZ Data Service: Full Landonline Dataset"
 subtitle: Data Dictionary and Data Models
-date: November 2017 <br> Version 2.4
+date: November 2018 <br> Version 2.6
 ---
 
 # Versioning
@@ -14,6 +14,8 @@ __Version number__ | __Amendments__ | __Date__
 2.2 | Updates to LINZ Licence For Personal Data references | September 2016
 2.3 | Updates for the change of source for Street Address and Roads data from Landonline to the Address Information Management System | October 2016
 2.4 | Revised URLs to direct to new dataset IDs <br> Added Ordinate Adjustment table and model <br> Deprecated Map Grid <br> Removed roads and addresses table and model | November 2017
+2.5 | Updated for change to Creative Commons Attribution 4.0 license | April 2018
+2.6 | Terminology changes from Land Transfer Act 2017 | November 2018
 
 # Introduction
 ### Purpose
@@ -152,7 +154,7 @@ To ensure that the data is compliant with the Act, official place names that sho
 Instruments can be made up of one or more actions.
 Actions are used to perform the actual operations of titles transactions.
 
-__Data Element__   | __Type (max. size)__   | __Required__   | __Notes__                      
+__Data Element__   | __Type (max. size)__   | __Required__   | __Notes__
 :------------|:-----------|:-------|:---------------------------------------
 __*AUDIT_ID*__     | INTEGER                | Yes            | Id used to link to the associated audit details. (Primary Key)
 __TIN_ID__         | INTEGER                | Yes            | The instrument the action belongs to. <br> The instrument id is also included in the primary in all foreign keys from the action table. (FK)
@@ -163,16 +165,16 @@ SYSTEM_ACTION      | CHAR(1)                | Yes            | Whether the curre
 ACT_ID_ORIG        | INTEGER                | No             | The id of the existing action that the current action affects. <br> Used by the data entry screens in the Receive Registration subsystem when a new action alters or removes the data created by another "original" action. (FK)
 ACT_TIN_ID_ORIG    | INTEGER                | No             | The id of the existing instrument that the current action affects. <br> Used by the data entry screens in the Receive Registration subsystem when a new action alters or removes the data created by another "original" instrument and action. (FK)
 STE_ID             | INTEGER                | No             | The id of the statute that is associated with this particular action. <br> This column is used to populate variables in memorial templates for the action. (FK)
-MODE               | VARCHAR(4)             | No             | Window mode for the Modify Encumbrance screen. This column will only be used by CRR_S11 - Modify Encumbrance. See Reference Code group ACTM for valid values. 
+MODE               | VARCHAR(4)             | No             | Window mode for the Modify Encumbrance screen. This column will only be used by CRR_S11 - Modify Encumbrance. See Reference Code group ACTM for valid values.
 FLAGS              | VARCHAR(4)             | No             | A general purpose column to store state during processing of the action.
 SOURCE             | INTEGER                | Yes            | Default: 1
 
 ### Relationships
 
- __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__ 
+ __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__
 :-----------------|:---------------|:-----------------------------|:----------------------------
-Action             | Action           | TIN_ID <br> ID            | ACT_TIN_ID_ORIG <br> ACT_ID_ORIG 
-Action             | Appellation      | TIN_ID <br> ID            | ACT_TIN_ID_CRT <br> ACT_ID_CRT 
+Action             | Action           | TIN_ID <br> ID            | ACT_TIN_ID_ORIG <br> ACT_ID_ORIG
+Action             | Appellation      | TIN_ID <br> ID            | ACT_TIN_ID_CRT <br> ACT_ID_CRT
 Action             | Appellation      | TIN_ID <br> ID            | ACT_TIN_ID_EXT <br> ACT_ID_EXT
 Acton              | Title Action     | TIN_ID <br> ID            | ACT_TIN_ID <br> ACT_ID
 Action             | Title Memorial   | TIN_ID <br> ID            | ACT_TIN_ID_CRT <br> ACT_ID_CRT
@@ -187,7 +189,7 @@ Title Instrument   | Action           | ID                            | TIN_ID
 Instruments can be made up of one or more actions. Actions are used to perform the actual operations of titles transactions.
 This table contains all the valid action types.
 
-__Data Element__   | __Type (max. size)__   | __Required__   | __Notes__                      
+__Data Element__   | __Type (max. size)__   | __Required__   | __Notes__
 :------------|:-----------|:-------|:---------------------------------------
 __*AUDIT_ID*__     | INTEGER                | Yes            | Id used to link to the associated audit details. (Primary Key)
 __TYPE__           | VARCHAR(4)             | Yes            | The code for the action type.
@@ -198,12 +200,12 @@ EXISTING_INST      | CHAR(1)                | Yes            | This column is us
 
 ### Relationships
 
- __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__ 
+ __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__
 :-----------------|:---------------|:-----------------------------|:----------------------------
 Action Type        | Action           | TYPE                          | ATT_TYPE
 
 ## Adjustment Coefficient [(https://data.linz.govt.nz/table/51704)](https://data.linz.govt.nz/table/51704)
-### Description: 
+### Description:
 Adjustment Coefficient is a set of control parameters used by an Adjustment Method in the Generate Coordinate/Adjustment process.
 
 __Data Element__   | __Type (max. size)__   | __Notes__
@@ -217,7 +219,7 @@ COEF_CODE          | VARCHAR(4)             | Adjustment Coefficient Code eg <br
 __AUDIT_ID__       | INTEGER                | Id used to link to the associated audit details.
 
 ## Adjustment Method [(https://data.linz.govt.nz/table/51705)](https://data.linz.govt.nz/table/51705)
-### Description: 
+### Description:
 Adjustment Method contains information concerning the type of software and procedures used to adjust the parcel fabric.
 
 __Data Element__   | __Type (max. size)__   | __Notes__
@@ -247,7 +249,7 @@ USR_ID_EXEC        | VARCHAR(20)            | User that last ran the adjustment.
 ADJUST_DATETIME    | DATETIME               | Timestamp of when the adjustment was run.
 DESCRIPTION        | VARCHAR(100)           | Description of the adjustment run.
 SUM_SQRD_RESIDUALS | DECIMAL(22,12)         | The weighted sum of squared residuals from the adjustment. <br> With the redundancy this provides an indication of how consistent the data is and how well it fits the fixed coordinates in the adjustment.
-REDUNDANCY         | DECIMAL(22,12)         | The redundancy of the adjustment is the number of independent observations - generally the total number of observations minus the number of ordinates and other parameters computed. 
+REDUNDANCY         | DECIMAL(22,12)         | The redundancy of the adjustment is the number of independent observations - generally the total number of observations minus the number of ordinates and other parameters computed.
 WRK_ID             | INTEGER                | Work id that created the adjustment run through authorise survey process.
 __AUDIT_ID__       | INTEGER                | Id used to link to the associated audit details.
 
@@ -292,16 +294,16 @@ __*AUDIT_ID*__     | INTEGER | Id used to link to the associated audit details. 
 
 ## Alias [(https://data.linz.govt.nz/table/51982)](https://data.linz.govt.nz/table/51982)
 ### Description:
-Individual proprietors may have one or more alternate names or (aliases). This entity stores all of the alternate names used by an individual proprietor. Corporate proprietors can not have aliases.<br>
+Individual registered owners may have one or more alternate names or aliases. This entity stores all of the alternate names used by an individual registered owner. Corporate owners can not have aliases.<br>
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
 __Data Element__   | __Type (max. size)__   | __Notes__
 :-----------|:-----------|:-----------------------------------
 __*ID*__           | INTEGER                | Unique identifier for an alias (Primary Key)
-PRP_ID             | INTEGER                | Identifier of the proprietor whose alias this is.
-SURNAME            | VARCHAR(100)           | The surname of an alias for a proprietor.
-OTHER_NAMES        | VARCHAR(100)           | The first and subsequent names of an alias for a proprietor.
+PRP_ID             | INTEGER                | Identifier of the registered owner whose alias this is.
+SURNAME            | VARCHAR(100)           | The surname of an alias for a registered owner.
+OTHER_NAMES        | VARCHAR(100)           | The first and subsequent names of an alias for a registered owner.
 
 ## Appellation [(https://data.linz.govt.nz/table/51590)](https://data.linz.govt.nz/table/51590)
 ### Description:
@@ -408,7 +410,7 @@ __Data Element__   | __Type (max. size)__   | __Notes__
 __*ID*__           | INTEGER                | Unique identifier of the coordinate system. (Primary Key)
 COT_ID             | INTEGER                | Coordinate type id specifies the format of the coordinates in this coordinate system
 DTM_ID             | INTEGER                | Datum of this coordinate system
-COS_ID_ADJUST      | INTEGER                | Id of the coordinate system that will be used for automatic adjustments when the survey was performed within this coordinate system. 
+COS_ID_ADJUST      | INTEGER                | Id of the coordinate system that will be used for automatic adjustments when the survey was performed within this coordinate system.
 NAME               | VARCHAR(100)           | Name of the coordinate system. e.g. Geodetic 1949 (28 Meridional Circuits); Old Cadastral (28 Meridional Circuits ); New Zealand Map Grid; WGS84 etc.
 INITIAL_STA_NAME   | VARCHAR(100)           | Coordinates can be expressed in terms of various origin points or Initial Stations. These initial stations (nodes) may have false values.
 CODE               | VARCHAR(10)            | Unique code used by external systems to reference a Coordinate System.
@@ -439,7 +441,7 @@ DATA               | VARCHAR(4)             | Data / Parameters which are operat
 __AUDIT_ID__       | INTEGER                | Id used to link to the associated audit details.
 
 ## Datum [(https://data.linz.govt.nz/table/51713)](https://data.linz.govt.nz/table/51713)
-### Description: 
+### Description:
 A Datum is a complete system for enabling Coordinates to be assigned to Nodes. A datum is prescribed by the appropriate authority from which it derives its validity. <br>
 All Coordinates will be in terms of a Datum. <br>
 A Datum also provides a spatial standard for the alignment of Reduced Observations via a Datum Calibration. Most Reduced Observations are Datum dependent but there are specific Reduced Observation types which are Datum independent. <br>
@@ -517,7 +519,7 @@ NAME               | VARCHAR(255)           | The name of the encumbrancee. <br>
 
 ## Estate Share [(https://data.linz.govt.nz/table/52065)](https://data.linz.govt.nz/table/52065)
 ### Description:
-An estate may be owned in shares by proprietors. For example John and Bill may each own a 1/2 share in the land. This table contains one row for each share that exists in an estate. <br>
+An estate may be owned in shares by registered owners. For example John and Bill may each own a 1/2 share in the land. This table contains one row for each share that exists in an estate. <br>
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
@@ -532,7 +534,7 @@ ORIGINAL_FLAG      | CHAR(1)                | This flag is set to "Y" if this sh
 SYSTEM_CRT         | CHAR(1)                | This field will indicate if an estate share has been created as as part of a copy down operation. It will be set to 'Y'es if an estate share was created by copying down another estate share simply to change the details. It will be set to 'N'o if the estate share was actually created by the user.
 EXECUTORSHIP       | VARCHAR(4)             | If the share is held by an executor, this will contain the type of executorship. Examples of executorship are when a person owns a share as an administrator or as the executor of a will. See Reference Code Group ETSE for valid values.
 ACT_ID_CRT         | INTEGER                | The id of the action that created the new estate share.
-SHARE_MEMORIAL     | VARCHAR(17500)         | Each estate share is displayed on a separate line on the title view. This description for the estate share is automatically generated from the attributes of the estate share and the names of the proprietors and their aliases. If there are not enough details stored as structured data to generate this description, it can be manually entered and stored in this attribute. Examples of when this will be required are for certain societies and minors, where the society name or the minor's date of birth is also needed to be displayed.
+SHARE_MEMORIAL     | VARCHAR(17500)         | Each estate share is displayed on a separate line on the title view. This description for the estate share is automatically generated from the attributes of the estate share and the names of the registered owners and their aliases. If there are not enough details stored as structured data to generate this description, it can be manually entered and stored in this attribute. Examples of when this will be required are for certain societies and minors, where the society name or the minor's date of birth is also needed to be displayed.
 
 ## Feature Name Point [(https://data.linz.govt.nz/layer/52017)](https://data.linz.govt.nz/layer/52017)
 ### Description:
@@ -545,7 +547,7 @@ __*ID*__           | INTEGER                | The unique identifier for the feat
 TYPE               | VARCHAR(4)             | The type of feature. Road, River, Stream, Mountain, Railway etc. <br> Refer Sys Code Group FENT for valid values. <br> Warning: Features with a Sys code of "NZPN" are intended for use as context or locational data, and are replaced every few months with data extracted from the NZTopo database.
 NAME               | VARCHAR(100)           | Name of the feature. This may not be unique for a feature type. <br> Note : a name that requires a macron will be shown without the macron and have “ [Spelling not official]” appended to the name. See Section 1.1 Introduction.
 STATUS             | VARCHAR(4)             | Status of the record. <br> Refer Sys Code Group FENS for valid values.
-OTHER_DETAILS      | VARCHAR(100)           | Other details associated with a feature name such as suburb, location etc. This is used to assist in identifying features  ith the same name. <br> For NZPN entries, this field will be populated with information about the named feature and the date it was extracted from the NZTopo database eg “ISLD - NZTopo geoname 07 May 09”. 
+OTHER_DETAILS      | VARCHAR(100)           | Other details associated with a feature name such as suburb, location etc. This is used to assist in identifying features  ith the same name. <br> For NZPN entries, this field will be populated with information about the named feature and the date it was extracted from the NZTopo database eg “ISLD - NZTopo geoname 07 May 09”.
 SE_ROW_ID          | INTEGER                | SE_ROW_ID is a unique key used internally by the ArcSDE datablade. NB the geometry stored at this location has been extracted into the SHAPE data element (below).
 __AUDIT_ID__       | INTEGER                | Id used to link to the associated audit details.
 SHAPE              | GEOMETRY(POINT)        | Spatial definition of the feature.
@@ -618,7 +620,7 @@ __Data Element__   | __Type (max. size)__   | __Notes__
 __*ID*__           | INTEGER                | The unique identifier for the line. (Primary Key)
 BOUNDARY           | CHAR(1)                | Indicates whether or not this line series is part of a boundary. <br> Valid values are "Y" or "N".
 TYPE               | VARCHAR(4)             | Describes the type of line, either right or irregular <br> Valid values are "RGHT" or "IRRE" (Refer Sys Code Group LINT)
-NOD_ID_END         | INTEGER                | The End node of the Line 
+NOD_ID_END         | INTEGER                | The End node of the Line
 NOD_ID_START       | INTEGER                | The Start node of the line.
 ARC_RADIUS         | DECIMAL(22,12)         | The radius of the line. Set to null for straight and irregular lines.
 ARC_DIRECTION      | VARCHAR(4)             | Whether the arc is drawn to the left or right of the line (direction of line is start node to end node). Refer Sys Code Group LIND for valid values.
@@ -726,7 +728,7 @@ REF_DATETIME       | DATETIME               | The date on which the condition of
 PEND_MARK_STATUS   | VARCHAR(4)             | The mark status which is stored as pending until the associated work is approved and then updated into the associated mark entry. <br> Refer Sys Code Group MRKS for valid values.
 PEND_REPLACED      | CHAR(1)                | The replaced flag which is stored as pending until the work is approved and then updated in the associated mark entry <br> Valid values are "Y" or "N".
 PEND_DISTURBED     | CHAR(1)                | The disturbed flag which is stored as pending until the associated work is approved and then updated in the associated mark entry. <br> Valid values are "Y" or "N".
-MRK_ID_PEND_REP    | INTEGER                | The mark the associated mark is going to replace which is stored as pending until the associated work is approved and then updated in the associated mark entry 
+MRK_ID_PEND_REP    | INTEGER                | The mark the associated mark is going to replace which is stored as pending until the associated work is approved and then updated in the associated mark entry
 MRK_ID_PEND_DIST   | INTEGER                | The non disturbed version of the associated disturbed mark which is stored as pending until the associated work is approved and then updated in the associated mark entry
 PEND_DIST_DATE     | DATETIME               | This is the date that the associated mark is indicated as being disturbed and is stored as pending until the associated work is approved. It is then updated in the associated mark entry
 PEND_REPL_DATE     | DATETIME               | The date that the associated mark is indicated that it is replacing another mark which is stored as pending until the associated work is approved and then updated in the associated mark entry
@@ -734,7 +736,7 @@ PEND_MARK_NAME     | VARCHAR(100)           | The mark name supplied for a mark 
 PEND_MARK_TYPE     | VARCHAR(4)             | The mark type supplied for a mark that was captured from CPC. <br> Refer Sys Code Group MRKT for valid values.
 PEND_MARK_ANN      | VARCHAR(50)            | Extra comments recorded in CPC when a mark is disturbed or replaced
 LATEST_CONDITION   | VARCHAR(4)             | The latest condition of the mark e.g. Damaged, Not Found, Destroyed, Threatened, Dangerous, Reliable <br> Refer Sys Code Group MPSC for valid values
-LATEST_COND_DATE   | DATETIME               | The date that the latest condition of the mark was noted. 
+LATEST_COND_DATE   | DATETIME               | The date that the latest condition of the mark was noted.
 __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated audit details. (Primary Key)
 DESCRIPTION        | VARCHAR(2048)          | Further details relating to the condition of the mark
 
@@ -794,16 +796,18 @@ __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated 
 
 ## Nominal Index [(https://data.linz.govt.nz/table/51994)](https://data.linz.govt.nz/table/51994)
 ### Description:
-The nominal index is used when searching for titles by registered proprietor. The actual proprietor table is not used for searching. Proprietors will always be automatically copied into the nominal index, but additional entries can be manually added (or removed). <br>
+The nominal index is used when searching for titles by registered owner (formerly registered owner).
+The actual registered owner table is not used for searching.
+Registered owners will always be automatically copied into the nominal index, but additional entries can be manually added (or removed). <br>
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
 __Data Element__   | __Type (max. size)__   | __Notes__
 :-----------|:-----------|:-----------------------------------
 TTL_TITLE_NO       | VARCHAR(20)            | The title that this nominal index belongs to.
-PRP_ID             | INTEGER                | If the name was automatically copied into the nominal index, this contains the id of the proprietor. This is used to make the nominal index entry historical when the proprietor is transferred off the title.
+PRP_ID             | INTEGER                | If the name was automatically copied into the nominal index, this contains the id of the registered owner. This is used to make the nominal index entry historical when the registered owner is transferred off the title.
 __*ID*__           | INTEGER                | The unique identifier for the nominal index entry. (Primary Key)
-STATUS             | VARCHAR(4)             | Status of the nominal index entry. This indicates if the name is currently the registered proprietor on the title or not. The default when searching is to search on current names only, but titles can be searched using all historical names as well. <br> See Reference Code Group TSDS for valid values
+STATUS             | VARCHAR(4)             | Status of the nominal index entry. This indicates if the name is currently the registered owner on the title or not. The default when searching is to search on current names only, but titles can be searched using all historical names as well. <br> See Reference Code Group TSDS for valid values
 NAME_TYPE          | VARCHAR(4)             | Indicates if the name is individual or corporate. See Reference Code Group NMIT for valid values
 SURNAME            | VARCHAR(100)           | If this nominal index entry is an individual, the surname is stored here, otherwise this should be blank.
 OTHER_NAMES        | VARCHAR(100)           | If this nominal index entry is an individual, the given names are stored here, otherwise this should be blank.
@@ -819,7 +823,7 @@ __*ID*__           | INTEGER                | Unique identifier for the observat
 OBT_TYPE           | VARCHAR(4)             | Type of Observation eg Raw or Reduced.
 OBT_SUB_TYPE       | VARCHAR(4)             | Code to identify the observation element subtype. Refer to the Observation Element Type table.
 STP_ID_LOCAL       | INTEGER                | The local setup id. This identifies the node that was observed from. <br> Refer Sys Code Group OBNT for valid values.
-STP_ID_REMOTE      | INTEGER                | The Remote setup id. This identifies the node that was observed to. 
+STP_ID_REMOTE      | INTEGER                | The Remote setup id. This identifies the node that was observed to.
 OBS_ID             | INTEGER                | This is used to group observations into a set. A collection of observations which are related in some way which is useful for administration or to simplify processes. <br> An example is a set of theodolite directions. These all have a common orientation uncertainty and are grouped as such in a network adjustment. <br> This field is only used for geodetic observations.
 COS_ID             | INTEGER                | The coordinate system the observation is defined in.
 RDN_ID             | INTEGER                | Identifies the reduction run that produced the reduced observation. <br> Only the metadata relating to the reduction is stored within CRS, the actual reduction of raw observations will be performed external to CRS.
@@ -846,7 +850,7 @@ Observation Accuracy applies to a particular Observation (variance or standard d
 __Data Element__   | __Type (max. size)__   | __Notes__
 :-----------|:-----------|:-----------------------------------
 OBN_ID1            | INTEGER                | The id of the observation for which the accuracy information applies.
-OBN_ID2            | INTEGER                | For cadastral data this is always the same as obn_id1. <br> For GPS data the accuracy information may represent the covariance between two different observations. Some parts of CRS assume that obn_id1 <= obn_id2 
+OBN_ID2            | INTEGER                | For cadastral data this is always the same as obn_id1. <br> For GPS data the accuracy information may represent the covariance between two different observations. Some parts of CRS assume that obn_id1 <= obn_id2
 VALUE_11           | FLOATING               | This information holds the covariance of the first elements of the observations identified by obn_id1 and obn_id2. <br> For distance observations obn_id1 = obn_id2 and this holds the variance of the observation in units of metres squared. <br> For bearing observations obn_id1 = obn_id2 and this holds the variance of the observation in units of degrees squared. <br> For arc observations obn_id1 = obn_id2 and this holds the variance of the arc chord bearing in units of degrees squared.
 VALUE_12           | FLOATING               | This information holds the covariance of the first element for obn_id1 and the second element of obn_id2.
 VALUE_13           | FLOATING               | This information holds the covariance of the first element for obn_id1 and the third element of obn_id2.
@@ -964,7 +968,7 @@ __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated 
 
 ## Ordinate Type [(https://data.linz.govt.nz/table/51735)](https://data.linz.govt.nz/table/51735)
 ### Description:
-This entity contains all of the ordinate types. 
+This entity contains all of the ordinate types.
 e.g. X,Y,Z, latitude, longitude, Velocity X, Velocity Y, Velocity Z etc.
 
 __Data Element__   | __Type (max. size)__   | __Notes__
@@ -979,7 +983,7 @@ __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated 
 ## Parcel [(https://data.linz.govt.nz/layer/51976)](https://data.linz.govt.nz/layer/51976)
 ### Description:
 A Parcel is a polygon or polyhedron consisting of boundary lines (Features which are boundary features) which may be, or may be capable of being defined by survey, and includes the parcel area and appellation. <br>
-Polyhedrons are required in order to define stratum estates and easements. 
+Polyhedrons are required in order to define stratum estates and easements.
 
 __Data Element__   | __Type (max. size)__   | __Notes__
 :-----------|:-------------|:-----------------------------------
@@ -1075,21 +1079,21 @@ __AUDIT_ID__       | INTEGER                | Id used to link to the associated 
 
 ## Proprietor [(https://data.linz.govt.nz/table/51998)](https://data.linz.govt.nz/table/51998)
 ### Description:
-A proprietor is a person or corporation holding a share in a title. <br>
+A registered owner is a person or corporation holding a share in a title. <br>
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
 __Data Element__   | __Type (max. size)__   | __Notes__
 :-------------|:-----------|:-----------------------------------
-ETS_ID             | INTEGER                | The identifier of the estate share that the proprietor owns. If there are joint tenants on a title, there will be more than one proprietor for the same estate share.
-__*ID*__           | INTEGER                | The unique identifier for the proprietor. (Primary Key)
-STATUS             | VARCHAR(4)             | The status of the proprietor. <br> See Reference Code Group TSDS for valid values.
-TYPE               | VARCHAR(4)             | Indicates whether this proprietor is an individual or corporation. <br> See Reference Code Group PRPT for valid values.
-PRIME_SURNAME      | VARCHAR(100)           | If this proprietor is an individual, the surname of the proprietor is stored here, otherwise this should be blank.
-PRIME_OTHER_NAMES  | VARCHAR(100)           | If this proprietor is an individual, the given name(s) of the proprietor are stored here, otherwise this should be blank.
-CORPORATE_NAME     | VARCHAR(250)           | If this proprietor is a corporation, the name of the corporation is stored here, otherwise this should be blank.
-NAME_SUFFIX        | VARCHAR(4)             | If this proprietor is an individual, the name_suffix of the proprietor is stored here, otherwise this should be blank. <br> See Reference Code Group NMSF for valid values.
-ORIGINAL_FLAG      | CHAR(1)                | This flag is set to "Y" if this proprietor was one of the original proprietors on the title. This is required for printing the historic view of the title which shows the original header data. 
+ETS_ID             | INTEGER                | The identifier of the estate share that the registered owner owns. If there are joint tenants on a title, there will be more than one registered owner for the same estate share.
+__*ID*__           | INTEGER                | The unique identifier for the registered owner. (Primary Key)
+STATUS             | VARCHAR(4)             | The status of the registered owner. <br> See Reference Code Group TSDS for valid values.
+TYPE               | VARCHAR(4)             | Indicates whether this registered owner is an individual or corporation. <br> See Reference Code Group PRPT for valid values.
+PRIME_SURNAME      | VARCHAR(100)           | If this registered owner is an individual, the surname of the registered owner is stored here, otherwise this should be blank.
+PRIME_OTHER_NAMES  | VARCHAR(100)           | If this registered owner is an individual, the given name(s) of the registered owner are stored here, otherwise this should be blank.
+CORPORATE_NAME     | VARCHAR(250)           | If this registered owner is a corporation, the name of the corporation is stored here, otherwise this should be blank.
+NAME_SUFFIX        | VARCHAR(4)             | If this registered owner is an individual, the name_suffix of the registered owner is stored here, otherwise this should be blank. <br> See Reference Code Group NMSF for valid values.
+ORIGINAL_FLAG      | CHAR(1)                | This flag is set to "Y" if this registered owner was one of the original registered owners on the title. This is required for printing the historic view of the title which shows the original header data.
 
 ## Reduction Method [(https://data.linz.govt.nz/table/51736)](https://data.linz.govt.nz/table/51736)
 ### Description:
@@ -1120,7 +1124,7 @@ SOFTWARE_USED      | VARCHAR(30)            | Software used in the reduction run
 __AUDIT_ID__       | INTEGER                | Id used to link to the associated audit details.
 
 ## Reference Survey [(https://data.linz.govt.nz/table/51738)](https://data.linz.govt.nz/table/51738)
-### Description: 
+### Description:
 The reference to previous survey datasets used in preparing a dataset being lodged. There will be a number of datasets appropriate to each dataset lodged.
 
 __Data Element__   | __Type (max. size)__   | __Notes__
@@ -1298,7 +1302,7 @@ EED_REQ_ID         | INTEGER                | Electoral Edit Request ID. The Ele
 __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated audit details. (Primary Key)
 
 ## Survey Plan Reference [(https://data.linz.govt.nz/layer/51747)](https://data.linz.govt.nz/layer/51747)
-### Description: 
+### Description:
 This is required to spatially position survey plan references for display within Landonline. <br>
 The plan reference itself is stored in the Survey table.
 
@@ -1328,7 +1332,7 @@ LAST_UPDATED       | DATETIME               | The date the latest image is saved
 
 ### Relationships
 
- __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__ 
+ __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__
 :-----------------|:---------------|:-----------------------------|:----------------------------
 Survey             | Survey Plan Image Revision     | WRK_ID          | SUR_WRK_ID
 
@@ -1403,7 +1407,7 @@ __ACT_ID__         | INTEGER                | The actio nid. (FK)
 
 ### Relationships
 
- __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__ 
+ __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__
 :-----------------|:---------------|:-----------------------------|:----------------------------
 Action             | Title Action     | TIN_ID <br> ID            | ACT_TIN_ID <br> ACT_ID
 Title              | Title Action     | TITLE_NO                      | TTL_TITLE_NO
@@ -1436,7 +1440,7 @@ ACT_ID_CRT         | INTEGER                | The id of the action that created 
 ## Title Estate [(https://data.linz.govt.nz/table/52068)](https://data.linz.govt.nz/table/52068)
 ### Description:
 An estate is a type of ownership of a piece of land e.g. fee simple estate, leasehold estate. <br>
-Estates are used to link the proprietor(s) to the title. A title can have more than 1 estate and type.
+Estates are used to link the registered owner(s) to the title. A title can have more than 1 estate and type.
 
 __Data Element__   | __Type (max. size)__   | __Notes__
 :--------------|:-----------|:-----------------------------------
@@ -1502,7 +1506,7 @@ This table contains one row for each current or historical memorial for a title.
 All historical memorials for all titles are kept. Current memorials are deleted when they are no longer valid on the title. <br>
 Note : Titles that existed prior to Landonline only had memorials converted when that title was live and they were current memorials.
 
-__Data Element__   | __Type (max. size)__   | __Required__   | __Notes__                      
+__Data Element__   | __Type (max. size)__   | __Required__   | __Notes__
 :-----------------|:-------------|:-------|:---------------------------------------
 __*ID*__           | INTEGER                | Yes            | The unique identifier for this title memorial. (Primary Key)
 TTL_TITLE_NO       | VARCHAR(20)            | Yes            | The title the memorial appears on. (FK)
@@ -1515,7 +1519,7 @@ STATUS             | VARCHAR(4)             | Yes            | The status of the
 USER_CHANGED       | CHAR(1)                | Yes            | This flag indicates if the user has changed the memorial text that the system generated. This is used to determine whether or not the memorial should be automatically regenerated or not.
 TEXT_TYPE          | VARCHAR(4)             | Yes            | Indicates whether or not the memorial contains text only, or contains a table. See Reference Code Group TTMT for valid values.
 REGISTER_ONLY_MEM  | CHAR(1)                | No             | Indicates whether the memorial should appear on the register copy of the title only, or if it should appear on the duplicate title as well.
-PREV_FURTHER_REG   | CHAR(1)                | No             | Indicates whether the current memorial may prevent further registration on the title, as long as it remains on thecurrent title view. 
+PREV_FURTHER_REG   | CHAR(1)                | No             | Indicates whether the current memorial may prevent further registration on the title, as long as it remains on thecurrent title view.
 CURR_HIST_FLAG     | VARCHAR(4)             | Yes            | This field indicates whether this memorial should be shown on the current or historic view of the title. See Reference Code Group TTMC for valid values.
 DEFAULT            | CHAR(1)                | Yes            | Flag used to determine whether the memorial was created as a default memorial. I.e. from the Instrument Detail screen. Yes/No Default: N
 NUMBER_OF_COLS     | INTEGER                | No             | If the memorial contains a table, this indicates the number of columns in the table.
@@ -1531,7 +1535,7 @@ ACT_TIN_ID_EXT     | INTEGER                | No             | The id of the ins
 
 ### Relationships
 
- __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__ 
+ __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__
 :-----------------|:---------------|:-----------------------------|:----------------------------
 Title Memorial     | Title Memorial Text | ID                         | TTM_ID
 Title              | Title Memorial      | TITLE_NO                   | TTL_TITLE_NO
@@ -1547,7 +1551,7 @@ Note: Titles that existed prior to Landonline only had memorials converted when 
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ License For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
-__Data Element__   | __Type (max. size)__   | __Required__   | __Notes__                      
+__Data Element__   | __Type (max. size)__   | __Required__   | __Notes__
 :------------|:-----------|:-------|:---------------------------------------
 __*AUDIT_ID*__     | INTEGER                | Yes            | Id used to link to the associated audit details. (Primary Key)
 __TTM_ID__         | INTEGER                | Yes            | The id of the title memorial this text belongs to. (FK)
@@ -1564,7 +1568,7 @@ COL_7_TEXT         | VARCHAR(2048)          | No             | Contains the text
 
 ### Relationships
 
- __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__ 
+ __Parent Entity__ | __Child Entity__ | __Relating Parent Attribute__ | __Relating Child Attribute__
 :-----------------|:---------------|:-----------------------------|:----------------------------
 Title Memorial     | Title Memorial Text | ID                         | TTM_ID
 
@@ -1580,7 +1584,7 @@ __PAR_ID__         |INTEGER                 |The id of the spatial parcel.
 SOURCE             |VARCHAR(4)              |The source of the association. <br> See Reference Code Group TPDS for valid values. <br> LOL - sourced from Landonline Legal Description associations.<br> LINZ - sourced from other Landonline relationships eg Unit title to spatial parcel(s).<br> EXTL – sourced external to Landonline (from external agenciesand LINZ staff). These will be of variable quality.
 
 ## Transaction Type [(https://data.linz.govt.nz/table/52009)](https://data.linz.govt.nz/table/52009)
-### Description:  
+### Description:
 This entity contains the different types of transactions managed through workflow, restricted to those used in titles instruments (GRP = ‘TINT’) and survey purpose (GRP = ‘WRKT’).
 
 __Data Element__   | __Type (max. size)__   | __Notes__
@@ -1668,7 +1672,7 @@ CEL_ID             | INTEGER                | The locality that the geodetic wor
 PROJECT_NAME       | VARCHAR(100)           | Project Name, used for Geodetic Work.
 INVOICE            | VARCHAR(20)            | The invoice may be supplied as part of the work transaction (geodetic) and before authorisation can occur, the work's invoice must be supplied for payment to be initiated.
 EXTERNAL_WORK_ID   | INTEGER                | External reference identifier
-VIEW_TXN           | CHAR(1)                | This indicates whether a user sees a transaction in their transaction listing when preparing survey's and the transaction has been authorised. <br> Valid values are "Y" or "N". Default= "Y". 
+VIEW_TXN           | CHAR(1)                | This indicates whether a user sees a transaction in their transaction listing when preparing survey's and the transaction has been authorised. <br> Valid values are "Y" or "N". Default= "Y".
 RESTRICTED         | CHAR(1)                | Whether access to this record is restricted. (Restricted records will have been filtered out by BDE)
 LODGED_DATE        | DATETIME               | Date of lodgment of the work with Land Information NZ.
 AUTHORISED_DATE    | DATETIME               | Date work was Authorised (i.e. date of approval).
