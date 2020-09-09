@@ -797,7 +797,7 @@ __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated 
 
 ## Nominal Index [(https://data.linz.govt.nz/table/51994)](https://data.linz.govt.nz/table/51994)
 ### Description:
-The nominal index is used when searching for titles by registered owner (formerly registered owner).
+The nominal index is used when searching for Records of Title by registered owner (formerly proprietor).
 The actual registered owner table is not used for searching.
 Registered owners will always be automatically copied into the nominal index, but additional entries can be manually added (or removed). <br>
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
@@ -1080,7 +1080,7 @@ __AUDIT_ID__       | INTEGER                | Id used to link to the associated 
 
 ## Proprietor [(https://data.linz.govt.nz/table/51998)](https://data.linz.govt.nz/table/51998)
 ### Description:
-A registered owner is a person or corporation holding a share in a title. <br>
+A registered owner (previously known as a proprietor) is a person or corporation holding a share in a Record of Title. <br>
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
