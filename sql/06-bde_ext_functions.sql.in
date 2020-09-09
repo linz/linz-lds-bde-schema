@@ -134,6 +134,7 @@ BEGIN
                     'crs_ttl_hierarchy',
                     'crs_ttl_inst',
                     'crs_ttl_inst_title',
+                    'crs_ttl_inst_protect',
                     'crs_user',
                     'crs_vector',
                     'crs_work',
@@ -145,8 +146,7 @@ BEGIN
                     'crs_image',
                     'crs_survey_image',
                     'crs_image_history',
-                    'crs_sys_code',
-                    'crs_ttl_inst_protect'
+                    'crs_sys_code'
                 ],
                 'any affected'
             )
