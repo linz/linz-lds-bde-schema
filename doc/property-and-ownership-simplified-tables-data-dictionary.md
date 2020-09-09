@@ -14,6 +14,7 @@ __Version number__ | __Amendments__ | __Date__
 1.3 | Schema changes to NZ Survey Plans, updated data diagram & other minor changes | August 2016
 1.4 | Updates to LINZ Licence For Personal Data references | September 2016
 1.5 | Updates for new version (2.1) of LINZ License for Personal Data and dataset ID changes | November 2017
+1.6 | Terminology changes for the Land Transfer Act 2017 | November 2018
 
 
 # Introduction
@@ -80,25 +81,26 @@ NZ Parcels | NZ Title Parcel Association List | id | par_id | Zero or more
 ## NZ Property Titles List
 ### Description:
 [https://data.linz.govt.nz/table/51567-nz-property-titles-list/](https://data.linz.govt.nz/table/51567-nz-property-titles-list/) <br>
-This table provides live and part cancelled Title information. <br>
-A Title is a record of all estates, encumbrances and easements that affect a piece of land. These are now known as Computer Registers incorporating Computer Freehold Registers, Composite Computer Registers, Computer Unit Title Registers and Computer Interest Registers.
+This table provides information on Records of Title that are live and part-cancelled. This table contains top level, general title data only, such as the title number, type (e.g. Freehold, Unit Title, Cross Lease etc) and status.<br>
+A Record of Title is a record of a property's owners, legal description and the rights and responsibilities registered against the title – known as estates, encumbrances and easements.</br>
+These are still recorded in this dataset in their legacy (pre-Land Transfer Act 2017) format as Computer Registers incorporating Computer Freehold Registers, Composite Computer Registers, Computer Unit Title Registers and Computer Interest Registers.
 
 __Column Name__ | __Type__ | __Description__
 :-------|:-------|:------------------------------
 __id__ |__integer__| The unique identifier for the title (Primary Key). Sourced from crs_title.audit_id
 __title_no__ |__varchar(20)__ |The title number that uniquely identifies each title.<br> Pre Landonline title numbers will usually be in the form of "nnnx/nn" (Eg, "203B/12" or "1A/1"). They will be converted with the land district prefix at the beginning to make them unique egg “OT1A/1”. <br> New title numbers created in Landonline will be numbers only.
 status |vvarchar(50) |The status of the title. Live or Part-Cancelled
-register_type |varchar(50) |Indicates the register the title is contained in (e.g. the Computer Freehold Register, Computer Interest Register)
+register_type |varchar(50) |Indicates the register the title is contained in under the legacy Land Transfer Act 1952 (e.g. the Computer Freehold Register, Computer Interest Register)
 type|varchar(100)|Indicates the type of title. Examples of title type include Freehold, Leasehold, Composite and Supplementary Record Sheet.
 land_district|varchar(100)|The name of the land district the title is in. e.g. “North Auckland”, “Southland” See [http://data.linz.govt.nz/layer/50785-nz-land-districts/](http://data.linz.govt.nz/layer/50785-nz-land-districts/) for more details <br> A Land District is an administrative area that all titles and surveys were registered against prior to Landonline.
 issue_date |datetime |The date on which the title was issued.
 guarantee_status |varchar(100) |The status of the State guarantees relating to a title. <br> A title may be fully guaranteed or "Limited as to parcels" which means that a fully guaranteed title will not be issued for the land until a survey plan of the land has been deposited.
-provisional |char(1)| A flag indicating if the title is provisional. A provisional title is a type of computer interest register that is used to record transactions against land where the requirements to have a normal computer freehold register issued have not been met. e.g. For Maori land, to deal with delays in the registration of dealings between the date of the order of the Maori Land Court declaring the land to be held in freehold tenure and the issue of the Crown grant.
+provisional |char(1)| A flag indicating if the title is qualified (previously termed provisional). A qualified title is a type of Record of Title (computer interest register) that is used to record transactions against land where the requirements to have a normal Record of Title (computer freehold register) issued have not been met. e.g. For Maori land, to deal with delays in the registration of dealings between the date of the order of the Maori Land Court declaring the land to be held in freehold tenure and the issue of the Crown grant.
 title_no_srs|varchar(20)|Unit titles are linked to a single Supplementary Record Sheet title. <br> This contains the SRS title number if the current title is a unit title.
 title_no_head_srs|varchar(20)|Titles of type Supplementary Record Sheet, where it is a subsidiary unit title development (subdivision of a principal unit).
 survey_reference|varchar(50)|Titles of type Supplementary Record Sheet display a survey plan number for the title to support the Unit development subdivision plan.
 maori_land |char(1)|‘Y’ or null. Identifies titles which may potentially be Maori Land. It is known to contain omissions and errors and is indicative only.
-number_owners|integer|Total number of current owners (proprietors) for the title.
+number_owners|integer|Total number of current owners for the title.
 
 ### Relationships
 
@@ -166,9 +168,9 @@ __Cancellation of Head Title for a Unit Development__ | principal_unit | varchar
 || assessory_unit | varchar(2048) | New assessory units issued from the cancelation of the title related to this memorial.
 || title_issued | varchar(2048) | New unit title issued from the cancelation of the title related to this memorial.
 __Easement__ | easement_type | varchar(2048) |The type of easement. For example right of way or drain water.
-|| servient_tenement | varchar(2048) | The land over which the easement runs.
+|| servient_tenement | varchar(2048) | The land over which the easement runs (burdened land).
 || easement_area | varchar(2048) | Description of the easement area.
-|| dominant_tenement_or_grantee | varchar(2048) | The land enjoying the benefit of an easement.
+|| dominant_tenement_or_grantee | varchar(2048) | The land enjoying the benefit of an easement (benefitted land).
 || statutory_restriction | varchar(2048) | A restriction on the removal of an easement without consent from a local body.
 
 ### Relationships
@@ -207,14 +209,14 @@ NZ Property Title Estates List | NZ Property Title Owners List | id | tte_id | O
 ## NZ Property Title Owners List
 ### Description:
 [https://data.linz.govt.nz/table/51564-nz-property-titles-owners-list/](https://data.linz.govt.nz/table/51564-nz-property-titles-owners-list/) <br>
-This table provides registered (or current) ownership information for a Title. An owner (or proprietor) is a person or corporation holding a share in a Title estate. <br>
+This table provides registered (or current) ownership information for a Title. An owner is a person or corporation holding a share in a Title estate. <br>
 This tabular data table has direct relationships to the tabular table, title estates. <br>
 __Important:__ The Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](LINZ Licence For Personal Data 2.1)
 
 __Column Name__ | __Type__ | __Description__
 :--------|:------|:-----------------------------------
-__id__            | __integer__   | The unique identifier for the title owner. (Primary Key). Sourced from crs_proprietor.id
-__tte_id__        | __integer__   | The identifier of the title estate that the proprietor owns. If there are joint tenants on a title, there will be more than one proprietor for the same title estate.
+__id__            | __integer__   | The unique identifier for the title owner. (Primary Key).
+__tte_id__        | __integer__   | The identifier of the title estate that the owner owns. If there are joint tenants on a title, there will be more than one owner for the same title estate.
 title_no          | varchar(20)   | The number of the title that this owner belongs to.
 land_district     | varchar(100)  | The name of the land district the title is in. e.g. “North Auckland”, “Southland” See [http://data.linz.govt.nz/layer/50785-nz-land-districts/](http://data.linz.govt.nz/layer/50785-nz-land-districts/) for more details. <br> A Land District is an administrative area that all titles and surveys were registered against prior to Landonline.
 status            | varchar(25)   | The status of the owner within the context of the title estate. Can only be ‘Registered’
@@ -223,7 +225,7 @@ owner_type        | varchar(10)   | Indicates whether this owner is an individua
 prime_surname     | varchar(100)  | If this owner is an individual, the surname of the owner is stored here, otherwise this should be blank.
 prime_other_names | varchar(100)  | If this owner is an individual, the given name(s) of the owner are stored here, otherwise this should be blank.
 corporate_name    | varchar(250)  | If this owner is a corporation, the name of the corporation is stored here, otherwise this should be blank.
-name_suffix       | varchar(6)    | If this owner is an individual, the name_suffix of the proprietor is stored here; otherwise this should be blank e.g. Junior, 'senior, Second, Third.
+name_suffix       | varchar(6)    | If this owner is an individual, the name_suffix of the owner is stored here; otherwise this should be blank e.g. Junior, 'senior, Second, Third.
 
 ### Relationships
 
