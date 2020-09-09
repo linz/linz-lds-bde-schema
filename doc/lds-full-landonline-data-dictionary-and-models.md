@@ -1,8 +1,7 @@
 ---
 title: "LINZ Data Service: Full Landonline Dataset"
 subtitle: Data Dictionary and Data Models
-date: November 2018
-version: 2.6
+date: November 2018 <br> Version: 2.6
 ---
 
 # Versioning
