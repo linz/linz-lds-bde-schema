@@ -520,7 +520,7 @@ NAME               | VARCHAR(255)           | The name of the encumbrancee. <br>
 
 ## Estate Share [(https://data.linz.govt.nz/table/52065)](https://data.linz.govt.nz/table/52065)
 ### Description:
-An estate may be owned in shares by registered owners. For example John and Bill may each own a 1/2 share in the land. This table contains one row for each share that exists in an estate. <br>
+An estate may be owned in shares by registered owners. For example Marian and Anne may each own a 1/2 share in the land. This table contains one row for each share that exists in an estate. <br>
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
