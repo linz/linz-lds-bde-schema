@@ -134,6 +134,7 @@ BEGIN
                     'crs_ttl_hierarchy',
                     'crs_ttl_inst',
                     'crs_ttl_inst_title',
+                    'crs_ttl_inst_protect',
                     'crs_user',
                     'crs_vector',
                     'crs_work',
