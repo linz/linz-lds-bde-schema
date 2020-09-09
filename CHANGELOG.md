@@ -5,7 +5,7 @@ this file.
 
 ## 1.11.3dev - YYYY-MM-DD
 ### Fixed
-- ...
+- Have changes in `crs_ttl_inst_protect` trigger FBDE maintenance (#244)
 
 ## 1.11.2 - 2020-08-25
 ### Fixed
