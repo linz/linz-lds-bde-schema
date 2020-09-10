@@ -8,6 +8,8 @@ TEST_DB=linz-lds-bde-schema-test-db
 LDS_TABLES=45
 BDE_EXT_TABLES=47
 
+IMAGES=$(shell find doc/models -name '*.png')
+
 datadir=${DESTDIR}/usr/share/linz-lds-bde-schema
 bindir=${DESTDIR}/usr/bin
 
@@ -240,7 +242,8 @@ install-docs: $(DOCS_built)
 
 doc/lds-full-landonline-data-dictionary-and-models.pdf: \
     doc/tools/markdown-to-pdf-conversion.sh \
-    doc/lds-full-landonline-data-dictionary-and-models.md
+    doc/lds-full-landonline-data-dictionary-and-models.md \
+    $(IMAGES)
 	@var=$(shell echo $(PANDOC_1_18));\
 	if [ "$$var" = "true" ]; then \
 		bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@; \
@@ -250,7 +253,8 @@ doc/lds-full-landonline-data-dictionary-and-models.pdf: \
 
 doc/property-and-ownership-simplified-tables-data-dictionary.pdf: \
     doc/tools/markdown-to-pdf-conversion.sh \
-    doc/property-and-ownership-simplified-tables-data-dictionary.md
+    doc/property-and-ownership-simplified-tables-data-dictionary.md \
+    $(IMAGES)
 	@var=$(shell echo $(PANDOC_1_18));\
 	if [ "$$var" = "true" ]; then \
 		bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@; \
