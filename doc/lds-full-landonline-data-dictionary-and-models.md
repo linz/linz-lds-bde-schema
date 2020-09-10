@@ -59,7 +59,7 @@ For Esri users we have developed a [File Geodatabase support tool to merge and b
 Data sourced from Landonline is updated in LDS on a weekly basis. The refreshed data will be available on LDS from Monday morning and is a snapshot of data from Landonline changed between Saturday and Friday and previous week.
 
 ### Data use and licensing
-Unless otherwise specified, data from LDS is provided under the [Creative Commons Attribution 3.0 New Zealand license](https://creativecommons.org/licenses/by/3.0/nz/). This means you are free to use, reuse and share data as long as you attribute the work to LINZ as the original source of the data. LINZ retains Crown copyright. See the LINZ website for more information on [data licensing and attribution](https://www.linz.govt.nz/data/licensing-and-using-data). <br>
+Unless otherwise specified, data from LDS is provided under the [Creative Commons Attribution 4.0 International license](https://creativecommons.org/licenses/by/4.0/). This means you are free to use, reuse and share data as long as you attribute the work to LINZ as the original source of the data. LINZ retains Crown copyright. See the LINZ website for more information on [data licensing and attribution](https://www.linz.govt.nz/data/licensing-and-using-data). <br>
 
 Datasets containing personal data, such as those that contain information on the owner of a property title, have a customised licence which you need to accept before being able to access this data. Please familiarise yourself with the key features of the [LINZ License For Personal Data](https://www.linz.govt.nz/data/licensing-and-using-data/linz-licence-for-personal-data), then read and accept [the terms and conditions of this license](https://data.linz.govt.nz/license/linz-licence-personal-data-21/) before using the licensed data.
 
@@ -505,7 +505,7 @@ SYSTEM_CRT         | CHAR(1)                | This field will indicate if an enc
 
 ## Encumbrancee [(https://data.linz.govt.nz/table/51985)](https://data.linz.govt.nz/table/51985)
 ### Description:
-An encumbrance on a title may be owned by one or more encumbrancees (whether an encumbrancee exists or not depends on the type of encumbrance). A lease does not have an encumbrancee because a Computer Interest Register is issued for the leasehold estate. <br>
+An encumbrance on a Record of Title may be owned by one or more encumbrancees (whether an encumbrancee exists or not depends on the type of encumbrance).<br>
 An encumbrancee has an interest in a share in an encumbrance. <br>
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
@@ -797,7 +797,7 @@ __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated 
 ## Nominal Index [(https://data.linz.govt.nz/table/51994)](https://data.linz.govt.nz/table/51994)
 ### Description:
 The nominal index is used when searching for Records of Title by registered owner (formerly proprietor).
-The actual registered owner table is not used for searching.
+The actual registered owner (proprietor) table is not used for searching.
 Registered owners will always be automatically copied into the nominal index, but additional entries can be manually added (or removed). <br>
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
@@ -1208,7 +1208,7 @@ __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated 
 
 ## Statute [(https://data.linz.govt.nz/table/51699)](https://data.linz.govt.nz/table/51699)
 ### Description:
-A Statute is legislation enacted by Parliament and includes Acts and Regulations. The contents or provisions of a Statue (Act) are identified in terms of Parts, Sections and Schedules and the Act name. Statutory Regulations are structured in the same way.
+A Statute is legislation enacted by Parliament and includes Acts and Regulations. The contents or provisions of a Statute (Act) are identified in terms of Parts, Sections and Schedules and the Act name. Statutory Regulations are structured in the same way.
 
 __Data Element__   | __Type (max. size)__   | __Notes__
 :-----------|:-----------|:-----------------------------------
@@ -1272,7 +1272,7 @@ TYPE_OF_DATASET    | VARCHAR(4)             | Survey - A dataset where a Surveyo
 DATA_SOURCE        | VARCHAR(4)             | Valuedflag that indicates if the survey was DCDB converted (CONV), a Work In Progress survey (WIPS), general Landonline survey (LNDL) or electronically lodged survey (ESUR). <br> Refer Sys Code Group SURW for valid values.
 LODGE_ORDER        | INTEGER                | The value of which position in the order of lodgment the survey was. <br> This is used for staged unit plans to enable the correct suffix to be allocated.
 DATASET_SUFFIX     | VARCHAR(7)             | Suffix for the dataset. <br>  This is used to provide a unique identifier for staged unit developments as they use the same dataset id for each stage.
-SURVEYOR_DATA_REF  | VARCHAR(50)            | The reference attached to the dataset by the surveyor to enable the survey number to be cross referenced with the surveyors own records after lodgment. <br> Name or number or both.
+SURVEYOR_DATA_REF  | VARCHAR(100)            | The reference attached to the dataset by the surveyor to enable the survey number to be cross referenced with the surveyors own records after lodgment. <br> Name or number or both.
 SURVEY_CLASS       | VARCHAR(4)             | Defines the class of the survey. Values for this field include I, II, III, IV <br> Refer Sys Code Group SURC for valid values.
 DESCRIPTION        | VARCHAR(2048)          | Survey Description, e.g. "Lots 1 and 2 being subdivision of Lot 1 DP 1000"
 USR_ID_SOL         | VARCHAR(20)            | Identifier used to indicate the solicitor involved with the survey
@@ -1375,7 +1375,8 @@ __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated 
 ## Title [(https://data.linz.govt.nz/table/52067)](https://data.linz.govt.nz/table/52067)
 ### Description:
 A title is a record of all estates, encumbrances and easements that affect a piece of land. <br>
-This table will also hold Computer Interest Registers (or non-title titles or instruments embodied in the register).
+This table will also hold records formerly known as Computer Interest Registers (or non-title titles or instruments embodied
+in the register).
 
 __Data Element__   | __Type (max. size)__   | __Notes__
 :----------------|:-----------|:-----------------------------------
@@ -1384,11 +1385,11 @@ LDT_LOC_ID         | INTEGER                | The id of the land district the ti
 STATUS             | VARCHAR(4)             | The status of the title. <br> See Reference Code Group TTLS for valid values
 ISSUE_DATE         | DATETIME YEAR          | The date on which the title was issued.
 REGISTER_TYPE      | VARCHAR(4)             | Indicates the register the title is contained in (eg, the Computer Freehold Register, Computer Interest Register) <br>  See Reference Code Group TTLR for valid values.
-TYPE               | VARCHAR(4)             | Indicates the type of title. Examples of title type include Freehold, Leasehold, Composite and Supplementary Record Sheet. <br> See Reference Code Group TTLT for valid values.
+TYPE               | VARCHAR(4)             | Indicates the type of title. Examples of title type include Freehold, Leasehold, and Supplementary Record Sheet. <br> See Reference Code Group TTLT for valid values.
 __*AUDIT_ID*__     | INTEGER                | Id used to link to the associated audit details.
 STE_ID             | INTEGER                | The id of the statute that the title is issued under. This will be the Unit Titles Act for supplementary record sheets and the Land Transfer Act for all other titles. <br> This is displayed on the title views.
 GUARANTEE_STATUS   | VARCHAR(4)             | The status of the State guarantee relating to a title. <br> A title may be fully guaranteed or "Limited as to parcels" which means that a fully guaranteed title will not be issued for the land until a survey plan of the land has been deposited. See Reference Code Group TTLG for valid values.
-PROVISIONAL        | CHAR(1)                | A flag indicating if the title is provisional. Used for display in the title view header.
+PROVISIONAL        | CHAR(1)                | A flag indicating if the title is qualified (previous known as provisional). Used for display in the title view header.
 SUR_WRK_ID         | INTEGER                | Titles of type Supplementary Record Sheet display a plan id in the title view. This contains the link to the corresponding work id of the SRS plan.
 MAORI_LAND         | CHAR(1)                | ‘Y’ or ‘null’. Identifies titles which may potentially be Maori Land. It is known to contain omissions and errors and is indicative only. In many cases this is set to ‘null’ (no information)
 TTL_TITLE_NO_SRS   | VARCHAR(20)            | Unit titles are linked to a single Supplementary Record Sheet title. <br>  This contains the SRS title number if the current title is a unit title.
