@@ -3,6 +3,10 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+## 1.11.4dev - YYYY-MM-DD
+### Fixed
+-
+
 ## 1.11.3 - 2020-09-15
 ### Fixed
 - Have changes in `crs_ttl_inst_protect` trigger FBDE maintenance (#244)
