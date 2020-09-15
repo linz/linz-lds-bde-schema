@@ -8,21 +8,24 @@ finish(){
 
 trap finish EXIT
 
+SED=$(which gsed)
+test -z "${SED}" && SED=sed
+
 if [ $# -ne 2 ]; then
   >&2 echo "Syntax markdown-to-pdf-conversion.sh <input_markdown_file> <output_pdf_file"
   exit 1;
 fi
 
-# Create temp markdown file with current location. 
+# Create temp markdown file with current location.
 cp $1 /tmp/markdown-pdf-convert-$$.md
 count=1
 while read text; do
   if [[ ${text::2} == "![" ]];
-    then 
-      text1=$(echo $text | sed -e 's/.*(\(.*\)).*/\1/')
+    then
+      text1=$(echo $text | ${SED} -e 's/.*(\(.*\)).*/\1/')
       text2=$(echo $(pwd)/doc/models/$text1)
-      sed -i "${count}s|$text1|$text2|g" /tmp/markdown-pdf-convert-$$.md
-      
+      ${SED} -i "${count}s|$text1|$text2|g" /tmp/markdown-pdf-convert-$$.md
+
   fi
   count=$(expr $count + 1);
 done<$1
