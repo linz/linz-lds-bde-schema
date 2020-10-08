@@ -6,6 +6,20 @@ this file.
 ## 1.12.0dev - YYYY-MM-DD
 ### Added
 
+## 1.11.3 - 2020-09-15
+### Fixed
+- Have changes in `crs_ttl_inst_protect` trigger FBDE maintenance (#244)
+### Enhanced
+- Update schema documentation (#229)
+
+## 1.11.2 - 2020-08-25
+### Fixed
+- Foreign key use in encumbrancee name filtering (#240)
+
+## 1.11.1 - 2020-07-21
+### Enhanced
+- Encoded dependency on linz-bde-schema-1.11+
+
 ## 1.11.0 - 2020-07-14
 ### Added
 - LOL-3.22b: add support for filtering encumbrancee name
