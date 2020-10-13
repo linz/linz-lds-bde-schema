@@ -80,6 +80,7 @@ Usage requires:
  - [`linz_bde_uploader`](https://github.com/linz/linz-bde-uploader) (v2.4.0+)
 
 Documentation building requires:
+ - [GNU Sed](https://www.gnu.org/software/sed/)
  - [python](https://www.python.org/)
  - [pandoc](https://github.com/jgm/pandoc) (v1.18+)
  - [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf) (v0.12.1+)
