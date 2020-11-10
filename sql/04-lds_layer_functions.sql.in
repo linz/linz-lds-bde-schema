@@ -621,6 +621,9 @@ CREATE OR REPLACE FUNCTION lds.LDS_CreateTitleExclusionTables(
 )
 RETURNS
 	BOOLEAN AS $$
+DECLARE
+	num_protected_proprietors INTEGER;
+	found_unused_ids INTEGER;
 BEGIN
 	IF (
 		SELECT
@@ -699,6 +702,30 @@ BEGIN
 	ALTER TABLE tmp_protected_titles ADD PRIMARY KEY (title_no);
 	ANALYSE tmp_protected_titles;
 
+	RAISE INFO 'Started creating temp table tmp_protected_proprietors';
+
+    -- Create a mapping between original proprietor identifiers
+    -- and virtual ones (those being published)
+
+    CREATE TEMP SEQUENCE tmp_proprietor_seq;
+
+    CREATE TEMP TABLE tmp_proprietors_map AS
+    SELECT
+        p.id source_id,
+        nextval('tmp_proprietor_seq') target_id,
+        nextval('tmp_proprietor_seq') target_dvl_id
+    FROM bde.crs_proprietor p
+    ORDER BY p.id;
+
+    DROP SEQUENCE tmp_proprietor_seq;
+
+    -- Shuffle mapping
+    UPDATE tmp_proprietors_map
+    SET
+        target_id = target_dvl_id,
+        target_dvl_id = target_id
+    WHERE source_id % 2 = 0;
+
 	RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql VOLATILE;
@@ -715,6 +742,7 @@ DECLARE
 BEGIN
 	DROP TABLE tmp_excluded_titles;
 	DROP TABLE tmp_protected_titles;
+	DROP TABLE tmp_proprietors_map;
 	DROP TABLE tmp_training_titles;
 	RETURN TRUE;
 EXCEPTION
@@ -2523,7 +2551,7 @@ BEGIN
 
     CREATE TEMP TABLE tmp_title_owners_aspatial AS
     SELECT
-        PRP.id,
+        PRPM.target_id AS id,
         TTS.id AS tte_id,
         TTS.title_no,
         TTS.land_district::VARCHAR(100),
@@ -2539,6 +2567,7 @@ BEGIN
         tmp_title_estates TTS
         JOIN bde.crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
         JOIN bde.crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
+        LEFT JOIN tmp_proprietors_map PRPM ON PRPM.source_id = PRP.id
         LEFT JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no
         LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
         LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
@@ -2559,7 +2588,7 @@ BEGIN
         corporate_name
     )
     SELECT
-        PRP.id,
+        PRPM.target_dvl_id,
         TTS.id,
         TTS.title_no,
         TTS.land_district,
@@ -2573,6 +2602,7 @@ BEGIN
         JOIN bde.crs_estate_share ETS ON TTS.id = ETS.ett_id AND ETS.status = 'REGD'
         JOIN bde.crs_proprietor PRP ON ETS.id = PRP.ets_id AND PRP.status = 'REGD'
         LEFT JOIN tmp_protected_titles PRO ON TTS.title_no = PRO.title_no
+        LEFT JOIN tmp_proprietors_map PRPM ON PRPM.source_id = PRP.id
         LEFT JOIN bde.crs_sys_code PRPT ON PRPT.scg_code = 'PRPT' AND PRPT.code = PRP.type
         LEFT JOIN bde.crs_sys_code NMSF ON NMSF.scg_code = 'NMSF' AND NMSF.code = PRP.name_suffix
         LEFT JOIN bde.crs_sys_code TSDS ON PRP.status = TSDS.code AND TSDS.scg_code = 'TSDS'
