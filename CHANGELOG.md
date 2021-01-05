@@ -3,8 +3,12 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
-## 1.12.0dev - YYYY-MM-DD
+## 1.12.0 - 2021-01-05
 ### Added
+- Update of LDS Full Landonline Data Dictionary 2.6
+### Fixed
+- Use proper FK in crs_ttl_inst_protect query
+- check crs_ttl_inst_protect table when launching FBDE maintenance
 
 ## 1.11.3 - 2020-09-15
 ### Fixed
