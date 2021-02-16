@@ -370,7 +370,7 @@ BEGIN
             TMT.ttm_id,
             TMT.sequence_no,
             TMT.curr_hist_flag,
-            CASE WHEN DVL_MEM.title_no IS NOT NULL AND TRT.grp = 'TINT' AND TRT.type IN ('JFH','DD','CN','UAPP','X','T','TSM')
+            CASE WHEN DVL_MEM.title_no IS NOT NULL AND TRT.grp = 'TINT' AND TRT.type IN ('JFH','DD','CN','UAPP','X','T','TSM','DMM','M','MEM','TM','TMEM','DM','CNMG','MM','MP','MVM','MFL','PDM')
             THEN TIN.inst_no || ' ' || TRT.description || ' - '|| to_char(TIN.lodged_datetime, 'DD.MM.YYYY') || ' at ' || to_char(TIN.lodged_datetime, 'HH:MI am')
             ELSE TMT.std_text
             END AS std_text,
