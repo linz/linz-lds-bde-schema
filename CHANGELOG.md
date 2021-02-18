@@ -3,6 +3,11 @@
 All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
+
+## 1.13.0 - 2021-02-18
+### Enhanced
+- Extended masking of title memorials
+
 ## 1.12.0 - 2021-01-05
 ### Added
 - Update of LDS Full Landonline Data Dictionary 2.6
