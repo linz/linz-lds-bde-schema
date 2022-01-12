@@ -48,16 +48,23 @@ RETURNS
 DECLARE
     v_dataset        TEXT;
 BEGIN
-    v_dataset := COALESCE(
-        bde_control.bde_GetOption(p_upload_id, '_dataset'),
-        '(undefined dataset)'
-    );
 
-    RAISE INFO 'Maintaining FBDE layers for dataset %', v_dataset;
+    IF p_upload_id != 0 THEN
+        v_dataset := COALESCE(
+            bde_control.bde_GetOption(p_upload_id, '_dataset'),
+            '(undefined dataset)'
+        );
+    ELSE
+        SELECT max(last_upload_dataset) || ' (latest)'
+        FROM bde_control.upload_table
+        INTO v_dataset;
+    END IF;
+
+    RAISE NOTICE 'Maintaining FBDE layers for dataset %', v_dataset;
 
     PERFORM LDS_MaintainFBDELayers(p_upload_id);
 
-    RAISE INFO 'Finished maintaining FBDE layers %', v_dataset;
+    RAISE NOTICE 'Finished maintaining FBDE layers %', v_dataset;
 
     RETURN 1;
 END;
@@ -80,8 +87,12 @@ DECLARE
     v_data_diff_sql    TEXT;
     v_data_insert_sql  TEXT;
 BEGIN
-    RAISE INFO 'Starting maintenance on titles FBDE layers';
+    RAISE NOTICE 'Starting maintenance on titles FBDE layers';
 
+    IF p_upload != 0 THEN
+    -- Skip maintainance of the functions if source data
+    -- was not changed by given upload and target tables
+    -- are already populated (unless forced)
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
@@ -123,6 +134,7 @@ BEGIN
                     'crs_ttl_hierarchy',
                     'crs_ttl_inst',
                     'crs_ttl_inst_title',
+                    'crs_ttl_inst_protect',
                     'crs_user',
                     'crs_vector',
                     'crs_work',
@@ -187,10 +199,11 @@ BEGIN
         AND LDS.LDS_TableHasData('bde_ext', 'survey_plan_image_revision')
     )
     THEN
-        RAISE INFO
+        RAISE NOTICE
             'Maintain FBDE layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
+    END IF; -- p_upload != 0
 
     ----------------------------------------------------------------------------
     -- temporary titles tables
@@ -357,7 +370,7 @@ BEGIN
             TMT.ttm_id,
             TMT.sequence_no,
             TMT.curr_hist_flag,
-            CASE WHEN DVL_MEM.title_no IS NOT NULL AND TRT.grp = 'TINT' AND TRT.type IN ('JFH','DD','CN','UAPP','X','T','TSM')
+            CASE WHEN DVL_MEM.title_no IS NOT NULL AND TRT.grp = 'TINT' AND TRT.type IN ('JFH','DD','CN','UAPP','X','T','TSM','DMM','M','MEM','TM','TMEM','DM','CNMG','MM','MP','MVM','MFL','PDM')
             THEN TIN.inst_no || ' ' || TRT.description || ' - '|| to_char(TIN.lodged_datetime, 'DD.MM.YYYY') || ' at ' || to_char(TIN.lodged_datetime, 'HH:MI am')
             ELSE TMT.std_text
             END AS std_text,
@@ -566,40 +579,22 @@ BEGIN
         status,
         name
     )
-    WITH
-    TTE(ttl_title_no,enc_id)
-    AS (
-        SELECT DISTINCT
-        ttl_title_no,enc_id
-        FROM crs_ttl_enc TE
-        JOIN crs_title T ON TE.ttl_title_no = T.title_no
-        WHERE T.status <> 'PEND'
-    ),
-    TRN_ENC(id)
-    AS (
-        SELECT DISTINCT
-        ENE.id AS id
-        FROM tmp_training_titles TRN
-        JOIN TTE ON TRN.title_no = TTE.ttl_title_no
-        JOIN crs_enc_share ENS ON ENS.enc_id = TTE.enc_id
-        JOIN crs_encumbrancee ENE ON ENE.ens_id = ENS.id
-    ),
-    ENE(id,ens_id,status,name)
-    AS (
-        SELECT
-        id,ens_id,status,name
-        FROM crs_encumbrancee
-        WHERE status <> 'LDGE'
-        AND id NOT IN (SELECT id FROM TRN_ENC)
-    )
     SELECT DISTINCT
         ENE.id,
         ENE.ens_id,
         ENE.status,
-        ENE.name
-    FROM ENE
+        lds.LDS_GetEncumbranceeName(ENE.name, PRO.id IS NOT NULL)
+    FROM crs_encumbrancee ENE
     JOIN crs_enc_share ENS ON ENS.id = ENE.ens_id
-    JOIN TTE ON TTE.enc_id = ENS.enc_id
+    JOIN crs_ttl_enc TE ON TE.enc_id = ENS.enc_id
+    JOIN crs_title T ON T.title_no = TE.ttl_title_no
+    -- Field ACT_TIN_ID_CRT of crs_enc_share is documented
+    -- to be "The id of the instrument that created the encumbrance share."
+    LEFT JOIN crs_ttl_inst_protect PRO ON PRO.tin_id = ENS.act_tin_id_crt
+    LEFT JOIN tmp_training_titles TRN ON TRN.title_no = T.title_no
+    WHERE TRN.title_no IS NULL
+      AND ENE.status <> 'LDGE'
+      AND T.status <> 'PEND'
     ORDER BY id;
     $sql$;
 
@@ -2565,7 +2560,7 @@ BEGIN
 
     PERFORM LDS_DropTitleExclusionTables(p_upload);
 
-    RAISE INFO 'Finished maintenance on FBDE layers';
+    RAISE NOTICE 'Finished maintenance on FBDE layers';
 
     RETURN 1;
 

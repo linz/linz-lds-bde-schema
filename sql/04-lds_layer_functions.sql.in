@@ -14,23 +14,20 @@
 --------------------------------------------------------------------------------
 BEGIN;
 
-DO $$
+CREATE FUNCTION pg_temp.bless_lds_bde_function(p_pcid regprocedure)
+RETURNS VOID LANGUAGE plpgsql VOLATILE AS $$
 DECLARE
-   v_pcid    TEXT;
-   v_schema  TEXT = 'lds';
+    v_comment TEXT;
 BEGIN
-    FOR v_pcid IN
-        SELECT v_schema || '.' || proname || '(' || pg_get_function_identity_arguments(oid) || ')'
-        FROM pg_proc
-        WHERE pronamespace=(SELECT oid FROM pg_namespace WHERE nspname = v_schema)
-        -- LDS_GetProtectedText is expected to be optionally provided
-        -- by the user
-        AND  proname <> 'lds_getprotectedtext'
-    LOOP
-        EXECUTE 'DROP FUNCTION ' || v_pcid;
-    END LOOP;
-END;
+    v_comment := 'Version: @@VERSION@@ @@REVISION@@'
+                 || E'\n' || 'Installed: ' ||
+                 to_char(current_timestamp,'YYYY-MM-DD HH:MI');
+
+    EXECUTE format('ALTER FUNCTION %s OWNER TO bde_dba', p_pcid);
+    EXECUTE format('COMMENT ON FUNCTION %s IS %L', p_pcid, v_comment);
+END
 $$;
+
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_deg_dms(
@@ -75,7 +72,7 @@ END;
 $$
     LANGUAGE plpgsql IMMUTABLE;
 
-ALTER FUNCTION lds.LDS_deg_dms(DOUBLE PRECISION, INTEGER, CHAR(2)) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_deg_dms(DOUBLE PRECISION, INTEGER, CHAR(2))'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedLayers(
@@ -86,18 +83,24 @@ RETURNS
 DECLARE
     v_dataset        TEXT;
 BEGIN
-    v_dataset := COALESCE(
-        bde_control.bde_GetOption(p_upload_id, '_dataset'),
-        '(undefined dataset)'
-    );
+    IF p_upload_id != 0 THEN
+        v_dataset := COALESCE(
+            bde_control.bde_GetOption(p_upload_id, '_dataset'),
+            '(undefined dataset)'
+        );
+    ELSE
+        SELECT max(last_upload_dataset) || ' (latest)'
+        FROM bde_control.upload_table
+        INTO v_dataset;
+    END IF;
 
-    RAISE INFO 'Maintaining simplified layers for dataset %', v_dataset;
+    RAISE NOTICE 'Maintaining simplified layers for dataset %', v_dataset;
 
     PERFORM LDS.LDS_MaintainSimplifiedGeodeticLayers(p_upload_id);
     PERFORM LDS.LDS_MaintainSimplifiedParcelLayers(p_upload_id);
     PERFORM LDS.LDS_MaintainSimplifiedSurveyLayers(p_upload_id);
 
-    RAISE INFO 'Finished maintaining simplified layers %', v_dataset;
+    RAISE NOTICE 'Finished maintaining simplified layers %', v_dataset;
 
     RETURN 1;
 END;
@@ -105,7 +108,7 @@ $$ LANGUAGE plpgsql VOLATILE STRICT SECURITY DEFINER;
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedLayers(integer) SET search_path=lds, bde, bde_control, public;
 
-ALTER FUNCTION lds.LDS_MaintainSimplifiedLayers(integer) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedLayers(integer)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_GetTable(
     p_schema NAME,
@@ -126,7 +129,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION lds.LDS_GetTable(NAME, NAME) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetTable(NAME, NAME)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_UpdateSimplifiedTable(
@@ -144,7 +147,7 @@ DECLARE
     v_temp_copy      REGCLASS;
 BEGIN
     IF LDS.LDS_TableHasData(p_table) THEN
-        RAISE INFO 'Started creating new version of table % for differencing',
+        RAISE NOTICE 'Started creating new version of table % for differencing',
             p_table;
 
         SELECT LDS.LDS_CreateTempCopy(p_table)
@@ -160,7 +163,7 @@ BEGIN
 
         EXECUTE 'ANALYSE ' || v_temp_copy;
 
-        RAISE INFO
+        RAISE NOTICE
             'Finished creating new version of table % for differencing. % rows were created',
             p_table, v_count;
 
@@ -168,14 +171,12 @@ BEGIN
 
         EXECUTE 'DROP TABLE ' || v_temp_copy;
     ELSE
-        RAISE INFO 'Started creating new version of table %', p_table;
+        RAISE NOTICE 'Started creating new version of table %', p_table;
 
         SELECT LDS.LDS_GetTableContrainstsAndIndexes(p_table)
         INTO   v_indexes;
 
         PERFORM LDS.LDS_DropTableContrainstsAndIndexes(p_table);
-
-        EXECUTE 'TRUNCATE ' || p_table;
 
         v_count := bde_control.bde_ExecuteTemplate(
             p_data_insert_tmpl,
@@ -190,7 +191,7 @@ BEGIN
 
         EXECUTE 'ANALYSE ' || p_table;
 
-        RAISE INFO 'Finished creating new version of table %. % rows were created',
+        RAISE NOTICE 'Finished creating new version of table %. % rows were created',
             p_table, v_count;
     END IF;
 
@@ -198,7 +199,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_UpdateSimplifiedTable(INTEGER, REGCLASS, TEXT, TEXT) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_UpdateSimplifiedTable(INTEGER, REGCLASS, TEXT, TEXT)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_TableHasData(
@@ -216,7 +217,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION lds.LDS_TableHasData(REGCLASS) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_TableHasData(REGCLASS)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_TableHasData(
     p_schema NAME,
@@ -227,7 +228,7 @@ RETURNS
     SELECT LDS.LDS_TableHasData(LDS.LDS_GetTable($1, $2));
 $$ LANGUAGE sql STABLE;
 
-ALTER FUNCTION lds.LDS_TableHasData(NAME, NAME) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_TableHasData(NAME, NAME)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_CreateTempCopy(
     p_table REGCLASS
@@ -262,7 +263,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_CreateTempCopy(REGCLASS) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_CreateTempCopy(REGCLASS)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_ApplyPrimaryKeyFrom(
@@ -307,7 +308,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_ApplyPrimaryKeyFrom(REGCLASS, REGCLASS) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_ApplyPrimaryKeyFrom(REGCLASS, REGCLASS)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_GetTableContrainstsAndIndexes(p_table REGCLASS) RETURNS TEXT[] AS $$
@@ -338,7 +339,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_GetTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetTableContrainstsAndIndexes(REGCLASS)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_DropTableContrainstsAndIndexes(p_table REGCLASS) RETURNS BOOLEAN AS $$
@@ -368,7 +369,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_DropTableContrainstsAndIndexes(REGCLASS) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_DropTableContrainstsAndIndexes(REGCLASS)'); END; $$;
 
 
 CREATE OR REPLACE FUNCTION lds.LDS_ApplyTableDifferences(
@@ -397,42 +398,82 @@ BEGIN
             p_table, p_temp_copy, p_key_column
         );
 
-    RAISE INFO 'Finished updating %. % deletes, % inserts and % updates',
+    RAISE NOTICE 'Finished updating %. % deletes, % inserts and % updates',
         p_table, v_ndel, v_nins, v_nupd;
 
     RETURN TRUE;
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_ApplyTableDifferences(INTEGER, REGCLASS, REGCLASS, NAME)'); END; $$;
 
 DO $$
 BEGIN
 
--- LDS_GetProtectedText is expected to be optionally provided by the
--- user, so we do not override it if existing.
--- See https://github.com/linz/linz-lds-bde-schema/issues/34
-IF NOT EXISTS(SELECT * from pg_proc where proname = 'lds_getprotectedtext') THEN
+    -- lds.LDS_GetProtectedText is expected to be optionally provided by the
+    -- user, so we do not override it if existing.
+    -- See https://github.com/linz/linz-lds-bde-schema/issues/34
+    --
+    -- This function is used to determine the value of the following
+    -- columns for protected titles (bde.crs_title.protect_{start,end}):
+    --
+    --  * corporate_name column in the lds.title_owners_aspatial table
+    --  * surname column in the bde_ext.alias table
+    --
+    IF NOT EXISTS(
+      SELECT *
+      FROM pg_proc p, pg_namespace n
+      WHERE p.proname = 'lds_getprotectedtext'
+        AND p.pronamespace = n.oid
+        AND n.nspname = 'lds'
+    ) THEN
 
-EXECUTE '
-CREATE FUNCTION lds.LDS_GetProtectedText(
-    p_text VARCHAR(20)
-)
-RETURNS
-    TEXT AS
-$FUNC$
-    SELECT ''''::VARCHAR;
-$FUNC$ LANGUAGE sql IMMUTABLE;
-';
+        CREATE FUNCTION lds.LDS_GetProtectedText(
+            p_text VARCHAR(20)
+        )
+        RETURNS
+            TEXT AS
+        $FUNC$
+            SELECT ''::VARCHAR;
+        $FUNC$ LANGUAGE sql IMMUTABLE;
 
-ALTER FUNCTION lds.LDS_GetProtectedText(VARCHAR(20)) OWNER TO bde_dba;
+        PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetProtectedText(VARCHAR(20))');
 
-END IF;
+    END IF;
+
+    -- lds.LDS_GetProtectedEncumbranceeName is expected to be optionally
+    -- provided by the user, so we do not override it if existing.
+    --
+    -- This function is used to write the value of the name
+    -- column for public encumbrancees table (bde_ext.encumbrancee)
+    -- optionally protected by title instruments protection
+    -- (bde.crs_ttl_inst_protect)
+    --
+    IF NOT EXISTS(
+      SELECT *
+      FROM pg_proc p, pg_namespace n
+      WHERE p.proname = 'lds_getencumbranceename'
+        AND p.pronamespace = n.oid
+        AND n.nspname = 'lds'
+    ) THEN
+
+      CREATE OR REPLACE FUNCTION lds.LDS_GetEncumbranceeName(name varchar, protected boolean)
+      RETURNS TEXT AS
+      $FUNC$
+        SELECT CASE WHEN protected THEN
+            ''
+        ELSE
+            $1
+        END;
+      $FUNC$ LANGUAGE sql IMMUTABLE;
+      PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetEncumbranceeName(varchar, boolean)');
+
+    END IF;
+
 END;
 $$;
 
--- Should this be District ? (missing `r')
-CREATE OR REPLACE FUNCTION lds.LDS_GetLandDistict(p_shape GEOMETRY)
+CREATE OR REPLACE FUNCTION lds.LDS_GetLandDistrict(p_shape GEOMETRY)
 RETURNS
     TEXT
 AS $$
@@ -448,7 +489,19 @@ AS $$
         ST_Distance(LDT.shape, $1) ASC
 $$ LANGUAGE sql STABLE;
 
-ALTER FUNCTION lds.LDS_GetLandDistict(GEOMETRY) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetLandDistrict(GEOMETRY)'); END; $$;
+
+-- This should be District (missing `r') but is retained for backward
+-- compatibility. The lds.LDS_GetLandDistrict function was introduced
+-- in version 1.6.0, this old one can probably be dropped somewhen
+-- in version 1.8.0 or so...
+CREATE OR REPLACE FUNCTION lds.LDS_GetLandDistict(p_shape GEOMETRY)
+RETURNS TEXT AS $$ BEGIN
+    RAISE WARNING 'Please use LDS_GetLandDistrict instead of LDS_GetLandDistict';
+    SELECT lds.LDS_GetLandDistrict($1);
+END; $$ LANGUAGE 'plpgsql';
+
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_GetLandDistict(GEOMETRY)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_CreateSurveyPlansTable(
     p_upload INTEGER
@@ -498,7 +551,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_CreateSurveyPlansTable(INTEGER) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_CreateSurveyPlansTable(INTEGER)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_DropSurveyPlansTable(
     p_upload INTEGER
@@ -516,7 +569,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_DropSurveyPlansTable(INTEGER) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_DropSurveyPlansTable(INTEGER)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_IsTableSufiUnique(p_upload INTEGER, p_table REGCLASS)
   RETURNS BOOLEAN AS
@@ -561,7 +614,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
-ALTER FUNCTION lds.LDS_IsTableSufiUnique(INTEGER, REGCLASS) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_IsTableSufiUnique(INTEGER, REGCLASS)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_CreateTitleExclusionTables(
 	p_upload INTEGER
@@ -588,7 +641,7 @@ BEGIN
 		RETURN FALSE;
 	END IF;
 
-	RAISE INFO 'Started creating temp table tmp_training_titles';
+	RAISE NOTICE 'Started creating temp table tmp_training_titles';
 
 	CREATE TEMP TABLE tmp_training_titles AS
 	SELECT
@@ -604,7 +657,7 @@ BEGIN
 	ALTER TABLE tmp_training_titles ADD PRIMARY KEY (title_no);
 	ANALYSE tmp_training_titles;
 
-	RAISE INFO 'Started creating temp table tmp_excluded_titles';
+	RAISE NOTICE 'Started creating temp table tmp_excluded_titles';
 
 	CREATE TEMP TABLE tmp_excluded_titles AS
 	SELECT
@@ -622,7 +675,7 @@ BEGIN
 	ALTER TABLE tmp_excluded_titles ADD PRIMARY KEY (title_no);
 	ANALYSE tmp_excluded_titles;
 
-	RAISE INFO 'Started creating temp table tmp_protected_titles';
+	RAISE NOTICE 'Started creating temp table tmp_protected_titles';
 
 	CREATE TEMP TABLE tmp_protected_titles AS
 	SELECT
@@ -677,7 +730,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_CreateTitleExclusionTables(INTEGER) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_CreateTitleExclusionTables(INTEGER)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_DropTitleExclusionTables(
 	p_upload INTEGER
@@ -698,7 +751,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_DropTitleExclusionTables(INTEGER) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_DropTitleExclusionTables(INTEGER)'); END; $$;
 
 CREATE OR REPLACE FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(
     p_upload INTEGER
@@ -713,29 +766,33 @@ DECLARE
     v_data_diff_sql    TEXT;
     v_data_insert_sql  TEXT;
 BEGIN
-    RAISE INFO 'Starting maintenance on geodetic simplified layers';
+    RAISE NOTICE 'Starting maintenance on geodetic simplified layers';
 
+    IF p_upload != 0 THEN
+    -- Skip maintainance of the functions if source data
+    -- was not changed by given upload and target tables
+    -- are already populated (unless forced)
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
                 p_upload,
                 ARRAY[
-                    'bde.crs_node',
-                    'bde.crs_node_works',
-                    'bde.crs_mark',
-                    'bde.crs_mark_name',
-                    'bde.crs_coordinate',
-                    'bde.crs_cord_order',
-                    'bde.crs_coordinate_tpe',
-                    'bde.crs_coordinate_sys',
-                    'bde.crs_geodetic_network',
-                    'bde.crs_geodetic_node_network',
-                    'bde.crs_site_locality',
-                    'bde.crs_locality',
-                    'bde.crs_mrk_phys_state',
-                    'bde.crs_sys_code',
-                    'bde.crs_survey',
-                    'bde.crs_work'
+                    'crs_node',
+                    'crs_node_works',
+                    'crs_mark',
+                    'crs_mark_name',
+                    'crs_coordinate',
+                    'crs_cord_order',
+                    'crs_coordinate_tpe',
+                    'crs_coordinate_sys',
+                    'crs_geodetic_network',
+                    'crs_geodetic_node_network',
+                    'crs_site_locality',
+                    'crs_locality',
+                    'crs_mrk_phys_state',
+                    'crs_sys_code',
+                    'crs_survey',
+                    'crs_work'
                 ],
                 'any affected'
             )
@@ -748,10 +805,11 @@ BEGIN
         AND LDS.LDS_TableHasData('lds', 'survey_protected_marks')
     )
     THEN
-        RAISE INFO
+        RAISE NOTICE
             'Maintain geodetic simplified layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
+    END IF; -- p_upload != 0
 
     -- Upper is used on the mark type to
     -- force the planner to do a seq scan on bde.crs_mark_name.
@@ -804,7 +862,7 @@ BEGIN
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'geodetic_marks');
 
-    RAISE INFO 'Started creating temp tables for %', v_table;
+    RAISE NOTICE 'Started creating temp tables for %', v_table;
 
     -- The windowing partition will prioritise the commissioned, non-replaced marks for each node.
     CREATE TEMP TABLE tmp_geodetic_marks AS
@@ -855,7 +913,7 @@ BEGIN
     WHERE
         row_number NOT IN (SELECT MIN(row_number) FROM tmp_geodetic_marks GROUP BY geodetic_code);
 
-    RAISE INFO 'Finished creating temp tables for %', v_table;
+    RAISE NOTICE 'Finished creating temp tables for %', v_table;
 
     v_data_insert_sql := $sql$
         INSERT INTO %1% (
@@ -957,7 +1015,7 @@ BEGIN
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'geodetic_vertical_marks');
 
-    RAISE INFO 'Started creating temp tables for %', v_table;
+    RAISE NOTICE 'Started creating temp tables for %', v_table;
 
     -- The windowing partition will prioritise the commissioned, non-replaced marks for each node.
     CREATE TEMP TABLE tmp_geodetic_vertical_mark AS
@@ -1014,7 +1072,7 @@ BEGIN
     WHERE
         row_number NOT IN (SELECT MIN(row_number) FROM tmp_geodetic_vertical_mark GROUP BY coordinate_system, nod_id);
 
-    RAISE INFO 'Finished creating temp tables for %', v_table;
+    RAISE NOTICE 'Finished creating temp tables for %', v_table;
 
     v_data_diff_sql := $sql$
         INSERT INTO %1% (
@@ -1192,7 +1250,7 @@ BEGIN
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'geodetic_network_marks');
 
-    RAISE INFO 'Started creating temp tables for %', v_table;
+    RAISE NOTICE 'Started creating temp tables for %', v_table;
 
     -- Create the geodetic network marks layer.
     --
@@ -1305,7 +1363,7 @@ BEGIN
     WHERE
         row_number NOT IN (SELECT MIN(row_number) FROM tmp_geodetic_network_marks GROUP BY nod_id, control_network);
 
-    RAISE INFO 'Finished creating temp tables for %', v_table;
+    RAISE NOTICE 'Finished creating temp tables for %', v_table;
 
     v_data_diff_sql := $sql$
         INSERT INTO %1% (
@@ -1549,7 +1607,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_protect_nodes;
     DROP TABLE IF EXISTS tmp_geo_nodes;
 
-    RAISE INFO 'Finished maintenance on geodetic simplified layers';
+    RAISE NOTICE 'Finished maintenance on geodetic simplified layers';
 
     RETURN 1;
 
@@ -1560,7 +1618,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER)'); END; $$;
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedGeodeticLayers(INTEGER) SET search_path=bde, bde_control, public;
 
@@ -1575,32 +1633,34 @@ DECLARE
     v_data_diff_sql    TEXT;
     v_data_insert_sql  TEXT;
 BEGIN
-    RAISE INFO
+    RAISE NOTICE
         'Starting maintenance on cadastral parcel and title simplified layers';
 
+    IF p_upload != 0 THEN
+    -- Skip maintainance of the functions if source data
+    -- was not changed by given upload and target tables
+    -- are already populated (unless forced)
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
                 p_upload,
                 ARRAY[
-                    'bde.crs_affected_parcl',
-                    'bde.crs_appellation',
-                    'bde.crs_estate_share',
-                    'bde.crs_legal_desc',
-                    'bde.crs_legal_desc_prl',
-                    'bde.crs_locality',
-                    'bde.crs_parcel',
-                    'bde.crs_proprietor',
-                    'bde.crs_stat_act_parcl',
-                    'bde.crs_statute',
-                    'bde.crs_statute_action',
-                    'bde.crs_survey',
-                    'bde.crs_sys_code',
-                    'bde.crs_title',
-                    'bde.crs_title_estate',
-                    'bde.crs_ttl_hierarchy',
-                    'bde.crs_topology_class',
-                    'bde.crs_work',
+                    'crs_affected_parcl',
+                    'crs_appellation', -- needed by bde_get_combined_appellation
+                    'crs_estate_share',
+                    'crs_legal_desc',
+                    'crs_locality',
+                    'crs_parcel',
+                    'crs_proprietor',
+                    'crs_stat_act_parcl',
+                    'crs_statute', -- needed by bde_get_par_stat_act
+                    'crs_statute_action', -- bde_get_par_stat_act
+                    'crs_survey',
+                    'crs_sys_code',
+                    'crs_title',
+                    'crs_title_estate',
+                    'crs_topology_class',
+                    'crs_work',
                     'cbe_title_parcel_association'
                 ],
                 'any affected'
@@ -1626,14 +1686,15 @@ BEGIN
         AND LDS.LDS_TableHasData('lds', 'title_parcel_associations')
     )
     THEN
-        RAISE INFO
+        RAISE NOTICE
             'Maintain cadastral parcel simplified layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
+    END IF; -- p_upload != 0
 
 	PERFORM LDS_CreateTitleExclusionTables(p_upload);
 
-    RAISE INFO 'Started creating temp table tmp_title_parcel_associations';
+    RAISE NOTICE 'Started creating temp table tmp_title_parcel_associations';
 
     CREATE TEMP TABLE tmp_title_parcel_associations AS
     SELECT
@@ -1648,7 +1709,7 @@ BEGIN
             END
         AS VARCHAR(8) ) AS source
     FROM
-        cbe_title_parcel_association
+        bde.cbe_title_parcel_association
     WHERE
         status = 'VALD' AND
         ttl_title_no NOT IN (SELECT title_no FROM tmp_excluded_titles);
@@ -1685,7 +1746,7 @@ BEGIN
         v_data_insert_sql
     );
 
-    RAISE INFO 'Started creating temp table tmp_par_stat_action';
+    RAISE NOTICE 'Started creating temp table tmp_par_stat_action';
 
     CREATE TEMP TABLE tmp_par_stat_action AS
     SELECT
@@ -1693,7 +1754,7 @@ BEGIN
         SAP.par_id,
         SAPS.char_value as status,
         SAPA.char_value AS action,
-        bde_get_par_stat_act(SAP.sta_id, SAP.par_id) as statutory_action
+        bde.bde_get_par_stat_act(SAP.sta_id, SAP.par_id) as statutory_action
     FROM
         bde.crs_stat_act_parcl SAP
         LEFT JOIN  bde.crs_sys_code SAPA ON SAPA.scg_code ='SAPA' AND SAP.action = SAPA.code
@@ -1851,7 +1912,7 @@ BEGIN
     CREATE INDEX tmp_world_regions_shpx ON tmp_world_regions USING gist (shape);
     ANALYSE tmp_world_regions;
 
-    RAISE INFO 'Started creating temp table tmp_parcel_geoms';
+    RAISE NOTICE 'Started creating temp table tmp_parcel_geoms';
 
     -- Some Landonline parcel polygons have rings that self-intersect, typically
     -- banana polygons. So here we use the buffer 0 trick to build a polygon
@@ -1870,7 +1931,7 @@ BEGIN
     ALTER TABLE tmp_parcel_geoms ADD PRIMARY KEY(par_id);
     ANALYSE tmp_parcel_geoms;
 
-    RAISE INFO 'Started creating temp table tmp_parcels';
+    RAISE NOTICE 'Started creating temp table tmp_parcels';
 
     CREATE TEMP TABLE tmp_parcels AS
     SELECT
@@ -1913,7 +1974,7 @@ BEGIN
     ORDER BY
         PAR.id;
 
-    RAISE INFO 'Finished creating temp table tmp_parcels';
+    RAISE NOTICE 'Finished creating temp table tmp_parcels';
 
     DROP TABLE IF EXISTS tmp_world_regions;
 
@@ -2411,7 +2472,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_par_stat_action_agg;
     DROP TABLE IF EXISTS tmp_parcels;
 
-    RAISE INFO 'Started creating temp table tmp_title_estates';
+    RAISE NOTICE 'Started creating temp table tmp_title_estates';
 
     DROP TABLE IF EXISTS tmp_title_estates;
 
@@ -2440,7 +2501,7 @@ BEGIN
         TTL.status IN ('LIVE', 'PRTC') AND
         TTL.title_no NOT IN (SELECT title_no FROM tmp_excluded_titles);
 
-    RAISE INFO 'Finished creating temp table tmp_title_estates';
+    RAISE NOTICE 'Finished creating temp table tmp_title_estates';
 
     ----------------------------------------------------------------------------
     -- title_estates table
@@ -2484,7 +2545,7 @@ BEGIN
         v_data_insert_sql
     );
 
-    RAISE INFO 'Started creating temp table tmp_title_owners_aspatial';
+    RAISE NOTICE 'Started creating temp table tmp_title_owners_aspatial';
 
     DROP TABLE IF EXISTS tmp_title_owners_aspatial;
 
@@ -2548,7 +2609,7 @@ BEGIN
     WHERE
         PRO.title_no IS NOT NULL;
 
-    RAISE INFO 'Finished creating temp table tmp_title_owners_aspatial';
+    RAISE NOTICE 'Finished creating temp table tmp_title_owners_aspatial';
 
     ----------------------------------------------------------------------------
     -- title_owners_aspatial table
@@ -2651,7 +2712,7 @@ BEGIN
 
     DROP TABLE IF EXISTS tmp_title_owners_aspatial;
 
-    RAISE INFO 'Started creating temp table tmp_titles';
+    RAISE NOTICE 'Started creating temp table tmp_titles';
 
     CREATE TEMP TABLE tmp_titles AS
     SELECT
@@ -2660,7 +2721,7 @@ BEGIN
         TTL.status AS status_code, -- TODO: remove once old spatial schema is realigned with aspatial.
         TTLS.char_value::VARCHAR(50) AS status,
         TTLR.char_value::VARCHAR(50) AS register_type,
-        TTLT.char_value AS type,
+        TTLT."desc" AS type,
         LOC.name AS land_district,
         TTL.issue_date,
         TTLG.char_value AS guarantee_status,
@@ -2708,7 +2769,7 @@ BEGIN
         TTL.status,
         TTLS.char_value,
         TTLR.char_value,
-        TTLT.char_value,
+        TTLT."desc",
         LOC.name,
         TTL.issue_date,
         TTLG.char_value,
@@ -2722,7 +2783,17 @@ BEGIN
 
     DROP TABLE IF EXISTS tmp_title_polygon;
 
-    RAISE INFO 'Finished creating temp table tmp_titles';
+    RAISE NOTICE 'Updating temp table tmp_titles with SRS descriptions';
+
+    UPDATE tmp_titles TTL SET estate_description = LGDSRS.legal_desc_text
+    FROM bde.crs_legal_desc LGDSRS
+    WHERE TTL.estate_description IS NULL
+        AND TTL.title_no = LGDSRS.ttl_title_no
+        AND TTL.type = 'Supplementary Record Sheet'
+        AND LGDSRS.status = 'REGD';
+
+
+    RAISE NOTICE 'Finished creating temp table tmp_titles';
 
     ----------------------------------------------------------------------------
     -- titles layer
@@ -2860,7 +2931,7 @@ BEGIN
         v_data_insert_sql
     );
 
-    RAISE INFO 'Started creating temp table tmp_title_owners';
+    RAISE NOTICE 'Started creating temp table tmp_title_owners';
 
     CREATE TEMP TABLE tmp_title_owners AS
     WITH title_owner_parcels (
@@ -2909,7 +2980,7 @@ BEGIN
     DROP TABLE IF EXISTS tmp_title_parcel_associations;
     DROP TABLE IF EXISTS tmp_title_owner_concat;
 
-    RAISE INFO 'Finished creating temp table tmp_title_owners';
+    RAISE NOTICE 'Finished creating temp table tmp_title_owners';
 
     ----------------------------------------------------------------------------
     -- title_owners layer
@@ -3315,7 +3386,7 @@ BEGIN
 
     PERFORM LDS_DropTitleExclusionTables(p_upload);
 
-    RAISE INFO 'Finished maintenance on cadastral parcel simplified layers';
+    RAISE NOTICE 'Finished maintenance on cadastral parcel simplified layers';
 
     RETURN 1;
 
@@ -3325,7 +3396,7 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_MaintainSimplifiedParcelLayers(INTEGER) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedParcelLayers(INTEGER)'); END; $$;
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedParcelLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
 
@@ -3339,40 +3410,44 @@ DECLARE
     v_data_diff_sql    TEXT;
     v_data_insert_sql  TEXT;
 BEGIN
-    RAISE INFO 'Starting maintenance on cadastral survey simplified layers';
+    RAISE NOTICE 'Starting maintenance on cadastral survey simplified layers';
 
+    IF p_upload != 0 THEN
+    -- Skip maintainance of the functions if source data
+    -- was not changed by given upload and target tables
+    -- are already populated (unless forced)
     IF (
         NOT (
             SELECT bde_control.bde_TablesAffected(
                 p_upload,
                 ARRAY[
-                    'bde.crs_adjust_method',
-                    'bde.crs_adjustment_run',
-                    'bde.crs_coordinate',
-                    'bde.crs_coordinate_sys',
-                    'bde.crs_cord_order',
-                    'bde.crs_land_district',
-                    'bde.crs_line',
-                    'bde.crs_locality',
-                    'bde.crs_mark',
-                    'bde.crs_mark_name',
-                    'bde.crs_mrk_phys_state',
-                    'bde.crs_node',
-                    'bde.crs_obs_elem_type',
-                    'bde.crs_observation',
-                    'bde.crs_obs_accuracy',
-                    'bde.crs_ordinate_adj',
-                    'bde.crs_parcel',
-                    'bde.crs_parcel_bndry',
-                    'bde.crs_parcel_dimen',
-                    'bde.crs_parcel_ring',
-                    'bde.crs_setup',
-                    'bde.crs_sur_plan_ref',
-                    'bde.crs_survey',
-                    'bde.crs_sys_code',
-                    'bde.crs_transact_type',
-                    'bde.crs_vector',
-                    'bde.crs_work'
+                    'crs_adjust_method',
+                    'crs_adjustment_run',
+                    'crs_coordinate',
+                    'crs_coordinate_sys',
+                    'crs_cord_order',
+                    'crs_land_district',
+                    'crs_line',
+                    'crs_locality',
+                    'crs_mark',
+                    'crs_mark_name',
+                    'crs_mrk_phys_state',
+                    'crs_node',
+                    'crs_obs_elem_type',
+                    'crs_observation',
+                    'crs_obs_accuracy',
+                    'crs_ordinate_adj',
+                    'crs_parcel',
+                    'crs_parcel_bndry',
+                    'crs_parcel_dimen',
+                    'crs_parcel_ring',
+                    'crs_setup',
+                    'crs_sur_plan_ref',
+                    'crs_survey',
+                    'crs_sys_code',
+                    'crs_transact_type',
+                    'crs_vector',
+                    'crs_work'
                 ],
                 'any affected'
             )
@@ -3390,10 +3465,11 @@ BEGIN
         AND LDS.LDS_TableHasData('lds', 'survey_non_bdy_marks')
     )
     THEN
-        RAISE INFO
+        RAISE NOTICE
             'Maintain cadastral survey simplified layers has been skipped as no relating tables were affected by the upload';
         RETURN 1;
     END IF;
+    END IF; -- p_upload != 0
 
     ----------------------------------------------------------------------------
     -- land_districts layer
@@ -3537,33 +3613,43 @@ BEGIN
             adjusted_nodes,
             shape
         )
+        WITH adjustments AS (
+            SELECT
+                ADJ.id,
+                ADJ.adjust_datetime AS date_adjusted,
+                SUR.survey_reference,
+                count(*) AS adjusted_nodes,
+                St_ConvexHull(ST_Collect(NOD.shape ORDER BY NOD.shape ASC)) as hull
+            FROM
+                bde.crs_adjustment_run ADJ
+                JOIN bde.crs_adjust_method ADM ON ADJ.adm_id = ADM.id
+                LEFT JOIN tmp_survey_plans SUR ON ADJ.wrk_id = SUR.wrk_id
+                JOIN bde.crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
+                JOIN bde.crs_coordinate COO ON ORJ.coo_id_output = COO.id
+                JOIN bde.crs_node NOD ON COO.nod_id = NOD.id
+            WHERE
+                ADJ.status = 'AUTH' AND
+                ADM.software_used = 'LNZC' AND
+                NOD.cos_id_official = 109
+            GROUP BY
+                ADJ.id,
+                ADJ.adjust_datetime,
+                SUR.survey_reference
+        )
         SELECT
-            ADJ.id,
-            ADJ.adjust_datetime AS date_adjusted,
-            SUR.survey_reference,
-            count(*) AS adjusted_nodes,
-            CASE WHEN count(*) < 3 THEN
-                ST_Buffer(St_ConvexHull(ST_Collect(NOD.shape ORDER BY NOD.shape ASC)), 0.00001, 4)
+            id,
+            date_adjusted,
+            survey_reference,
+            adjusted_nodes,
+            CASE WHEN ST_Dimension(hull) < 2 THEN
+                ST_Buffer(hull, 0.00001, 4)
             ELSE
-                St_ConvexHull(ST_Collect(NOD.shape ORDER BY NOD.shape ASC))
-            END  AS shape
+                hull
+            END AS shape
         FROM
-            bde.crs_adjustment_run ADJ
-            JOIN bde.crs_adjust_method ADM ON ADJ.adm_id = ADM.id
-            LEFT JOIN tmp_survey_plans SUR ON ADJ.wrk_id = SUR.wrk_id
-            JOIN bde.crs_ordinate_adj ORJ ON ADJ.id = ORJ.adj_id
-            JOIN bde.crs_coordinate COO ON ORJ.coo_id_output = COO.id
-            JOIN bde.crs_node NOD ON COO.nod_id = NOD.id
-        WHERE
-            ADJ.status = 'AUTH' AND
-            ADM.software_used = 'LNZC' AND
-            NOD.cos_id_official = 109
-        GROUP BY
-            ADJ.id,
-            ADJ.adjust_datetime,
-            SUR.survey_reference
+            adjustments
         ORDER BY
-            ADJ.id;
+            id;
     $sql$;
 
     PERFORM LDS.LDS_UpdateSimplifiedTable(
@@ -3657,7 +3743,7 @@ BEGIN
             ADJ.status = 'AUTH' AND
             ADM.software_used = 'LNZC' AND
             NOD.cos_id_official = 109 AND
-            ADM.name ilike 'SDC WACA adjustment%'
+            ADM.name like '%WACA%'
         GROUP BY
             ADJ.id,
             ADJ.adjust_datetime,
@@ -3678,7 +3764,7 @@ BEGIN
     ----------------------------------------------------------------------------
     v_table := LDS.LDS_GetTable('lds', 'parcel_vectors');
 
-    RAISE INFO 'Started creating temp table tmp_parcel_vectors';
+    RAISE NOTICE 'Started creating temp table tmp_parcel_vectors';
 
     CREATE TEMP TABLE tmp_parcel_vectors AS
     SELECT
@@ -3704,7 +3790,7 @@ BEGIN
     ANALYSE tmp_parcel_vectors;
 
 
-    RAISE INFO 'Started creating table tmp_parcel_vector_detail';
+    RAISE NOTICE 'Started creating table tmp_parcel_vector_detail';
 
     CREATE TEMP TABLE tmp_parcel_vector_detail AS
     WITH latest_vector (row_number, id, type, bearing, distance, shape) AS (
@@ -3739,7 +3825,7 @@ BEGIN
     WHERE
         row_number = 1;
 
-    RAISE INFO 'Started inserting vector rows into table tmp_parcel_vector_detail';
+    RAISE NOTICE 'Started inserting vector rows into table tmp_parcel_vector_detail';
 
     INSERT INTO tmp_parcel_vector_detail(
         id,
@@ -3789,7 +3875,7 @@ BEGIN
         LVT.row_number = 1 AND
         PVD.id IS NULL;
 
-    RAISE INFO 'Finished creating table tmp_parcel_vector_detail';
+    RAISE NOTICE 'Finished creating table tmp_parcel_vector_detail';
 
     v_data_insert_sql := $sql$
         INSERT INTO %1%(
@@ -3937,7 +4023,7 @@ BEGIN
 
     -- Temp tables required for survey_bdy_marks and survey_non_bdy_marks
 
-    RAISE INFO 'Started creating table tmp_bdy_nodes';
+    RAISE NOTICE 'Started creating table tmp_bdy_nodes';
 
     CREATE TEMP TABLE tmp_bdy_nodes AS
     WITH bdy_nodes (nod_id_start, nod_id_end) AS (
@@ -3965,7 +4051,7 @@ BEGIN
     FROM
         bdy_nodes;
 
-    RAISE INFO 'Started creating table tmp_node_last_adjusted';
+    RAISE NOTICE 'Started creating table tmp_node_last_adjusted';
 
     CREATE TEMP TABLE tmp_node_last_adjusted AS
     SELECT
@@ -3983,7 +4069,7 @@ BEGIN
     GROUP BY
         NOD.id;
 
-    RAISE INFO 'Started creating table tmp_cadastral_marks';
+    RAISE NOTICE 'Started creating table tmp_cadastral_marks';
 
     CREATE TEMP TABLE tmp_cadastral_marks AS
     WITH t (
@@ -4035,7 +4121,7 @@ BEGIN
     WHERE
         row_number = 1;
 
-    RAISE INFO 'Finished creating table tmp_cadastral_marks';
+    RAISE NOTICE 'Finished creating table tmp_cadastral_marks';
 
     ----------------------------------------------------------------------------
     -- survey_bdy_marks layer
@@ -4153,7 +4239,7 @@ BEGIN
             SCO.char_value AS surveyed_type,
             COS.name AS coordinate_system,
             CASE WHEN SUR.wrk_id IS NULL THEN
-                LDS_GetLandDistict(MRKL.shape)
+                LDS_GetLandDistrict(MRKL.shape)
             ELSE
                 SUR.land_district
             END as land_district,
@@ -4176,7 +4262,8 @@ BEGIN
             OBN.obt_type = 'REDC' AND
             OBN.obt_sub_type IN ('SLDI', 'BEAR') AND
             OBN.status = 'AUTH' AND
-            OBN.surveyed_class IN ('ADPT', 'CALC', 'MEAS')
+            OBN.surveyed_class IN ('ADPT', 'CALC', 'MEAS') AND
+            OBN.value_1 >= 0
         ORDER BY
             OBN.id;
     $sql$;
@@ -4231,7 +4318,7 @@ BEGIN
         SCO.char_value,
         COS.name,
         CASE WHEN SUR.wrk_id IS NULL THEN
-            LDS_GetLandDistict(MRKL.shape)
+            LDS_GetLandDistrict(MRKL.shape)
         ELSE
             SUR.land_district
         END as land_district,
@@ -4266,7 +4353,7 @@ BEGIN
         v_data_insert_sql
     );
 
-    RAISE INFO 'Finished maintenance on cadastral survey simplified layers';
+    RAISE NOTICE 'Finished maintenance on cadastral survey simplified layers';
 
     PERFORM LDS.LDS_DropSurveyPlansTable(p_upload);
 
@@ -4281,40 +4368,9 @@ EXCEPTION
 END;
 $$ LANGUAGE plpgsql VOLATILE;
 
-ALTER FUNCTION lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER) OWNER TO bde_dba;
+DO $$ BEGIN PERFORM pg_temp.bless_lds_bde_function('lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER)'); END; $$;
 
 ALTER FUNCTION lds.LDS_MaintainSimplifiedSurveyLayers(INTEGER) SET search_path=lds, bde, bde_control, public;
 
-DO $$
-DECLARE
-    v_comment TEXT;
-    v_pcid    TEXT;
-    v_schema  TEXT = 'lds';
-BEGIN
-    FOR v_comment, v_pcid IN
-        SELECT
-            obj_description(oid, 'pg_proc'),
-            proname || '(' || pg_get_function_identity_arguments(oid) || ')'
-        FROM
-            pg_proc
-        WHERE
-            pronamespace=(SELECT oid FROM pg_namespace WHERE nspname = v_schema)  AND
-            proname NOT ILIKE '_createVersionComment'
-    LOOP
-        IF v_comment IS NULL THEN
-            v_comment := '';
-        ELSE
-            v_comment := E'\n\n' || v_comment;
-        END IF;
-
-        v_comment := 'Version: @@VERSION@@ @@REVISION@@'
-                    || E'\n' || 'Installed: ' ||
-                    to_char(current_timestamp,'YYYY-MM-DD HH:MI') || v_comment;
-
-        EXECUTE 'COMMENT ON FUNCTION ' || v_schema || '.' || v_pcid || ' IS '
-            || quote_literal( v_comment );
-    END LOOP;
-END
-$$;
 
 COMMIT;

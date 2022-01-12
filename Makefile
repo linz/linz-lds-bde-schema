@@ -1,12 +1,14 @@
 # Minimal script to install the SQL creation scripts ready for postinst script.
 
-VERSION=1.3.0
+VERSION=1.14.0dev
 REVISION=$(shell test -d .git && which git > /dev/null && git describe --always)
 
 SED = sed
 TEST_DB=linz-lds-bde-schema-test-db
 LDS_TABLES=45
 BDE_EXT_TABLES=47
+
+IMAGES=$(shell find doc/models -name '*.png')
 
 datadir=${DESTDIR}/usr/share/linz-lds-bde-schema
 bindir=${DESTDIR}/usr/bin
@@ -32,6 +34,7 @@ SQLSCRIPTS_built = \
 
 SCRIPTS_built = \
     scripts/linz-lds-bde-schema-load \
+    scripts/linz-lds-bde-schema-publish \
     $(END)
 
 
@@ -70,6 +73,13 @@ scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.in Makefile
            $< > $@
 	chmod +x $@
 
+scripts/linz-lds-bde-schema-publish: scripts/linz-lds-bde-schema-publish.in Makefile
+	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)$(SQLSCRIPTS_built)|' \
+	       -e 's|@@VERSION@@|$(VERSION)|g' \
+           -e 's|@@REVISION@@|$(REVISION)|g' \
+           $< > $@
+	chmod +x $@
+
 sql/95-lds_comments.sql: doc/tools/comment-extraction.py \
 		      doc/lds-full-landonline-data-dictionary-and-models.md \
 		      doc/property-and-ownership-simplified-tables-data-dictionary.md
@@ -91,11 +101,11 @@ uninstall:
 check test: $(SQLSCRIPTS) check-docs check-generic check-noextension
 
 check-generic:
-	export PGDATABASE=regress_linz_lds_bde_schema; \
-	dropdb --if-exists $$PGDATABASE; \
-	createdb $$PGDATABASE; \
-	linz-bde-schema-load $$SCHEMA_LOAD_OPTS $$PGDATABASE; \
-	linz-bde-uploader-schema-load $$SCHEMA_LOAD_OPTS $$PGDATABASE; \
+	export PGDATABASE=regress_linz_lds_bde_schema && \
+	dropdb --if-exists $$PGDATABASE && \
+	createdb $$PGDATABASE && \
+	linz-bde-schema-load $$SCHEMA_LOAD_OPTS $$PGDATABASE && \
+	linz-bde-uploader-schema-load $$SCHEMA_LOAD_OPTS $$PGDATABASE && \
 	pg_prove test/
 
 check-noextension:
@@ -106,6 +116,14 @@ clean:
 	rm -f regression.out
 	rm -rf results
 	rm -f $(EXTRA_CLEAN)
+
+check-publisher:
+
+	export PGDATABASE=$(TEST_DB); \
+	V=`linz-lds-bde-schema-publish --version` && \
+	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
+
+	test/test-publication.sh
 
 loader-version-test:
 
@@ -138,63 +156,76 @@ prepared-db-revision-test:
         false; \
     }
 
+load-schema:
+
+	if test "${SCHEMA_LOAD_USE_STDOUT}" = 1; then \
+	    linz-lds-bde-schema-load $(SCHEMA_LOAD_OPTS) - | \
+            psql --set ON_ERROR_STOP=1 -Xo /dev/null $(TEST_DB); \
+    else \
+        linz-lds-bde-schema-load $(SCHEMA_LOAD_OPTS) $(TEST_DB); \
+    fi
+
+installcheck-stdout:
+	$(MAKE) installcheck SCHEMA_LOAD_USE_STDOUT=1
+
 installcheck:
 
 	$(MAKE) loader-version-test
 
-	dropdb --if-exists linz-lds-bde-schema-test-db
+	dropdb --if-exists $(TEST_DB)
 
     #
     # Default install
     #
-	createdb linz-lds-bde-schema-test-db
-	linz-bde-schema-load linz-lds-bde-schema-test-db
+	createdb $(TEST_DB)
+	linz-bde-schema-load $(TEST_DB)
     # Load schema
-	linz-lds-bde-schema-load linz-lds-bde-schema-test-db
+	$(MAKE) load-schema
 	$(MAKE) prepared-db-simple-test
     # Load schema again (upgrade)
-	linz-lds-bde-schema-load linz-lds-bde-schema-test-db
+	linz-lds-bde-schema-load $(TEST_DB)
 	$(MAKE) prepared-db-simple-test
 	$(MAKE) prepared-db-revision-test LDS_TABLES=0 BDE_EXT_TABLES=0
     # Drop DB
-	dropdb linz-lds-bde-schema-test-db
+	dropdb $(TEST_DB)
 
     #
     # Default revisioned install
     #
-	createdb linz-lds-bde-schema-test-db
-	linz-bde-schema-load linz-lds-bde-schema-test-db
+	createdb $(TEST_DB)
+	linz-bde-schema-load $(TEST_DB)
     # Load schema
-	linz-lds-bde-schema-load --revision linz-lds-bde-schema-test-db
+	$(MAKE) load-schema SCHEMA_LOAD_OPTS="--revision"
+	#linz-lds-bde-schema-load --revision $(TEST_DB)
 	$(MAKE) prepared-db-simple-test
 	$(MAKE) prepared-db-revision-test
     # Drop DB
-	dropdb linz-lds-bde-schema-test-db
+	dropdb $(TEST_DB)
 
     #
     # Extension-less install
     #
-	createdb linz-lds-bde-schema-test-db
-	linz-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	createdb $(TEST_DB)
+	linz-bde-schema-load --noextension $(TEST_DB)
     # Load schema
-	linz-lds-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	$(MAKE) load-schema SCHEMA_LOAD_OPTS="--noextension"
 	$(MAKE) prepared-db-simple-test
     # Load schema again (upgrade)
-	linz-lds-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	linz-lds-bde-schema-load --noextension $(TEST_DB)
 	$(MAKE) prepared-db-simple-test
 	$(MAKE) prepared-db-revision-test LDS_TABLES=0 BDE_EXT_TABLES=0
-	dropdb linz-lds-bde-schema-test-db
+	dropdb $(TEST_DB)
 
     #
     # Extension-less revisioned install
     #
-	createdb linz-lds-bde-schema-test-db
-	linz-bde-schema-load --noextension linz-lds-bde-schema-test-db
+	createdb $(TEST_DB)
+	linz-bde-schema-load --noextension $(TEST_DB)
     # Load schema
-	linz-lds-bde-schema-load --noextension --revision linz-lds-bde-schema-test-db
+	$(MAKE) load-schema SCHEMA_LOAD_OPTS="--noextension --revision"
 	$(MAKE) prepared-db-simple-test
 	$(MAKE) prepared-db-revision-test
-	dropdb linz-lds-bde-schema-test-db
+	dropdb $(TEST_DB)
 
 docs: $(DOCS_built)
 
@@ -211,7 +242,8 @@ install-docs: $(DOCS_built)
 
 doc/lds-full-landonline-data-dictionary-and-models.pdf: \
     doc/tools/markdown-to-pdf-conversion.sh \
-    doc/lds-full-landonline-data-dictionary-and-models.md
+    doc/lds-full-landonline-data-dictionary-and-models.md \
+    $(IMAGES)
 	@var=$(shell echo $(PANDOC_1_18));\
 	if [ "$$var" = "true" ]; then \
 		bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@; \
@@ -221,7 +253,8 @@ doc/lds-full-landonline-data-dictionary-and-models.pdf: \
 
 doc/property-and-ownership-simplified-tables-data-dictionary.pdf: \
     doc/tools/markdown-to-pdf-conversion.sh \
-    doc/property-and-ownership-simplified-tables-data-dictionary.md
+    doc/property-and-ownership-simplified-tables-data-dictionary.md \
+    $(IMAGES)
 	@var=$(shell echo $(PANDOC_1_18));\
 	if [ "$$var" = "true" ]; then \
 		bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@; \

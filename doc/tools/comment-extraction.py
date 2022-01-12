@@ -237,7 +237,7 @@ with open(sys.argv[1]) as fp:
           else:
             break
         name = name[:len(name)-1].replace('\n', '')
-        if mappings.has_key(name):
+        if name in mappings:
           table_name = mappings[name]
         else:
           table_name = name.lower()
