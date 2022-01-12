@@ -36,7 +36,7 @@ jobs:
       PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
       APT: "apt-get -o Dpkg::Progress=0 -o Dpkg::Use-Pty=0"
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2.3.5
     - name: Install dependencies
       run: |
         sudo ${APT} -qq purge \
