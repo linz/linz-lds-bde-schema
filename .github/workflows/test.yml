@@ -22,16 +22,24 @@ jobs:
     strategy:
         fail-fast: false
         matrix:
-            pg: [ '9.5', '9.6', '10', '11' ]
-            pgis: [ '2.4', '2.5' ]
-            os: [ ubuntu-18.04 ]
-            exclude:
-              # excludes PostGIS 2.5 on PostgreSQL 9.3
-              - pg: 9.3
-                pgis: 2.5
-              # excludes PostGIS 2.4 on PostgreSQL 11
-              - pg: 11
-                pgis: 2.4
+            # Combines <https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS> and
+            # `curl https://apt.postgresql.org/pub/repos/apt/dists/bionic-pgdg/main/binary-amd64/Packages | grep --only-matching '^Package: postgresql-[0-9.]\+-postgis-[0-9.]\+$' | sort --version-sort`.
+            include:
+                -   os: ubuntu-18.04
+                    pg: '10'
+                    pgis: '2.4'
+                -   os: ubuntu-18.04
+                    pg: '10'
+                    pgis: '2.5'
+                -   os: ubuntu-18.04
+                    pg: '10'
+                    pgis: '3'
+                -   os: ubuntu-18.04
+                    pg: '12'
+                    pgis: '2.5'
+                -   os: ubuntu-18.04
+                    pg: '12'
+                    pgis: '3'
     env:
       # Set PATH as postgresql-server-dev-all pretends version is 11
       PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
