@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/linz/linz-lds-bde-schema.svg)](http://travis-ci.org/linz/linz-lds-bde-schema)
+[![Actions Status](https://github.com/linz/linz-lds-bde-schema/workflows/test/badge.svg?branch=master)](https://github.com/linz/linz-lds-bde-schema/actions)
 
 LINZ LDS BDE Schemas
 =================================
@@ -74,12 +74,13 @@ Dependencies
 ------------
 
 Usage requires:
- - [`linz-bde-schema`](https://github.com/linz/linz-bde-schema) (v1.1.0+)
+ - [`linz-bde-schema`](https://github.com/linz/linz-bde-schema) (v1.11.0+)
  - [`table_version`](https://github.com/linz/postgresql-tableversion) (v1.4.0+)
  - [`dbpatch`](https://github.com/linz/postgresql-dbpatch) (v1.2.0+)
- - [`linz_bde_uploader`](https://github.com/linz/linz_bde_uploader) (v2.4.0+)
+ - [`linz_bde_uploader`](https://github.com/linz/linz-bde-uploader) (v2.4.0+)
 
 Documentation building requires:
+ - [GNU Sed](https://www.gnu.org/software/sed/)
  - [python](https://www.python.org/)
  - [pandoc](https://github.com/jgm/pandoc) (v1.18+)
  - [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf) (v0.12.1+)
