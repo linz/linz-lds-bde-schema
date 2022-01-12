@@ -1,21 +1,22 @@
 ---
 title: "LINZ Data Service: Full Landonline Dataset"
 subtitle: Data Dictionary and Data Models
-date: November 2018 <br> Version 2.6
+date: January 2022 <br> Version 2.7
 ---
 
 # Versioning
 
-__Version number__ | __Amendments__ | __Date__
-:--------|:---------------------------------|:------------
-1.0 | First draft drawn from BDE documentation for external comment. <br> Notable changes: <br> - Geometry type defined <br> - Clarification of primary keys | September 2014
-2.0 | First official release | November 2014
-2.1 | Updates for schema and data changes, and minor corrections | May 2015
-2.2 | Updates to LINZ Licence For Personal Data references | September 2016
-2.3 | Updates for the change of source for Street Address and Roads data from Landonline to the Address Information Management System | October 2016
-2.4 | Revised URLs to direct to new dataset IDs <br> Added Ordinate Adjustment table and model <br> Deprecated Map Grid <br> Removed roads and addresses table and model | November 2017
-2.5 | Updated for change to Creative Commons Attribution 4.0 license | April 2018
-2.6 | Terminology changes from Land Transfer Act 2017 | November 2018
+__Version number__ | __Amendments__                                                                                                                                                     | __Date__
+:------------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------
+1.0                | First draft drawn from BDE documentation for external comment. <br> Notable changes: <br> - Geometry type defined <br> - Clarification of primary keys             | September 2014
+2.0                | First official release                                                                                                                                             | November 2014
+2.1                | Updates for schema and data changes, and minor corrections                                                                                                         | May 2015
+2.2                | Updates to LINZ Licence For Personal Data references                                                                                                               | September 2016
+2.3                | Updates for the change of source for Street Address and Roads data from Landonline to the Address Information Management System                                    | October 2016
+2.4                | Revised URLs to direct to new dataset IDs <br> Added Ordinate Adjustment table and model <br> Deprecated Map Grid <br> Removed roads and addresses table and model | November 2017
+2.5                | Updated for change to Creative Commons Attribution 4.0 license                                                                                                     | April 2018
+2.6                | Terminology changes from Land Transfer Act 2017                                                                                                                    | November 2018
+2.7                | Minor schema changes                                                                                                                                               | January 2022
 
 # Introduction
 ### Purpose
@@ -298,12 +299,12 @@ Individual registered owners may have one or more alternate names or aliases. Th
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
-__Data Element__   | __Type (max. size)__   | __Notes__
-:-----------|:-----------|:-----------------------------------
-__*ID*__           | INTEGER                | Unique identifier for an alias (Primary Key)
-PRP_ID             | INTEGER                | Identifier of the registered owner whose alias this is.
-SURNAME            | VARCHAR(100)           | The surname of an alias for a registered owner.
-OTHER_NAMES        | VARCHAR(100)           | The first and subsequent names of an alias for a registered owner.
+__Data Element__   | __Type (max. size)__ | __Notes__
+:------------------|:---------------------|:-----------------------------------
+__*ID*__           | INTEGER              | Unique identifier for an alias (Primary Key)
+PRP_ID             | INTEGER              | Identifier of the registered owner whose alias this is.
+SURNAME            | TEXT                 | The surname of an alias for a registered owner.
+OTHER_NAMES        | VARCHAR(100)         | The first and subsequent names of an alias for a registered owner.
 
 ## Appellation [(https://data.linz.govt.nz/table/51590)](https://data.linz.govt.nz/table/51590)
 ### Description:
@@ -802,16 +803,16 @@ Registered owners will always be automatically copied into the nominal index, bu
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
-__Data Element__   | __Type (max. size)__   | __Notes__
-:-----------|:-----------|:-----------------------------------
-TTL_TITLE_NO       | VARCHAR(20)            | The title that this nominal index belongs to.
-PRP_ID             | INTEGER                | If the name was automatically copied into the nominal index, this contains the id of the registered owner. This is used to make the nominal index entry historical when the registered owner is transferred off the title.
-__*ID*__           | INTEGER                | The unique identifier for the nominal index entry. (Primary Key)
-STATUS             | VARCHAR(4)             | Status of the nominal index entry. This indicates if the name is currently the registered owner on the title or not. The default when searching is to search on current names only, but titles can be searched using all historical names as well. <br> See Reference Code Group TSDS for valid values
-NAME_TYPE          | VARCHAR(4)             | Indicates if the name is individual or corporate. See Reference Code Group NMIT for valid values
-SURNAME            | VARCHAR(100)           | If this nominal index entry is an individual, the surname is stored here, otherwise this should be blank.
-OTHER_NAMES        | VARCHAR(100)           | If this nominal index entry is an individual, the given names are stored here, otherwise this should be blank.
-CORPORATE_NAME      | VARCHAR(250)           | If this nominal index entry is a corporation, the name of the corporation is stored here, otherwise this should be blank.
+__Data Element__   | __Type (max. size)__ | __Notes__
+:------------------|:---------------------|:-----------------------------------
+TTL_TITLE_NO       | VARCHAR(20)          | The title that this nominal index belongs to.
+PRP_ID             | INTEGER              | If the name was automatically copied into the nominal index, this contains the id of the registered owner. This is used to make the nominal index entry historical when the registered owner is transferred off the title.
+__*ID*__           | INTEGER              | The unique identifier for the nominal index entry. (Primary Key)
+STATUS             | VARCHAR(4)           | Status of the nominal index entry. This indicates if the name is currently the registered owner on the title or not. The default when searching is to search on current names only, but titles can be searched using all historical names as well. <br> See Reference Code Group TSDS for valid values
+NAME_TYPE          | VARCHAR(4)           | Indicates if the name is individual or corporate. See Reference Code Group NMIT for valid values
+SURNAME            | VARCHAR(100)         | If this nominal index entry is an individual, the surname is stored here, otherwise this should be blank.
+OTHER_NAMES        | VARCHAR(100)         | If this nominal index entry is an individual, the given names are stored here, otherwise this should be blank.
+CORPORATE_NAME     | TEXT                 | If this nominal index entry is a corporation, the name of the corporation is stored here, otherwise this should be blank.
 
 ## Observation [(https://data.linz.govt.nz/table/51725)](https://data.linz.govt.nz/table/51725)
 ### Description:
@@ -1083,17 +1084,17 @@ A registered owner (previously known as a proprietor) is a person or corporation
 __IMPORTANT__: LINZ would like to remind users that the Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](https://data.linz.govt.nz/license/linz-licence-personal-data-21/)
 __Please ensure your use of this data does not breach any conditions of the Act.__
 
-__Data Element__   | __Type (max. size)__   | __Notes__
-:-------------|:-----------|:-----------------------------------
-ETS_ID             | INTEGER                | The identifier of the estate share that the registered owner owns. If there are joint tenants on a title, there will be more than one registered owner for the same estate share.
-__*ID*__           | INTEGER                | The unique identifier for the registered owner. (Primary Key)
-STATUS             | VARCHAR(4)             | The status of the registered owner. <br> See Reference Code Group TSDS for valid values.
-TYPE               | VARCHAR(4)             | Indicates whether this registered owner is an individual or corporation. <br> See Reference Code Group PRPT for valid values.
-PRIME_SURNAME      | VARCHAR(100)           | If this registered owner is an individual, the surname of the registered owner is stored here, otherwise this should be blank.
-PRIME_OTHER_NAMES  | VARCHAR(100)           | If this registered owner is an individual, the given name(s) of the registered owner are stored here, otherwise this should be blank.
-CORPORATE_NAME     | VARCHAR(250)           | If this registered owner is a corporation, the name of the corporation is stored here, otherwise this should be blank.
-NAME_SUFFIX        | VARCHAR(4)             | If this registered owner is an individual, the name_suffix of the registered owner is stored here, otherwise this should be blank. <br> See Reference Code Group NMSF for valid values.
-ORIGINAL_FLAG      | CHAR(1)                | This flag is set to "Y" if this registered owner was one of the original registered owners on the title. This is required for printing the historic view of the title which shows the original header data.
+__Data Element__   | __Type (max. size)__ | __Notes__
+:------------------|:---------------------|:-----------------------------------
+ETS_ID             | INTEGER              | The identifier of the estate share that the registered owner owns. If there are joint tenants on a title, there will be more than one registered owner for the same estate share.
+__*ID*__           | INTEGER              | The unique identifier for the registered owner. (Primary Key)
+STATUS             | VARCHAR(4)           | The status of the registered owner. <br> See Reference Code Group TSDS for valid values.
+TYPE               | VARCHAR(4)           | Indicates whether this registered owner is an individual or corporation. <br> See Reference Code Group PRPT for valid values.
+PRIME_SURNAME      | VARCHAR(100)         | If this registered owner is an individual, the surname of the registered owner is stored here, otherwise this should be blank.
+PRIME_OTHER_NAMES  | VARCHAR(100)         | If this registered owner is an individual, the given name(s) of the registered owner are stored here, otherwise this should be blank.
+CORPORATE_NAME     | TEXT                 | If this registered owner is a corporation, the name of the corporation is stored here, otherwise this should be blank.
+NAME_SUFFIX        | VARCHAR(4)           | If this registered owner is an individual, the name_suffix of the registered owner is stored here, otherwise this should be blank. <br> See Reference Code Group NMSF for valid values.
+ORIGINAL_FLAG      | CHAR(1)              | This flag is set to "Y" if this registered owner was one of the original registered owners on the title. This is required for printing the historic view of the title which shows the original header data.
 
 ## Reduction Method [(https://data.linz.govt.nz/table/51736)](https://data.linz.govt.nz/table/51736)
 ### Description:

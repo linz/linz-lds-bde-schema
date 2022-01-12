@@ -4,6 +4,10 @@ All notable changes for the LINZ LDS BDE schema are documented in
 this file.
 
 
+## 1.14.0 - 2022-01-13
+### Fixed
+- Minor schema changes
+
 ## 1.13.0 - 2021-02-18
 ### Enhanced
 - Extended masking of title memorials
