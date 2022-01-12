@@ -134,6 +134,62 @@ $$
 $PATCH$
 );
 
+PERFORM _patches.apply_patch(
+    'lds - 1.14.0: Use `text` field for anything depending on `LDS_GetProtectedText`',
+    $PATCH$
+DO $$
+DECLARE
+    versioning_enabled BOOL;
+    table_is_versioned BOOL;
+    schema_name TEXT;
+    table_name TEXT;
+    column_name TEXT;
+BEGIN
+    versioning_enabled := false;
+
+    -- Is the DB versioned
+    SELECT EXISTS (
+        SELECT pg_proc.oid
+          FROM pg_catalog.pg_proc, pg_catalog.pg_namespace
+         WHERE pg_proc.proname = 'ver_is_table_versioned'
+           AND pg_namespace.oid = pg_proc.pronamespace
+           AND pg_namespace.nspname = 'table_version'
+    ) INTO versioning_enabled;
+
+    FOR schema_name, table_name, column_name IN VALUES
+        ('bde_ext', 'alias', 'surname'),
+        ('bde_ext', 'nominal_index', 'corporate_name'),
+        ('bde_ext', 'proprietor', 'corporate_name'),
+        ('lds', 'title_owners', 'owner'),
+        ('lds', 'title_owners_aspatial', 'corporate_name'),
+        ('lds', 'titles_plus', 'owners')
+    LOOP
+        RAISE NOTICE 'Schema %, table %, column %', schema_name, table_name, column_name;
+
+        IF versioning_enabled
+        THEN
+            SELECT table_version.ver_is_table_versioned(schema_name, table_name) INTO table_is_versioned;
+        ELSE
+            table_is_versioned := false;
+        END IF;
+
+        IF table_is_versioned
+        THEN
+            PERFORM table_version.ver_versioned_table_change_column_type(
+                schema_name,
+                table_name,
+                column_name,
+                'TEXT'
+            );
+        ELSE
+            EXECUTE format('ALTER TABLE %I.%I ALTER COLUMN %I TYPE TEXT', schema_name, table_name, column_name);
+        END IF;
+
+    END LOOP;
+END;
+$$
+$PATCH$
+    );
+
 END;
 $PATCHES$;
-
