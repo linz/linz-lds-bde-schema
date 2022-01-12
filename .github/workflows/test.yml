@@ -108,6 +108,12 @@ jobs:
     - name: Test docs building
       run: |
         xvfb-run make docs
+    - name: Archive docs
+      uses: actions/upload-artifact@v2
+      with:
+          name: docs for PostgreSQL ${{ matrix.pg }}, PostGIS ${{ matrix.pgis }} on ${{ matrix.os }}
+          path: doc/*.pdf
+          if-no-files-found: error
     - name: Test packaging
       run: |
         make deb
