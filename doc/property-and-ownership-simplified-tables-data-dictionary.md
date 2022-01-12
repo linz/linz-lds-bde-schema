@@ -321,5 +321,3 @@ statutory_action |varchar(255)  | Description of the statutory action listing ty
 __Parent table__ | __Child table__ | __Relating Parent Attribute__ | __Relating Child Attribute__ | __Cardinality__
 :---------------|:---------------------|:----------------------------|:---------------------------|:--------------
 NZ Parcels | NZ Parcel Statutory Actions List | id | par_id | Zero or more
-
-

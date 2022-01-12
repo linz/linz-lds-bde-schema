@@ -1686,15 +1686,3 @@ RUN_AUTO_RULES     | CHAR(1)                | Indicates when automatic business 
 ALT_ID             | INTEGER                | Where present, this is a transaction id that has established a lock on the record. Can be used as a warning that changes may be pending.
 __AUDIT_ID__       | INTEGER                | Id used to link to the associated audit details.
 USR_ID_PRIN_FIRM   | VARCHAR(20)            | Firm of the usr_id_principal that has lodged the work.
-
-
-
-
-
-
-
-
-
-
-
-
