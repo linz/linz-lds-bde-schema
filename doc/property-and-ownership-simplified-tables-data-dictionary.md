@@ -1,20 +1,21 @@
 ---
 title: "LINZ Data Service: Simplified property and ownership tables"
 subtitle: Data Dictionary
-date: November 2017 <br> Version 1.5
+date: January 2022 <br> Version 1.7
 ---
 
 # Versioning
 
-__Version number__ | __Amendments__ | __Date__
-:--------|:--------------------------------|:------------
-1.0 | First draft | September 2013
-1.1 | Minor corrections | July 2015
-1.2| Links to datasets and licensing information added | May 2016
-1.3 | Schema changes to NZ Survey Plans, updated data diagram & other minor changes | August 2016
-1.4 | Updates to LINZ Licence For Personal Data references | September 2016
-1.5 | Updates for new version (2.1) of LINZ License for Personal Data and dataset ID changes | November 2017
-1.6 | Terminology changes for the Land Transfer Act 2017 | November 2018
+__Version number__ | __Amendments__                                                                         | __Date__
+:------------------|:---------------------------------------------------------------------------------------|:------------
+1.0                | First draft                                                                            | September 2013
+1.1                | Minor corrections                                                                      | July 2015
+1.2                | Links to datasets and licensing information added                                      | May 2016
+1.3                | Schema changes to NZ Survey Plans, updated data diagram & other minor changes          | August 2016
+1.4                | Updates to LINZ Licence For Personal Data references                                   | September 2016
+1.5                | Updates for new version (2.1) of LINZ License for Personal Data and dataset ID changes | November 2017
+1.6                | Terminology changes for the Land Transfer Act 2017                                     | November 2018
+1.7                | Minor schema changes                                                                   | January 2022
 
 
 # Introduction
@@ -213,19 +214,19 @@ This table provides registered (or current) ownership information for a Title. A
 This tabular data table has direct relationships to the tabular table, title estates. <br>
 __Important:__ The Privacy Act applies to personal information contained within this dataset, particularly when used in conjunction with other public data. See the [LINZ Licence For Personal Data 2.1](LINZ Licence For Personal Data 2.1)
 
-__Column Name__ | __Type__ | __Description__
-:--------|:------|:-----------------------------------
-__id__            | __integer__   | The unique identifier for the title owner. (Primary Key).
-__tte_id__        | __integer__   | The identifier of the title estate that the owner owns. If there are joint tenants on a title, there will be more than one owner for the same title estate.
-title_no          | varchar(20)   | The number of the title that this owner belongs to.
-land_district     | varchar(100)  | The name of the land district the title is in. e.g. “North Auckland”, “Southland” See [http://data.linz.govt.nz/layer/50785-nz-land-districts/](http://data.linz.govt.nz/layer/50785-nz-land-districts/) for more details. <br> A Land District is an administrative area that all titles and surveys were registered against prior to Landonline.
-status            | varchar(25)   | The status of the owner within the context of the title estate. Can only be ‘Registered’
-estate_share      | varchar(100)  | The title estate share that owner has. If tenants in common exist on a title, they will be recorded as separate estate shares. A value needs to be given to each of the shares. Generally the value of all the estate shares in an estate will add up to one (but this is not always the case with Maori titles).
-owner_type        | varchar(10)   | Indicates whether this owner is an individual or corporation.
-prime_surname     | varchar(100)  | If this owner is an individual, the surname of the owner is stored here, otherwise this should be blank.
-prime_other_names | varchar(100)  | If this owner is an individual, the given name(s) of the owner are stored here, otherwise this should be blank.
-corporate_name    | varchar(250)  | If this owner is a corporation, the name of the corporation is stored here, otherwise this should be blank.
-name_suffix       | varchar(6)    | If this owner is an individual, the name_suffix of the owner is stored here; otherwise this should be blank e.g. Junior, 'senior, Second, Third.
+__Column Name__   | __Type__     | __Description__
+:-----------------|:-------------|:-----------------------------------
+__id__            | __integer__  | The unique identifier for the title owner. (Primary Key).
+__tte_id__        | __integer__  | The identifier of the title estate that the owner owns. If there are joint tenants on a title, there will be more than one owner for the same title estate.
+title_no          | varchar(20)  | The number of the title that this owner belongs to.
+land_district     | varchar(100) | The name of the land district the title is in. e.g. “North Auckland”, “Southland” See [http://data.linz.govt.nz/layer/50785-nz-land-districts/](http://data.linz.govt.nz/layer/50785-nz-land-districts/) for more details. <br> A Land District is an administrative area that all titles and surveys were registered against prior to Landonline.
+status            | varchar(25)  | The status of the owner within the context of the title estate. Can only be ‘Registered’
+estate_share      | varchar(100) | The title estate share that owner has. If tenants in common exist on a title, they will be recorded as separate estate shares. A value needs to be given to each of the shares. Generally the value of all the estate shares in an estate will add up to one (but this is not always the case with Maori titles).
+owner_type        | varchar(10)  | Indicates whether this owner is an individual or corporation.
+prime_surname     | varchar(100) | If this owner is an individual, the surname of the owner is stored here, otherwise this should be blank.
+prime_other_names | varchar(100) | If this owner is an individual, the given name(s) of the owner are stored here, otherwise this should be blank.
+corporate_name    | text         | If this owner is a corporation, the name of the corporation is stored here, otherwise this should be blank.
+name_suffix       | varchar(6)   | If this owner is an individual, the name_suffix of the owner is stored here; otherwise this should be blank e.g. Junior, 'senior, Second, Third.
 
 ### Relationships
 
@@ -321,5 +322,3 @@ statutory_action |varchar(255)  | Description of the statutory action listing ty
 __Parent table__ | __Child table__ | __Relating Parent Attribute__ | __Relating Child Attribute__ | __Cardinality__
 :---------------|:---------------------|:----------------------------|:---------------------------|:--------------
 NZ Parcels | NZ Parcel Statutory Actions List | id | par_id | Zero or more
-
-
