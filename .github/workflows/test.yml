@@ -12,6 +12,8 @@ on:
   pull_request:
     branches:
       - '*'
+  schedule:
+      - cron:  '0 12 * * 0'
 
 jobs:
 
@@ -20,17 +22,26 @@ jobs:
     name: PostgreSQL ${{ matrix.pg }}, PostGIS ${{ matrix.pgis }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+        fail-fast: false
         matrix:
-            pg: [ '9.5', '9.6', '10', '11' ]
-            pgis: [ '2.4', '2.5' ]
-            os: [ ubuntu-18.04 ]
-            exclude:
-              # excludes PostGIS 2.5 on PostgreSQL 9.3
-              - pg: 9.3
-                pgis: 2.5
-              # excludes PostGIS 2.4 on PostgreSQL 11
-              - pg: 11
-                pgis: 2.4
+            # Combines <https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS> and
+            # `curl https://apt.postgresql.org/pub/repos/apt/dists/bionic-pgdg/main/binary-amd64/Packages | grep --only-matching '^Package: postgresql-[0-9.]\+-postgis-[0-9.]\+$' | sort --version-sort`.
+            include:
+                -   os: ubuntu-18.04
+                    pg: '10'
+                    pgis: '2.4'
+                -   os: ubuntu-18.04
+                    pg: '10'
+                    pgis: '2.5'
+                -   os: ubuntu-18.04
+                    pg: '10'
+                    pgis: '3'
+                -   os: ubuntu-18.04
+                    pg: '12'
+                    pgis: '2.5'
+                -   os: ubuntu-18.04
+                    pg: '12'
+                    pgis: '3'
     env:
       # Set PATH as postgresql-server-dev-all pretends version is 11
       PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
@@ -59,20 +70,22 @@ jobs:
         sudo ${APT} -qq update
         # Install dependencies
         sudo ${APT} -qq install --no-install-recommends \
-            postgresql-client-${{ matrix.pg }} \
-            postgresql-contrib-${{ matrix.pg }} \
+            debhelper \
+            fakeroot \
+            libtap-parser-sourcehandler-pgtap-perl \
+            linz-bde-schema \
+            linz-bde-uploader \
+            pandoc \
             postgresql-${{ matrix.pg }} \
             postgresql-${{ matrix.pg }}-dbpatch \
             postgresql-${{ matrix.pg }}-pgtap \
             postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }} \
             postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }}-scripts \
             postgresql-${{ matrix.pg }}-tableversion \
+            postgresql-client-${{ matrix.pg }} \
+            postgresql-contrib-${{ matrix.pg }} \
             postgresql-server-dev-${{ matrix.pg }} \
-            libtap-parser-sourcehandler-pgtap-perl \
-            debhelper \
-            fakeroot \
-            linz-bde-schema \
-            linz-bde-uploader
+            wkhtmltopdf
     - name: Setup PostgreSQL user
       run: |
         sudo -u postgres createuser -s "$USER"
@@ -99,6 +112,12 @@ jobs:
     - name: Test docs building
       run: |
         xvfb-run make docs
+    - name: Archive docs
+      uses: actions/upload-artifact@v2
+      with:
+          name: docs for PostgreSQL ${{ matrix.pg }}, PostGIS ${{ matrix.pgis }} on ${{ matrix.os }}
+          path: doc/*.pdf
+          if-no-files-found: error
     - name: Test packaging
       run: |
         make deb
@@ -140,7 +159,7 @@ jobs:
         fi
         echo "PACKAGECLOUD_REPOSITORY=$PACKAGECLOUD_REPOSITORY" | tee -a $GITHUB_ENV
 
-    - uses: linz/linz-software-repository@v4
+    - uses: linz/linz-software-repository@v5
       with:
         packagecloud_token: ${{ secrets.LINZCI_PACKAGECLOUD_TOKEN }}
         packagecloud_repository: ${{ env.PACKAGECLOUD_REPOSITORY }}
