@@ -51,13 +51,6 @@ DOCS_built = \
     doc/property-and-ownership-simplified-tables-data-dictionary-rtd.md \
     $(END)
 
-PANDOC_VERSION:= $(shell pandoc --version 2> /dev/null | sed -n '1 p' | sed 's/.* //' )
-MAJOR := $(shell echo $(PANDOC_VERSION) | cut -f1 -d.)
-MINOR := $(shell echo $(PANDOC_VERSION) | cut -f2 -d.)
-ifdef PANDOC_VERSION
-	PANDOC_1_18 := $(shell [ $(MAJOR) -gt 1 -o \( $(MAJOR) -eq 1 -a $(MINOR) -ge 18 \) ] && echo "true" || echo "false")
-endif
-
 .dummy:
 
 
@@ -234,53 +227,30 @@ check-docs: doc/tools/markdown-validation.py
 	python $< doc/property-and-ownership-simplified-tables-data-dictionary.md
 
 install-docs: $(DOCS_built)
-	var=$(shell echo $(PANDOC_1_18));\
-	if [ "$$var" = "true" ]; then \
-		mkdir -p ${datadir}/docs; \
-		cp $(DOCS_built) ${datadir}/docs; \
-	fi
+	mkdir -p ${datadir}/docs
+	cp $(DOCS_built) ${datadir}/docs
 
 doc/lds-full-landonline-data-dictionary-and-models.pdf: \
     doc/tools/markdown-to-pdf-conversion.sh \
     doc/lds-full-landonline-data-dictionary-and-models.md \
     $(IMAGES)
-	@var=$(shell echo $(PANDOC_1_18));\
-	if [ "$$var" = "true" ]; then \
-		bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@; \
-	else \
-		echo "WARNING Pandoc is unable to create PDF. Pandoc 1.18+ is required to create PDF!"; \
-	fi
+	bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@
 
 doc/property-and-ownership-simplified-tables-data-dictionary.pdf: \
     doc/tools/markdown-to-pdf-conversion.sh \
     doc/property-and-ownership-simplified-tables-data-dictionary.md \
     $(IMAGES)
-	@var=$(shell echo $(PANDOC_1_18));\
-	if [ "$$var" = "true" ]; then \
-		bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@; \
-	else \
-		echo "WARNING Pandoc is unable to create PDF. Pandoc 1.18+ is required to create PDF!"; \
-	fi
+	bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@
 
 doc/lds-full-landonline-data-dictionary-and-models-rtd.md: \
     doc/tools/markdown-to-commonmark-conversion.sh \
     doc/lds-full-landonline-data-dictionary-and-models.md
-	@var=$(shell echo $(PANDOC_1_18));\
-	if [ "$$var" = "true" ]; then \
-		bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@; \
-	else \
-		echo "WARNING Pandoc is unable to perform commonmark conversion. Pandoc 1.18+ is required to create PDF!"; \
-	fi
+	bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@
 
 doc/property-and-ownership-simplified-tables-data-dictionary-rtd.md: \
     doc/tools/markdown-to-commonmark-conversion.sh \
     doc/property-and-ownership-simplified-tables-data-dictionary.md
-	@var=$(shell echo $(PANDOC_1_18));\
-	if [ "$$var" = "true" ]; then \
-		bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@; \
-	else \
-		echo "WARNING Pandoc is unable to perform commonmark conversion. Pandoc 1.18+ is required to create PDF!"; \
-	fi
+	bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@
 
 deb:
 	dpkg-buildpackage -b -us -uc
