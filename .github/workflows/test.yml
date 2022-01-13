@@ -12,6 +12,8 @@ on:
   pull_request:
     branches:
       - '*'
+  schedule:
+      - cron:  '0 12 * * 0'
 
 jobs:
 
@@ -68,20 +70,22 @@ jobs:
         sudo ${APT} -qq update
         # Install dependencies
         sudo ${APT} -qq install --no-install-recommends \
-            postgresql-client-${{ matrix.pg }} \
-            postgresql-contrib-${{ matrix.pg }} \
+            debhelper \
+            fakeroot \
+            libtap-parser-sourcehandler-pgtap-perl \
+            linz-bde-schema \
+            linz-bde-uploader \
+            pandoc \
             postgresql-${{ matrix.pg }} \
             postgresql-${{ matrix.pg }}-dbpatch \
             postgresql-${{ matrix.pg }}-pgtap \
             postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }} \
             postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }}-scripts \
             postgresql-${{ matrix.pg }}-tableversion \
+            postgresql-client-${{ matrix.pg }} \
+            postgresql-contrib-${{ matrix.pg }} \
             postgresql-server-dev-${{ matrix.pg }} \
-            libtap-parser-sourcehandler-pgtap-perl \
-            debhelper \
-            fakeroot \
-            linz-bde-schema \
-            linz-bde-uploader
+            wkhtmltopdf
     - name: Setup PostgreSQL user
       run: |
         sudo -u postgres createuser -s "$USER"
@@ -108,6 +112,12 @@ jobs:
     - name: Test docs building
       run: |
         xvfb-run make docs
+    - name: Archive docs
+      uses: actions/upload-artifact@v2
+      with:
+          name: docs for PostgreSQL ${{ matrix.pg }}, PostGIS ${{ matrix.pgis }} on ${{ matrix.os }}
+          path: doc/*.pdf
+          if-no-files-found: error
     - name: Test packaging
       run: |
         make deb
