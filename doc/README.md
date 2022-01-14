@@ -150,3 +150,8 @@ If the title, version or subtitle text contains the text : the text must be cont
     subtitle: Dictionary Subtitle
     date: Date \newline Version
     ---
+
+
+# Visio Files
+
+When there is a change to the schema the png diagrams must also be updated. To do this, update the relevant Visio files and then save copies of the diagrams as png images.
