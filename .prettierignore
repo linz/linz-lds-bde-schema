@@ -1,0 +1,7 @@
+# Ignore all inc files:
+*.inc
+
+# Ignore markdown files used for SQL comment extraction -- modifying these breaks the docs/comment-extraction.py script
+# and subsequently the CI build
+doc/lds-full-landonline-data-dictionary-and-models.md
+doc/property-and-ownership-simplified-tables-data-dictionary.md
