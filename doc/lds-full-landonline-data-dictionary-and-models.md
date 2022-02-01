@@ -104,8 +104,7 @@ This dataset contains the intermediate “building blocks” for parcel polygons
 ![](parcel_topology_dataset_model.png)
 
 ## Survey Dataset Model
-This dataset contains those tables related to survey documentation, including survey plan references.
-![](survey_dataset_model.png)
+This dataset contains tables related to survey documentation, including survey plan references.![](survey_dataset_model.png)
 
 ## Marks, Nodes & Coordinates Dataset Model
 This dataset focuses on the tables directly related to nodes and survey monuments (marks).
