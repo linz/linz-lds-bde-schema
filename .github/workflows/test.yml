@@ -115,7 +115,9 @@ jobs:
               run: sudo -E make install
 
             - name: Test installation
-              run: make installcheck make installcheck-stdout
+              run: |
+                  make installcheck
+                  make installcheck-stdout
 
             - name: Test uninstall
               run: make uninstall
