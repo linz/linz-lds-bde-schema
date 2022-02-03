@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script to convert markdown files to pdf.
 # Updates directory location of figures/ models to match correct location.
 

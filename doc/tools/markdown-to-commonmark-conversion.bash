@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script to convert from a markdown file with yaml metadata to a commonmark
 # file suitable for read the docs.
 

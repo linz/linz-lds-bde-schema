@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 UPGRADEABLE_VERSIONS="
     1.5.0

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 DB_NAME=
 export SKIP_INDEXES=no
