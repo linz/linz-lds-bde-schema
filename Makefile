@@ -116,7 +116,7 @@ check-publisher:
 	V=`linz-lds-bde-schema-publish --version` && \
 	echo $$V && test `echo "$$V" | awk '{print $$1}'` = "$(VERSION)"
 
-	test/test-publication.sh
+	test/test-publication.bash
 
 loader-version-test:
 
