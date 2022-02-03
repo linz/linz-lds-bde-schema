@@ -9,7 +9,7 @@ if test "$1" = "--version"; then
 fi
 
 while test -n "$1"; do
-    DB_NAME=$1; shift
+    DB_NAME="$1"; shift
 done
 
 if test -z "$DB_NAME"; then
@@ -18,7 +18,7 @@ if test -z "$DB_NAME"; then
     exit 1
 fi
 
-export PGDATABASE=$DB_NAME
+export PGDATABASE="$DB_NAME"
 
 rollback()
 {
@@ -77,7 +77,7 @@ EOF
 } |
 grep -v "^\(BEGIN\|COMMIT\);" |
 ( echo "BEGIN;"; cat; echo "COMMIT;"; ) |
-if test $PGDATABASE = "-"; then
+if test "$PGDATABASE" = "-"; then
     cat
 else
     $PSQL -XtA --set ON_ERROR_STOP=1 -o /dev/null
