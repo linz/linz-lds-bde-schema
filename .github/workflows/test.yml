@@ -1,4 +1,4 @@
-name: test
+name: Test
 
 on:
     push:
@@ -44,7 +44,9 @@ jobs:
             PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
             APT: 'apt-get -o Dpkg::Progress=0 -o Dpkg::Use-Pty=0'
         steps:
-            - uses: actions/checkout@v1
+            - name: Check out repository
+              uses: actions/checkout@v1
+
             - name: Install dependencies
               run: |
                   sudo ${APT} -qq purge \
@@ -83,32 +85,30 @@ jobs:
                       postgresql-contrib-${{ matrix.pg }} \
                       postgresql-server-dev-${{ matrix.pg }} \
                       wkhtmltopdf
+
             - name: Setup PostgreSQL user
               run: |
                   sudo -u postgres createuser -s "$USER"
                   sudo -u postgres createuser -s root
+
             - name: Build
-              run: |
-                  # Build
-                  make
+              run: make
+
             - name: Test build
-              run: |
-                  # Pre-install tests
-                  make check || { cat regression.diffs; false; }
+              run: make check || { cat regression.diffs; false; }
+
             - name: Install
-              run: |
-                  sudo -E make install
+              run: sudo -E make install
+
             - name: Test installation
-              run: |
-                  # Post-install tests
-                  make installcheck
-                  make installcheck-stdout
+              run: make installcheck make installcheck-stdout
+
             - name: Test uninstall
-              run: |
-                  make uninstall
+              run: make uninstall
+
             - name: Test docs building
-              run: |
-                  xvfb-run make docs
+              run: xvfb-run make docs
+
             - name: Archive docs
               uses: actions/upload-artifact@v2
               with:
@@ -117,16 +117,17 @@ jobs:
                       matrix.os }}
                   path: doc/*.pdf
                   if-no-files-found: error
+
             - name: Test packaging
               run: |
                   make deb
                   sudo dpkg -i ../linz-lds-bde-schema*.deb
+
             - name: Test upgrades
-              run: |
-                  test/test-upgrades.sh
+              run: test/test-upgrades.sh
+
             - name: Test publication
-              run: |
-                  make check-publisher
+              run: make check-publisher
               if: matrix.pg >= 10
 
     package:
@@ -137,7 +138,8 @@ jobs:
             matrix:
                 distro: ['bionic']
         steps:
-            - uses: actions/checkout@v1
+            - name: Check out repository
+              uses: actions/checkout@v1
 
             - name: Determine packagecloud publication target
               run: |
@@ -158,7 +160,8 @@ jobs:
                   fi
                   echo "PACKAGECLOUD_REPOSITORY=$PACKAGECLOUD_REPOSITORY" | tee -a $GITHUB_ENV
 
-            - uses: linz/linz-software-repository@v7
+            - name: Build and upload to packagecloud
+              uses: linz/linz-software-repository@v7
               with:
                   release: ${{ matrix.distro }}
                   packagecloud_token: ${{ secrets.LINZCI_PACKAGECLOUD_TOKEN }}
