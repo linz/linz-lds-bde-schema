@@ -59,14 +59,14 @@ all: $(SQLSCRIPTS) $(SQLSCRIPTS_built) $(SCRIPTS_built)
 %.sql: %.sql.in
 	$(SED) -e 's/@@VERSION@@/$(VERSION)/;s|@@REVISION@@|$(REVISION)|' $< > $@
 
-scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.in Makefile
+scripts/linz-lds-bde-schema-load: scripts/linz-lds-bde-schema-load.bash Makefile
 	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)$(SQLSCRIPTS_built)|' \
 	       -e 's|@@VERSION@@|$(VERSION)|g' \
            -e 's|@@REVISION@@|$(REVISION)|g' \
            $< > $@
 	chmod +x $@
 
-scripts/linz-lds-bde-schema-publish: scripts/linz-lds-bde-schema-publish.in Makefile
+scripts/linz-lds-bde-schema-publish: scripts/linz-lds-bde-schema-publish.bash Makefile
 	$(SED) -e 's|@@SQLSCRIPTS@@|$(SQLSCRIPTS)$(SQLSCRIPTS_built)|' \
 	       -e 's|@@VERSION@@|$(VERSION)|g' \
            -e 's|@@REVISION@@|$(REVISION)|g' \
@@ -231,24 +231,24 @@ install-docs: $(DOCS_built)
 	cp $(DOCS_built) ${datadir}/docs
 
 doc/lds-full-landonline-data-dictionary-and-models.pdf: \
-    doc/tools/markdown-to-pdf-conversion.sh \
+    doc/tools/markdown-to-pdf-conversion.bash \
     doc/lds-full-landonline-data-dictionary-and-models.md \
     $(IMAGES)
 	bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@
 
 doc/property-and-ownership-simplified-tables-data-dictionary.pdf: \
-    doc/tools/markdown-to-pdf-conversion.sh \
+    doc/tools/markdown-to-pdf-conversion.bash \
     doc/property-and-ownership-simplified-tables-data-dictionary.md \
     $(IMAGES)
 	bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@
 
 doc/lds-full-landonline-data-dictionary-and-models-rtd.md: \
-    doc/tools/markdown-to-commonmark-conversion.sh \
+    doc/tools/markdown-to-commonmark-conversion.bash \
     doc/lds-full-landonline-data-dictionary-and-models.md
 	bash $< doc/lds-full-landonline-data-dictionary-and-models.md $@
 
 doc/property-and-ownership-simplified-tables-data-dictionary-rtd.md: \
-    doc/tools/markdown-to-commonmark-conversion.sh \
+    doc/tools/markdown-to-commonmark-conversion.bash \
     doc/property-and-ownership-simplified-tables-data-dictionary.md
 	bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@
 
