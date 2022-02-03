@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script to convert from a markdown file with yaml metadata to a commonmark
 # file suitable for read the docs.
 
@@ -12,7 +12,7 @@ SED=$(which gsed)
 test -z "${SED}" && SED=sed
 
 if [ $# -ne 2 ]; then
-  >&2 echo "Syntax markdown-to-commonmark-conversion.sh <input_markdown_file> <output_commonmark_file"
+  >&2 echo "Syntax markdown-to-commonmark-conversion.bash <input_markdown_file> <output_commonmark_file"
   exit 1;
 fi
 

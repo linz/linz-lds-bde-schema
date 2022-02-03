@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Script to convert markdown files to pdf.
 # Updates directory location of figures/ models to match correct location.
 
@@ -12,7 +12,7 @@ SED=$(which gsed)
 test -z "${SED}" && SED=sed
 
 if [ $# -ne 2 ]; then
-  >&2 echo "Syntax markdown-to-pdf-conversion.sh <input_markdown_file> <output_pdf_file"
+  >&2 echo "Syntax markdown-to-pdf-conversion.bash <input_markdown_file> <output_pdf_file"
   exit 1;
 fi
 

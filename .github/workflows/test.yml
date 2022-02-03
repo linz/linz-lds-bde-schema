@@ -140,7 +140,7 @@ jobs:
                   sudo dpkg -i ../linz-lds-bde-schema*.deb
 
             - name: Test upgrades
-              run: test/test-upgrades.sh
+              run: test/test-upgrades.bash
 
             - name: Test publication
               run: make check-publisher
