@@ -147,11 +147,11 @@ fi
 (
 
 if test "$TABLEVERSION_SUPPORTS_STDOUT" = yes; then
-    "${TABLEVERSION_LOADER}" "${EXTOPT[@]}" "${UPLOADER_OPTS}" - || rollback
+    "${TABLEVERSION_LOADER}" "${EXTOPT[@]}" - || rollback
 fi
 
 if test "$DBPATCH_SUPPORTS_STDOUT" = yes; then
-    "${DBPATCH_LOADER}" "${EXTOPT[@]}" "${UPLOADER_OPTS}" - _patches || rollback
+    "${DBPATCH_LOADER}" "${EXTOPT[@]}" - _patches || rollback
 fi
 
 cat << EOF
