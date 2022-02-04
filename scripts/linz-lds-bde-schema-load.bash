@@ -107,9 +107,8 @@ if test "$PGDATABASE" = "-" -a "$DBPATCH_SUPPORTS_STDOUT" != yes; then
     exit 1
 fi
 
-EXTOPT=
 if test "${EXTENSION_MODE}" = "off"; then
-    EXTOPT="--no-extension"
+    EXTOPT=("--no-extension")
 fi
 
 # Load tableversion
@@ -119,7 +118,7 @@ echo "Loading tableversion schema in database $PGDATABASE" >&2
 if test "$TABLEVERSION_SUPPORTS_STDOUT" != yes; then
     echo "WARNING: table_version-loader does not support stdout mode, working in non-transactional mode" >&2
     echo "HINT: install tableversion 1.6.0 or higher to fix this." >&2
-    "${TABLEVERSION_LOADER}" "${EXTOPT}" "${PGDATABASE}" > /dev/null || {
+    "${TABLEVERSION_LOADER}" "${EXTOPT[@]}" "${PGDATABASE}" > /dev/null || {
         echo "${TABLEVERSION_LOADER} exited with an error" >&2
         exit 1
     }
@@ -128,7 +127,7 @@ fi
 if test "$DBPATCH_SUPPORTS_STDOUT" != yes; then
     echo "WARNING: dbpatch-loader does not support stdout mode, working in non-transactional mode" >&2
     echo "HINT: install dbpatch 1.4.0 or higher to fix this." >&2
-    "${DBPATCH_LOADER}" "${EXTOPT}" "${PGDATABASE}" _patches > /dev/null || {
+    "${DBPATCH_LOADER}" "${EXTOPT[@]}" "${PGDATABASE}" _patches > /dev/null || {
         echo "${DBPATCH_LOADER} exited with an error" >&2
         exit 1
     }
@@ -148,11 +147,11 @@ fi
 (
 
 if test "$TABLEVERSION_SUPPORTS_STDOUT" = yes; then
-    "${TABLEVERSION_LOADER}" "${EXTOPT}" "${UPLOADER_OPTS}" - || rollback
+    "${TABLEVERSION_LOADER}" "${EXTOPT[@]}" "${UPLOADER_OPTS}" - || rollback
 fi
 
 if test "$DBPATCH_SUPPORTS_STDOUT" = yes; then
-    "${DBPATCH_LOADER}" "${EXTOPT}" "${UPLOADER_OPTS}" - _patches || rollback
+    "${DBPATCH_LOADER}" "${EXTOPT[@]}" "${UPLOADER_OPTS}" - _patches || rollback
 fi
 
 cat << EOF
