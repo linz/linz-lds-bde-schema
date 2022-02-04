@@ -165,7 +165,7 @@ for file in $SQLSCRIPTS; do
         continue
     fi
     echo "Loading $file" >&2
-    file="${SCRIPTSDIR}/$(echo "$file" | sed 's|sql/||')"
+    file="${SCRIPTSDIR}/${file//sql\//}"
     cat "${file}" | sed 's/^BEGIN;//;s/^COMMIT;//'
 done
 
@@ -173,7 +173,7 @@ if test "${ADD_REVISIONS}" = "yes"; then
     for file in $SQLSCRIPTS; do
         if test "$(dirname "$file")" = 'sql/versioning'; then
             echo "Loading (versioning) $file" >&2
-            file="${SCRIPTSDIR}/$(echo "$file" | sed 's|sql/||')"
+            file="${SCRIPTSDIR}/${file//sql\//}"
             cat "${file}" | sed 's/^BEGIN;//;s/^COMMIT;//'
         fi
     done
