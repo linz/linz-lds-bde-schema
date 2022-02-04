@@ -8,9 +8,6 @@ finish(){
 
 trap finish EXIT
 
-SED="$(which gsed)"
-test -z "${SED}" && SED=sed
-
 if [ $# -ne 2 ]; then
   >&2 echo "Syntax markdown-to-commonmark-conversion.bash <input_markdown_file> <output_commonmark_file"
   exit 1;
@@ -23,13 +20,13 @@ cp "$1" /tmp/markdown-commonmark-convert-$$.md
 count=1
 while read -r text; do
   if [[ $text == "---" ]]; then
-      "${SED}" -i "${count}s/---//" /tmp/markdown-commonmark-convert-$$.md;
+      sed -i "${count}s/---//" /tmp/markdown-commonmark-convert-$$.md;
   elif [[ "${text::5}" == "title" ]]; then
-      "${SED}" -i "s/${text}/$(echo "# ""${text:7}" | ${SED} "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
+      sed -i "s/${text}/$(echo "# ""${text:7}" | sed "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
   elif [[ "${text::8}" == "subtitle" ]]; then
-      "${SED}" -i "s/${text}/$(echo "## ""${text:10}" | ${SED} "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
+      sed -i "s/${text}/$(echo "## ""${text:10}" | sed "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
   elif [[ $count -ne 1 ]] && [[ $text != "---" ]]; then
-      "${SED}" -i "s/${text}/$(echo "### ""${text:6}" | ${SED} "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
+      sed -i "s/${text}/$(echo "### ""${text:6}" | sed "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
   fi
   if [[ $count -ne 1 ]] && [[ $text == "---" ]]; then break; fi
   ((count++))

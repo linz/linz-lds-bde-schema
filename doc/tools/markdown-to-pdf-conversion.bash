@@ -8,9 +8,6 @@ finish(){
 
 trap finish EXIT
 
-SED="$(which gsed)"
-test -z "${SED}" && SED=sed
-
 if [ $# -ne 2 ]; then
   >&2 echo "Syntax markdown-to-pdf-conversion.bash <input_markdown_file> <output_pdf_file"
   exit 1;
@@ -22,7 +19,7 @@ count=1
 while read -r text; do
   if [[ ${text::2} == "![" ]];
     then
-      text1="$(echo "$text" | "${SED}" -e 's/.*(\(.*\)).*/\1/')"
+      text1="$(echo "$text" | sed -e 's/.*(\(.*\)).*/\1/')"
       text2="$(pwd)/doc/models/$text1)"
       ${SED} -i "${count}s|$text1|$text2|g" /tmp/markdown-pdf-convert-$$.md
 
