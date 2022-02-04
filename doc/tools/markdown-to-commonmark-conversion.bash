@@ -32,8 +32,8 @@ while read -r text; do
       "${SED}" -i "s/${text}/$(echo "### ""${text:6}" | ${SED} "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
   fi
   if [[ $count -ne 1 ]] && [[ $text == "---" ]]; then break; fi
-  count="$(expr $count + 1)";
-done</tmp/markdown-commonmark-convert-$$.md
+  ((count++))
+done<"$1"
 
 # Perform pandoc markdown to commonmark conversion.
 pandoc /tmp/markdown-commonmark-convert-$$.md -f \
