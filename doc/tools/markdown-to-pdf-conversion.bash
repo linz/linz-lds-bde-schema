@@ -19,16 +19,17 @@ count=1
 while read -r text; do
   if [[ ${text::2} == "![" ]];
     then
-      text1="$(echo "$text" | sed -e 's/.*(\(.*\)).*/\1/')"
+      text1="${text##*\(}"
+      text1="${text1%%\)*}"
       text2="$(pwd)/doc/models/$text1)"
       ${SED} -i "${count}s|$text1|$text2|g" /tmp/markdown-pdf-convert-$$.md
 
   fi
-  count="$(expr $count + 1)";
+  ((count++))
 done<"$1"
 
 # Run pandoc to perform the conversion between markdown to pdf.
-pandoc /tmp/markdown-pdf-convert-$$.md -o $2 -t html5        \
+pandoc /tmp/markdown-pdf-convert-$$.md -o "$2" -t html5        \
     --css="$(pwd)/doc/tools/custom.css" -s -f                                        \
     markdown_strict+intraword_underscores+raw_tex+hard_line_breaks+pipe_tables+compact_definition_lists+yaml_metadata_block \
     --toc --variable margin-left=0.75in --variable margin-right=0.75in         \
