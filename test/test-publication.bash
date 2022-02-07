@@ -10,11 +10,11 @@ createdb "${PGDATABASE}"
 
 linz-bde-schema-load "$PGDATABASE"
 linz-lds-bde-schema-load "$PGDATABASE"
-bdeExtTables="$(psql -qXtAc "select count(*) from pg_class c, pg_namespace n WHERE c.relnamespace = n.oid and n.nspname = 'bde_ext' and c.relkind = 'r'")"
-ldsTables="$(psql -qXtAc "select count(*) from pg_class c, pg_namespace n WHERE c.relnamespace = n.oid and n.nspname = 'lds' and c.relkind = 'r'")"
+bde_ext_tables="$(psql -qXtAc "select count(*) from pg_class c, pg_namespace n WHERE c.relnamespace = n.oid and n.nspname = 'bde_ext' and c.relkind = 'r'")"
+lds_tables="$(psql -qXtAc "select count(*) from pg_class c, pg_namespace n WHERE c.relnamespace = n.oid and n.nspname = 'lds' and c.relkind = 'r'")"
 
 compareTableCount() {
-    exp="$bdeExtTables"
+    exp="$bde_ext_tables"
     obt="$(psql -qXtAc "select count(*) from pg_catalog.pg_publication_tables WHERE pubname = 'all_bde_ext'")"
     test "$exp" = "$obt" || {
         echo "Expected $exp published bde_ext tables in all_bde_ext, got $obt:" >&2
@@ -23,7 +23,7 @@ compareTableCount() {
         exit 1
     }
 
-    exp=$ldsTables
+    exp=$lds_tables
     obt="$(psql -qXtAc "select count(*) from pg_catalog.pg_publication_tables WHERE pubname = 'all_lds'")"
     test "$exp" = "$obt" || {
         echo "Expected $exp published lds tablesin all_lds, got $obt:" >&2

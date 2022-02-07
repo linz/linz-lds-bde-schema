@@ -3,15 +3,15 @@
 set -o errexit -o noclobber -o nounset -o pipefail
 shopt -s failglob inherit_errexit
 
-DB_NAME=
+db_name=
 export SKIP_INDEXES=no
 export EXTENSION_MODE=on
 export PSQL=psql
 export SCRIPTSDIR=/usr/share/linz-lds-bde-schema/sql/
 
-ADD_REVISIONS=no
-READ_ONLY=no
-SQLSCRIPTS="$(echo "@@SQLSCRIPTS@@" | tr ' ' '\n' | LANG=C sort | tr '\n' ' ')"
+add_revisions=no
+read_only=no
+sqlscripts="$(echo "@@sqlscripts@@" | tr ' ' '\n' | LANG=C sort | tr '\n' ' ')"
 
 if test -n "${LDSBDESCHEMA_SQLDIR}"
 then
@@ -47,12 +47,12 @@ do
         continue
     elif test "$1" = "--revision"
     then
-        ADD_REVISIONS=yes
+        add_revisions=yes
         shift
         continue
     elif test "$1" = "--readonly"
     then
-        READ_ONLY=yes
+        read_only=yes
         shift
         continue
     elif test "$1" = "--help"
@@ -68,18 +68,18 @@ do
         shift
         continue
     else
-        DB_NAME="$1"
+        db_name="$1"
         shift
     fi
 done
 
-if test -z "$DB_NAME"
+if test -z "$db_name"
 then
     usage >&2
     exit 1
 fi
 
-export PGDATABASE="$DB_NAME"
+export PGDATABASE="$db_name"
 
 # Find table_version-loader
 which table_version-loader > /dev/null || {
@@ -121,7 +121,7 @@ fi
 
 if test "${EXTENSION_MODE}" = "off"
 then
-    EXTOPT=("--no-extension")
+    extopt=("--no-extension")
 fi
 
 # Load tableversion
@@ -132,7 +132,7 @@ if test "$TABLEVERSION_SUPPORTS_STDOUT" != yes
 then
     echo "WARNING: table_version-loader does not support stdout mode, working in non-transactional mode" >&2
     echo "HINT: install tableversion 1.6.0 or higher to fix this." >&2
-    table_version-loader "${EXTOPT[@]}" "${PGDATABASE}" > /dev/null || {
+    table_version-loader "${extopt[@]}" "${PGDATABASE}" > /dev/null || {
         echo "table_version-loader exited with an error" >&2
         exit 1
     }
@@ -142,7 +142,7 @@ if test "$DBPATCH_SUPPORTS_STDOUT" != yes
 then
     echo "WARNING: dbpatch-loader does not support stdout mode, working in non-transactional mode" >&2
     echo "HINT: install dbpatch 1.4.0 or higher to fix this." >&2
-    dbpatch-loader "${EXTOPT[@]}" "${PGDATABASE}" _patches > /dev/null || {
+    dbpatch-loader "${extopt[@]}" "${PGDATABASE}" _patches > /dev/null || {
         echo "dbpatch-loader exited with an error" >&2
         exit 1
     }
@@ -150,7 +150,7 @@ fi
 
 
 {
-    echo -n "Loading LDS DBE schema in database $DB_NAME (extension mode "
+    echo -n "Loading LDS DBE schema in database $db_name (extension mode "
     if test "${EXTENSION_MODE}" = "off"
     then
         echo -n "off"
@@ -164,12 +164,12 @@ fi
 
 if test "$TABLEVERSION_SUPPORTS_STDOUT" = yes
 then
-    table_version-loader "${EXTOPT[@]}" -
+    table_version-loader "${extopt[@]}" -
 fi
 
 if test "$DBPATCH_SUPPORTS_STDOUT" = yes
 then
-    dbpatch-loader "${EXTOPT[@]}" - _patches
+    dbpatch-loader "${extopt[@]}" - _patches
 fi
 
 cat << EOF
@@ -177,7 +177,7 @@ SET client_min_messages TO WARNING;
 CREATE EXTENSION IF NOT EXISTS unaccent SCHEMA public;
 EOF
 
-for file in $SQLSCRIPTS
+for file in $sqlscripts
 do
     if test "$(dirname "$file")" = 'sql/versioning'
     then
@@ -188,9 +188,9 @@ do
     sed 's/^BEGIN;//;s/^COMMIT;//' "${file}"
 done
 
-if test "${ADD_REVISIONS}" = "yes"
+if test "${add_revisions}" = "yes"
 then
-    for file in $SQLSCRIPTS
+    for file in $sqlscripts
     do
         if test "$(dirname "$file")" = 'sql/versioning'
         then
@@ -201,7 +201,7 @@ then
     done
 fi
 
-if test "${READ_ONLY}" = "yes"
+if test "${read_only}" = "yes"
 then
     cat <<EOF
 REVOKE UPDATE, INSERT, DELETE, TRUNCATE
