@@ -46,7 +46,7 @@ done<"$1"
 # Perform pandoc markdown to commonmark conversion.
 pandoc /tmp/markdown-commonmark-convert-$$.md -f \
   markdown_strict+intraword_underscores+pipe_tables+hard_line_breaks+compact_definition_lists \
-  -t commonmark -o "$2" || exit 1
+  -t commonmark -o "$2"
 
 
 

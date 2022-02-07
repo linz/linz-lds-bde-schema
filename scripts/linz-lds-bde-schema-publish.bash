@@ -27,12 +27,6 @@ fi
 
 export PGDATABASE="$DB_NAME"
 
-rollback()
-{
-    echo "ROLLBACK;"
-    exit 1
-}
-
 {
 cat << EOF
 DO \$PUBLICATION\$

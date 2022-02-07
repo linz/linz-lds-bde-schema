@@ -81,12 +81,6 @@ fi
 
 export PGDATABASE="$DB_NAME"
 
-rollback()
-{
-    echo "ROLLBACK;"
-    exit 1
-}
-
 # Find table_version-loader
 TABLEVERSION_LOADER=table_version-loader
 which "$TABLEVERSION_LOADER" > /dev/null || {
@@ -172,12 +166,12 @@ fi
 
 if test "$TABLEVERSION_SUPPORTS_STDOUT" = yes
 then
-    "${TABLEVERSION_LOADER}" "${EXTOPT[@]}" - || rollback
+    "${TABLEVERSION_LOADER}" "${EXTOPT[@]}" -
 fi
 
 if test "$DBPATCH_SUPPORTS_STDOUT" = yes
 then
-    "${DBPATCH_LOADER}" "${EXTOPT[@]}" - _patches || rollback
+    "${DBPATCH_LOADER}" "${EXTOPT[@]}" - _patches
 fi
 
 cat << EOF

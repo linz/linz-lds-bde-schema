@@ -6,10 +6,10 @@ shopt -s failglob inherit_errexit
 export PGDATABASE=linz-lds-bde-schema-test-db
 
 dropdb --if-exists "${PGDATABASE}"
-createdb "${PGDATABASE}" || exit 1
+createdb "${PGDATABASE}"
 
-linz-bde-schema-load "$PGDATABASE" || exit 1
-linz-lds-bde-schema-load "$PGDATABASE" || exit 1
+linz-bde-schema-load "$PGDATABASE"
+linz-lds-bde-schema-load "$PGDATABASE"
 bdeExtTables="$(psql -qXtAc "select count(*) from pg_class c, pg_namespace n WHERE c.relnamespace = n.oid and n.nspname = 'bde_ext' and c.relkind = 'r'")"
 ldsTables="$(psql -qXtAc "select count(*) from pg_class c, pg_namespace n WHERE c.relnamespace = n.oid and n.nspname = 'lds' and c.relkind = 'r'")"
 
@@ -33,15 +33,15 @@ compareTableCount() {
     }
 }
 
-linz-lds-bde-schema-publish "$PGDATABASE" || exit 1
+linz-lds-bde-schema-publish "$PGDATABASE"
 compareTableCount
 echo "PASS: publication first run"
 
-linz-lds-bde-schema-publish "$PGDATABASE" || exit 1
+linz-lds-bde-schema-publish "$PGDATABASE"
 compareTableCount
 echo "PASS: publication second run"
 
-linz-lds-bde-schema-publish - | psql -qXtA "$PGDATABASE" || exit 1
+linz-lds-bde-schema-publish - | psql -qXtA "$PGDATABASE"
 compareTableCount
 echo "PASS: publication third run via stdout"
 

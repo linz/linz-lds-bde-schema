@@ -39,5 +39,5 @@ pandoc /tmp/markdown-pdf-convert-$$.md -o "$2" -t html5        \
     markdown_strict+intraword_underscores+raw_tex+hard_line_breaks+pipe_tables+compact_definition_lists+yaml_metadata_block \
     --toc --variable margin-left=0.75in --variable margin-right=0.75in         \
     --variable margin-top=0.8in --variable margin-bottom=0.8in --toc-depth=2   \
-    -N --data-dir=""  || exit 1
+    -N --data-dir=""
 
