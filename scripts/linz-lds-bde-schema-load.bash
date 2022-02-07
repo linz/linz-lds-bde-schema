@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -o errexit -o noclobber -o nounset -o pipefail
+shopt -s failglob inherit_errexit
+
 DB_NAME=
 export SKIP_INDEXES=no
 export EXTENSION_MODE=on

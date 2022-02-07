@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+set -o errexit -o noclobber -o nounset -o pipefail
+shopt -s failglob inherit_errexit
+
 UPGRADEABLE_VERSIONS="
     1.5.0
     1.6.0

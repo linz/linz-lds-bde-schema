@@ -2,6 +2,9 @@
 # Script to convert markdown files to pdf.
 # Updates directory location of figures/ models to match correct location.
 
+set -o errexit -o noclobber -o nounset -o pipefail
+shopt -s failglob inherit_errexit
+
 finish(){
   rm -f /tmp/markdown-pdf-convert-$$.md
 }

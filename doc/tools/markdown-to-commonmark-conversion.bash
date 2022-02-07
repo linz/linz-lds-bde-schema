@@ -2,6 +2,9 @@
 # Script to convert from a markdown file with yaml metadata to a commonmark
 # file suitable for read the docs.
 
+set -o errexit -o noclobber -o nounset -o pipefail
+shopt -s failglob inherit_errexit
+
 finish(){
   rm -f /tmp/markdown-commonmark-convert-$$.md
 }
