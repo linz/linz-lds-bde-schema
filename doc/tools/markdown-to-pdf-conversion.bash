@@ -27,7 +27,7 @@ do
       text1="${text##*\(}"
       text1="${text1%%\)*}"
       text2="$(pwd)/doc/models/$text1)"
-      ${SED} -i "${count}s|$text1|$text2|g" /tmp/markdown-pdf-convert-$$.md
+      sed -i "${count}s|$text1|$text2|g" /tmp/markdown-pdf-convert-$$.md
 
   fi
   ((count++))

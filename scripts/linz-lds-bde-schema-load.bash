@@ -82,15 +82,14 @@ fi
 export PGDATABASE="$DB_NAME"
 
 # Find table_version-loader
-TABLEVERSION_LOADER=table_version-loader
-which "$TABLEVERSION_LOADER" > /dev/null || {
-    echo "$0 depends on $TABLEVERSION_LOADER, which cannot be found in current PATH." >&2
+which table_version-loader > /dev/null || {
+    echo "$0 depends on table_version-loader, which cannot be found in current PATH." >&2
     echo "Is table_version 1.4.0+ installed ?" >&2
     exit 1
 }
 
 # Check if table_version-loader supports stdout
-${TABLEVERSION_LOADER} -  2>&1 | grep -q "database.*does not exist" &&
+table_version-loader -  2>&1 | grep -q "database.*does not exist" &&
     TABLEVERSION_SUPPORTS_STDOUT=no ||
     TABLEVERSION_SUPPORTS_STDOUT=yes
 
@@ -102,15 +101,14 @@ then
 fi
 
 # Find dbpatch-loader
-DBPATCH_LOADER=dbpatch-loader
-which "$DBPATCH_LOADER" > /dev/null || {
-    echo "$0 depends on $DBPATCH_LOADER, which cannot be found in current PATH." >&2
+which dbpatch-loader > /dev/null || {
+    echo "$0 depends on dbpatch-loader, which cannot be found in current PATH." >&2
     echo "Is dbpatch 1.6.0+ installed ?" >&2
     exit 1
 }
 
 # Check if dbpatch-loader supports stdout
-"${DBPATCH_LOADER}" - testing 2>&1 | grep -q "database.*does not exist" &&
+dbpatch-loader - testing 2>&1 | grep -q "database.*does not exist" &&
     DBPATCH_SUPPORTS_STDOUT=no ||
     DBPATCH_SUPPORTS_STDOUT=yes
 
@@ -134,8 +132,8 @@ if test "$TABLEVERSION_SUPPORTS_STDOUT" != yes
 then
     echo "WARNING: table_version-loader does not support stdout mode, working in non-transactional mode" >&2
     echo "HINT: install tableversion 1.6.0 or higher to fix this." >&2
-    "${TABLEVERSION_LOADER}" "${EXTOPT[@]}" "${PGDATABASE}" > /dev/null || {
-        echo "${TABLEVERSION_LOADER} exited with an error" >&2
+    table_version-loader "${EXTOPT[@]}" "${PGDATABASE}" > /dev/null || {
+        echo "table_version-loader exited with an error" >&2
         exit 1
     }
 fi
@@ -144,8 +142,8 @@ if test "$DBPATCH_SUPPORTS_STDOUT" != yes
 then
     echo "WARNING: dbpatch-loader does not support stdout mode, working in non-transactional mode" >&2
     echo "HINT: install dbpatch 1.4.0 or higher to fix this." >&2
-    "${DBPATCH_LOADER}" "${EXTOPT[@]}" "${PGDATABASE}" _patches > /dev/null || {
-        echo "${DBPATCH_LOADER} exited with an error" >&2
+    dbpatch-loader "${EXTOPT[@]}" "${PGDATABASE}" _patches > /dev/null || {
+        echo "dbpatch-loader exited with an error" >&2
         exit 1
     }
 fi
@@ -166,12 +164,12 @@ fi
 
 if test "$TABLEVERSION_SUPPORTS_STDOUT" = yes
 then
-    "${TABLEVERSION_LOADER}" "${EXTOPT[@]}" -
+    table_version-loader "${EXTOPT[@]}" -
 fi
 
 if test "$DBPATCH_SUPPORTS_STDOUT" = yes
 then
-    "${DBPATCH_LOADER}" "${EXTOPT[@]}" - _patches
+    dbpatch-loader "${EXTOPT[@]}" - _patches
 fi
 
 cat << EOF
