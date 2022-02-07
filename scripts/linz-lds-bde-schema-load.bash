@@ -11,9 +11,9 @@ export SCRIPTSDIR=/usr/share/linz-lds-bde-schema/sql/
 
 add_revisions=no
 read_only=no
-sqlscripts="$(echo "@@sqlscripts@@" | tr ' ' '\n' | LANG=C sort | tr '\n' ' ')"
+sqlscripts="$(echo "@@SQLSCRIPTS@@" | tr ' ' '\n' | LANG=C sort | tr '\n' ' ')"
 
-if test -n "${LDSBDESCHEMA_SQLDIR}"
+if test -n "${LDSBDESCHEMA_SQLDIR-}"
 then
     SCRIPTSDIR="${LDSBDESCHEMA_SQLDIR}"
 fi
@@ -38,7 +38,7 @@ Options:
 EOF
 }
 
-while test -n "$1"
+while test -n "${1-}"
 do
     if test "$1" = "--noindexes"
     then

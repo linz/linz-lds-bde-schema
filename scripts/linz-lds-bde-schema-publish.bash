@@ -12,7 +12,7 @@ then
     exit 0
 fi
 
-while test -n "$1"
+while test -n "${1-}"
 do
     db_name="$1"
     shift
