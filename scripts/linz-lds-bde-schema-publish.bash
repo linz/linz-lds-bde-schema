@@ -6,16 +6,20 @@ shopt -s failglob inherit_errexit
 DB_NAME=
 export PSQL=psql
 
-if test "$1" = "--version"; then
+if test "$1" = "--version"
+then
     echo "@@VERSION@@ @@REVISION@@"
     exit 0
 fi
 
-while test -n "$1"; do
-    DB_NAME="$1"; shift
+while test -n "$1"
+do
+    DB_NAME="$1"
+    shift
 done
 
-if test -z "$DB_NAME"; then
+if test -z "$DB_NAME"
+then
     echo "Usage: $0 { <database> | - }" >&2
     echo "       $0 --version" >&2
     exit 1
@@ -80,7 +84,8 @@ EOF
 } |
 grep -v "^\(BEGIN\|COMMIT\);" |
 ( echo "BEGIN;"; cat; echo "COMMIT;"; ) |
-if test "$PGDATABASE" = "-"; then
+if test "$PGDATABASE" = "-"
+then
     cat
 else
     $PSQL -XtA --set ON_ERROR_STOP=1 -o /dev/null

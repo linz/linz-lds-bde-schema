@@ -21,7 +21,8 @@ mkdir -p "${TMPDIR}"
 
 export PGDATABASE="${TEST_DATABASE}"
 
-for ver in ${UPGRADEABLE_VERSIONS}; do
+for ver in ${UPGRADEABLE_VERSIONS}
+do
     OWD="$PWD"
 
     dropdb --if-exists "${TEST_DATABASE}"

@@ -11,9 +11,10 @@ finish(){
 
 trap finish EXIT
 
-if [ $# -ne 2 ]; then
+if [ $# -ne 2 ]
+then
   >&2 echo "Syntax markdown-to-commonmark-conversion.bash <input_markdown_file> <output_commonmark_file"
-  exit 1;
+  exit 1
 fi
 
 # Create temp markdown file
@@ -21,17 +22,24 @@ cp "$1" /tmp/markdown-commonmark-convert-$$.md
 
 # Update yaml metadata to header style.
 count=1
-while read -r text; do
-  if [[ $text == "---" ]]; then
-      sed -i "${count}s/---//" /tmp/markdown-commonmark-convert-$$.md;
-  elif [[ "${text::5}" == "title" ]]; then
-      sed -i "s/${text}/$(echo "# ""${text:7}" | sed "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
-  elif [[ "${text::8}" == "subtitle" ]]; then
-      sed -i "s/${text}/$(echo "## ""${text:10}" | sed "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
-  elif [[ $count -ne 1 ]] && [[ $text != "---" ]]; then
-      sed -i "s/${text}/$(echo "### ""${text:6}" | sed "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md;
+while read -r text
+do
+  if [[ $text == "---" ]]
+  then
+      sed -i "${count}s/---//" /tmp/markdown-commonmark-convert-$$.md
+  elif [[ "${text::5}" == "title" ]]
+  then
+      sed -i "s/${text}/$(echo "# ""${text:7}" | sed "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md
+  elif [[ "${text::8}" == "subtitle" ]]
+  then
+      sed -i "s/${text}/$(echo "## ""${text:10}" | sed "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md
+  elif [[ $count -ne 1 ]] && [[ $text != "---" ]]
+  then
+      sed -i "s/${text}/$(echo "### ""${text:6}" | sed "s/\"//g")/g" /tmp/markdown-commonmark-convert-$$.md
   fi
-  if [[ $count -ne 1 ]] && [[ $text == "---" ]]; then break; fi
+  if [[ $count -ne 1 ]] && [[ $text == "---" ]]
+  then break
+  fi
   ((count++))
 done<"$1"
 
