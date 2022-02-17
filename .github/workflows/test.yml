@@ -35,7 +35,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                os: [ ubuntu-20.04 ]
+                os: [ubuntu-20.04]
                 # Combines <https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS> and
                 # `curl https://apt.postgresql.org/pub/repos/apt/dists/bionic-pgdg/main/binary-amd64/Packages | grep --only-matching '^Package: postgresql-[0-9.]\+-postgis-[0-9.]\+$' | sort --version-sort`.
                 include:
