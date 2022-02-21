@@ -251,6 +251,3 @@ doc/property-and-ownership-simplified-tables-data-dictionary-rtd.md: \
     doc/tools/markdown-to-commonmark-conversion.bash \
     doc/property-and-ownership-simplified-tables-data-dictionary.md
 	bash $< doc/property-and-ownership-simplified-tables-data-dictionary.md $@
-
-deb:
-	dpkg-buildpackage -b -us -uc

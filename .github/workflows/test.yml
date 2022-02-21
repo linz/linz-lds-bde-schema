@@ -157,11 +157,15 @@ jobs:
                   path: doc/*.pdf
                   if-no-files-found: error
 
-            - name: Build package
-              run: make deb
+            - name: Build local debian package
+              uses: linz/linz-software-repository@v8
+              with:
+                  release: ${{ matrix.release }}
+              env:
+                  PG_SUPPORTED_VERSIONS: ${{ matrix.pg }}
 
             - name: Test packaging
-              run: sudo dpkg -i ../linz-lds-bde-schema*.deb
+              run: sudo dpkg -i build-area/linz-lds-bde-schema*.deb
 
             - name: Test upgrades
               run: test/test-upgrades.bash
