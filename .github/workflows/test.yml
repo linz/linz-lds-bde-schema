@@ -49,6 +49,8 @@ jobs:
                       pgis: '2.5'
                     - pg: '12'
                       pgis: '3'
+                    - pg: '14'
+                      pgis: '3'
         env:
             # Set PATH as postgresql-server-dev-all pretends version is 11
             PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
