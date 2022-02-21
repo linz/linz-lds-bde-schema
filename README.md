@@ -41,12 +41,6 @@ following command:
 
     make check
 
-## Building Debian packaging
-
-Build the debian packages using the following command:
-
-    make deb
-
 ## Building Documentation
 
 PDF documentation can be built using:
