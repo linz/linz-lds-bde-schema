@@ -41,23 +41,18 @@ jobs:
                     - os: ubuntu-18.04
                       pg: '10'
                       pgis: '2.4'
-                      release: bionic
                     - os: ubuntu-18.04
                       pg: '10'
                       pgis: '2.5'
-                      release: bionic
                     - os: ubuntu-18.04
                       pg: '10'
                       pgis: '3'
-                      release: bionic
                     - os: ubuntu-18.04
                       pg: '12'
                       pgis: '2.5'
-                      release: bionic
                     - os: ubuntu-18.04
                       pg: '12'
                       pgis: '3'
-                      release: bionic
         env:
             # Set PATH as postgresql-server-dev-all pretends version is 11
             PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
@@ -165,7 +160,7 @@ jobs:
             - name: Build local debian package
               uses: linz/linz-software-repository@v9
               with:
-                  release: ${{ matrix.release }}
+                  release: ${{ steps.distro.outputs.codename }}
               env:
                   PG_SUPPORTED_VERSIONS: ${{ matrix.pg }}
 
