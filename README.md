@@ -56,17 +56,17 @@ running X server. You can work around that by installing `xvfb` and using:
 
 Usage requires:
 
--   [`linz-bde-schema`](https://github.com/linz/linz-bde-schema) (v1.11.0+)
--   [`table_version`](https://github.com/linz/postgresql-tableversion) (v1.4.0+)
--   [`dbpatch`](https://github.com/linz/postgresql-dbpatch) (v1.2.0+)
--   [`linz_bde_uploader`](https://github.com/linz/linz-bde-uploader) (v2.4.0+)
+-   [`linz-bde-schema`](https://github.com/linz/linz-bde-schema)
+-   [`table_version`](https://github.com/linz/postgresql-tableversion)
+-   [`dbpatch`](https://github.com/linz/postgresql-dbpatch)
+-   [`linz_bde_uploader`](https://github.com/linz/linz-bde-uploader)
 
 Documentation building requires:
 
 -   [GNU Sed](https://www.gnu.org/software/sed/)
 -   [python](https://www.python.org/)
--   [pandoc](https://github.com/jgm/pandoc) (v1.18+)
--   [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf) (v0.12.1+)
+-   [pandoc](https://github.com/jgm/pandoc)
+-   [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf)
 
 Testing requires:
 
