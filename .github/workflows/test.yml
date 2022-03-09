@@ -53,6 +53,27 @@ jobs:
                     - os: ubuntu-18.04
                       pg: '12'
                       pgis: '3'
+                    - os: ubuntu-18.04
+                      pg: '14'
+                      pgis: '3'
+                    - os: ubuntu-20.04
+                      pg: '10'
+                      pgis: '2.5'
+                    - os: ubuntu-20.04
+                      pg: '10'
+                      pgis: '3'
+                    - os: ubuntu-20.04
+                      pg: '12'
+                      pgis: '2.5'
+                    - os: ubuntu-20.04
+                      pg: '12'
+                      pgis: '3'
+                    - os: ubuntu-20.04
+                      pg: '14'
+                      pgis: '3'
+                    - os: ubuntu-latest
+                      pg: '14'
+                      pgis: '3'
         env:
             # Set PATH as postgresql-server-dev-all pretends version is 11
             PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
@@ -177,10 +198,10 @@ jobs:
     package:
         needs: test
         name: Package for Debian
-        runs-on: ubuntu-18.04
+        runs-on: ubuntu-20.04
         strategy:
             matrix:
-                distro: ['bionic']
+                distro: ['bionic', 'focal']
             max-parallel: 1
         steps:
             - name: Check out repository
