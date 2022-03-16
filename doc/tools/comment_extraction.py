@@ -131,7 +131,7 @@ nextline_seen = False
 notes_column = 3
 
 if len(sys.argv) != 2:
-    sys.stderr.write("Syntax comment-extraction.py <input_file>\n")
+    sys.stderr.write("Syntax comment_extraction.py <input_file>\n")
     sys.exit(1)
 
 with open(sys.argv[1]) as fp:
