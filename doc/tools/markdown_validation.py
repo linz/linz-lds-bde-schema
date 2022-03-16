@@ -35,6 +35,7 @@ DESCRIPTION = "## Description"
 NEXTLINE_CHECKED = False
 TABLE_REQUIRED = False
 
+
 # Output error details
 def format_error(heading, line, count, details):
     sys.stderr.write(heading + "'" + line + "' on line " + str(count) + details + "\n")
@@ -141,7 +142,7 @@ def image_check(line, count):
 
 
 # Check that only #, ##, and ### level headings are used.
-def header_check(line, count, prvline, fp, nextline_checked):
+def header_check(line, count, fp, nextline_checked):
     if INVALID_HEADING in line:
         format_error(
             "Incorrect Heading: ",
@@ -241,7 +242,7 @@ def newline_check(line, count):
 
 
 # Check a table to make sure it is correctly formatted.
-def table_check(fp, count, line, prvline):
+def table_check(fp, count, line):
 
     # Stores the number of columns in the table.
     table_sep = line.count("|")
@@ -292,7 +293,7 @@ def table_check(fp, count, line, prvline):
 
 
 # Check that yaml header correctly written.
-def yaml_header_check(fp, count, line, prvline):
+def yaml_header_check(fp, count, line):
     options = ("title:", "subtitle:", "date:")
     if "---" not in line:
         format_error(
@@ -339,8 +340,7 @@ def yaml_header_check(fp, count, line, prvline):
 
 with open(file) as fp:
     line = fp.readline()
-    prvline = ""
-    fp, COUNT, line, prvline = yaml_header_check(fp, COUNT, line, prvline)
+    fp, COUNT, line, prvline = yaml_header_check(fp, COUNT, line)
     while line:
         # Check each line
         hyperlink_check(line, COUNT)
@@ -352,7 +352,7 @@ with open(file) as fp:
         # If line is a header line, do header and empty line check
         if "#" in line[0]:
             line, COUNT, prvline, fp, NEXTLINE_CHECKED = header_check(
-                line, COUNT, prvline, fp, NEXTLINE_CHECKED
+                line, COUNT, fp, NEXTLINE_CHECKED
             )
             empty_line_check()
             if NEXTLINE_CHECKED:
@@ -363,7 +363,7 @@ with open(file) as fp:
                         COUNT,
                         "",
                     )
-                fp, COUNT, line, prvline = table_check(fp, COUNT, line, prvline)
+                fp, COUNT, line, prvline = table_check(fp, COUNT, line)
                 TABLE_REQUIRED = False
                 NEXTLINE_CHECKED = False
         # Else if line is a table line, check there is an empty line before and
@@ -376,7 +376,7 @@ with open(file) as fp:
                     COUNT,
                     "",
                 )
-            fp, COUNT, line, prvline = table_check(fp, COUNT, line, prvline)
+            fp, COUNT, line, prvline = table_check(fp, COUNT, line)
             TABLE_REQUIRED = False
 
         if DESCRIPTION in line:
