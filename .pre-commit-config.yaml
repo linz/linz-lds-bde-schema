@@ -26,3 +26,8 @@ repos:
       hooks:
           - id: black
             language_version: python3
+
+    - repo: https://github.com/pycqa/pylint
+      rev: eec287fae66f8fc514d5daa9caee46fd0e0cb6d9 # v2.12.2
+      hooks:
+          - id: pylint
