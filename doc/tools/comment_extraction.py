@@ -130,6 +130,23 @@ NEXTLINE_SEEN = False
 
 NOTES_COLUMN = 3
 
+
+def wrap_to_character_limit_and_print(limit: int, line_in):
+    excess_line = line_in[:limit][: line_in[:limit].rfind(" ")]
+    if "\n" in excess_line:
+        excess_line = excess_line[: excess_line.rfind("\n")]
+    start = len(excess_line) + 1
+    sys.stdout.write(excess_line.strip() + "\n")
+    while len(line_in[start:]) > limit:
+        excess_line = line_in[start : start + limit]
+        excess_line = excess_line[: excess_line.rfind(" ")]
+        if "\n" in excess_line:
+            excess_line = excess_line[: excess_line.rfind("\n")]
+        start += len(excess_line) + 1
+        sys.stdout.write(excess_line.strip() + "\n")
+    sys.stdout.write(line_in[start:].strip() + "\n")
+
+
 if len(sys.argv) != 2:
     sys.stderr.write("Syntax comment_extraction.py <input_file>\n")
     sys.exit(1)
@@ -157,23 +174,12 @@ with open(sys.argv[1], encoding="UTF-8") as fp:
                     .replace(ITALIC, "")
                     .replace(NEWLINE, "\n")
                 )
-                ## Wrap lines to 80 characters
+                # Wrap lines to 80 characters
                 if len(line) < 80:
                     sys.stdout.write(line.strip() + "\n")
                 else:
-                    templine = line[:80][: line[:80].rfind(" ")]
-                    if "\n" in templine:
-                        templine = templine[: templine.rfind("\n")]
-                    start = len(templine) + 1
-                    sys.stdout.write(templine.strip() + "\n")
-                    while len(line[start:]) > 80:
-                        templine = line[start : start + 80]
-                        templine = templine[: templine.rfind(" ")]
-                        if "\n" in templine:
-                            templine = templine[: templine.rfind("\n")]
-                        start += len(templine) + 1
-                        sys.stdout.write(templine.strip() + "\n")
-                    sys.stdout.write(line[start:].strip() + "\n")
+                    wrap_to_character_limit_and_print(80, line)
+
                 ##
                 line = fp.readline()
             sys.stdout.write("$comment$;\n\n")
@@ -228,23 +234,11 @@ with open(sys.argv[1], encoding="UTF-8") as fp:
                             + row[0].strip().lower()
                             + " IS $comment$\n"
                         )
-                ## Wrap lines to 80 characters
+                # Wrap lines to 80 characters
                 if len(note) < 80:
                     sys.stdout.write(note.strip() + "\n")
                 else:
-                    templine = note[:80][: note[:80].rfind(" ")]
-                    if "\n" in templine:
-                        templine = templine[: templine.rfind("\n")]
-                    start = len(templine) + 1
-                    sys.stdout.write(templine.strip() + "\n")
-                    while len(note[start:]) > 80:
-                        templine = note[start : start + 80]
-                        templine = templine[: templine.rfind(" ")]
-                        if "\n" in templine:
-                            templine = templine[: templine.rfind("\n")]
-                        start += len(templine) + 1
-                        sys.stdout.write(templine.strip() + "\n")
-                    sys.stdout.write(note[start:].strip())
+                    wrap_to_character_limit_and_print(80, note)
                 ##
                 sys.stdout.write("\n$comment$;\n\n")
 
