@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 '''
 Python script to check against markdown file before extracting PostgreSQL
 comments and creating pdf.
@@ -110,14 +110,14 @@ def header_check(line, count, prvline, fp, nextline_checked):
   prvline = line
   line = fp.readline()
   count += 1
-  
+
   # If current heading is a table heading and next line is description
   if description in line and subheading not in prvline:
     format_error('Incorrect Heading: ', line[:len(line)-1], count,             \
                  '\nTable heading before a description heading must be ## '    \
                  'Subheading not # Heading format \nFor conversion to sql '    \
                  'commments.')
-    
+
   # Else if the heading is followed by empty lines find next text line
   elif line == "\n":
     while line == "\n":
@@ -128,11 +128,11 @@ def header_check(line, count, prvline, fp, nextline_checked):
     if description in line:
       format_error('Incorrect Heading: ', line[:len(line)-1], count,           \
                    '\nThere cannot be any empty lines between table and '      \
-                   'description headings')  
+                   'description headings')
   if "|" in line:
     nextline_checked = True
   return line, count, prvline, fp, nextline_checked
-  
+
 
 # Check that emphasis characters(bold and italic) have been used correctly to
 # display on the pdf.
