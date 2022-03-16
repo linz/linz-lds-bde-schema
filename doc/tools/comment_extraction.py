@@ -134,7 +134,7 @@ if len(sys.argv) != 2:
     sys.stderr.write("Syntax comment_extraction.py <input_file>\n")
     sys.exit(1)
 
-with open(sys.argv[1]) as fp:
+with open(sys.argv[1], encoding="UTF-8") as fp:
     line = fp.readline()
 
     while line:
