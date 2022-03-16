@@ -73,7 +73,7 @@ def hyperlink_check(line, count):
 
 # Check if line is a heading, it must have either an empty line or another
 # header previous to it.
-def empty_line_check():
+def empty_line_check(prvline, line):
     if (
         COUNT != 1
         and prvline != "\n"
@@ -142,7 +142,7 @@ def image_check(line, count):
 
 
 # Check that only #, ##, and ### level headings are used.
-def header_check(line, count, fp, nextline_checked):
+def header_check(line, count, file_pointer, nextline_checked):
     if INVALID_HEADING in line:
         format_error(
             "Incorrect Heading: ",
@@ -151,7 +151,7 @@ def header_check(line, count, fp, nextline_checked):
             "\n# Main Heading\n## Subheading\n### Other Heading",
         )
     prvline = line
-    line = fp.readline()
+    line = file_pointer.readline()
     count += 1
 
     # If current heading is a table heading and next line is description
@@ -169,7 +169,7 @@ def header_check(line, count, fp, nextline_checked):
     elif line == "\n":
         while line == "\n":
             prvline = line
-            line = fp.readline()
+            line = file_pointer.readline()
             count += 1
         # There cannot be spaces between table and description headings
         if DESCRIPTION in line:
@@ -182,7 +182,7 @@ def header_check(line, count, fp, nextline_checked):
             )
     if "|" in line:
         nextline_checked = True
-    return line, count, prvline, fp, nextline_checked
+    return line, count, prvline, file_pointer, nextline_checked
 
 
 # Check that emphasis characters(bold and italic) have been used correctly to
@@ -242,7 +242,7 @@ def newline_check(line, count):
 
 
 # Check a table to make sure it is correctly formatted.
-def table_check(fp, count, line):
+def table_check(file_pointer, count, line):
 
     # Stores the number of columns in the table.
     table_sep = line.count("|")
@@ -259,7 +259,7 @@ def table_check(fp, count, line):
 
     # Update previous/next lines and count
     prvline = line
-    line = fp.readline()
+    line = file_pointer.readline()
     count += 1
 
     # Check for correct header line separator in table:
@@ -287,13 +287,13 @@ def table_check(fp, count, line):
 
         # Update previous/next lines and count
         prvline = line
-        line = fp.readline()
+        line = file_pointer.readline()
         count += 1
-    return fp, count, line, prvline
+    return file_pointer, count, line, prvline
 
 
 # Check that yaml header correctly written.
-def yaml_header_check(fp, count, line):
+def yaml_header_check(file_pointer, count, line):
     options = ("title:", "subtitle:", "date:")
     if "---" not in line:
         format_error(
@@ -305,7 +305,7 @@ def yaml_header_check(fp, count, line):
             "subtitle:\n\tdate:\n\t---",
         )
     prvline = line
-    line = fp.readline()
+    line = file_pointer.readline()
     count += 1
     while "---" not in line:
         if line == "\n":
@@ -333,62 +333,72 @@ def yaml_header_check(fp, count, line):
                 "subtitle:\n\tdate:\n\t---",
             )
         prvline = line
-        line = fp.readline()
+        line = file_pointer.readline()
         count += 1
-    return fp, count, line, prvline
+    return file_pointer, count, line, prvline
 
 
-with open(file) as fp:
-    line = fp.readline()
-    fp, COUNT, line, prvline = yaml_header_check(fp, COUNT, line)
-    while line:
+with open(file, encoding="UTF-8") as file_object:
+    current_line = file_object.readline()
+    file_object, COUNT, current_line, previous_line = yaml_header_check(
+        file_object, COUNT, current_line
+    )
+    while current_line:
         # Check each line
-        hyperlink_check(line, COUNT)
-        image_check(line, COUNT)
-        emphasis_check(line, COUNT)
-        newline_check(line, COUNT)
-        list_check(line, COUNT, prvline)
+        hyperlink_check(current_line, COUNT)
+        image_check(current_line, COUNT)
+        emphasis_check(current_line, COUNT)
+        newline_check(current_line, COUNT)
+        list_check(current_line, COUNT, previous_line)
 
         # If line is a header line, do header and empty line check
-        if "#" in line[0]:
-            line, COUNT, prvline, fp, NEXTLINE_CHECKED = header_check(
-                line, COUNT, fp, NEXTLINE_CHECKED
-            )
-            empty_line_check()
+        if "#" in current_line[0]:
+            (
+                current_line,
+                COUNT,
+                previous_line,
+                file_object,
+                NEXTLINE_CHECKED,
+            ) = header_check(current_line, COUNT, file_object, NEXTLINE_CHECKED)
+            empty_line_check(previous_line, current_line)
             if NEXTLINE_CHECKED:
-                if prvline != "\n":
+                if previous_line != "\n":
                     format_error(
                         "Incorrect spacing no new line before table header: ",
-                        line[: len(line) - 1],
+                        current_line[: len(current_line) - 1],
                         COUNT,
                         "",
                     )
-                fp, COUNT, line, prvline = table_check(fp, COUNT, line)
+                file_object, COUNT, current_line, previous_line = table_check(
+                    file_object, COUNT, current_line
+                )
                 TABLE_REQUIRED = False
                 NEXTLINE_CHECKED = False
         # Else if line is a table line, check there is an empty line before and
         # call table check.
-        elif line.count("|") > 0:
-            if prvline != "\n":
+        elif current_line.count("|") > 0:
+            if previous_line != "\n":
                 format_error(
                     "Incorrect spacing no new line before table header: ",
-                    line[: len(line) - 1],
+                    current_line[: len(current_line) - 1],
                     COUNT,
                     "",
                 )
-            fp, COUNT, line, prvline = table_check(fp, COUNT, line)
+            file_object, COUNT, current_line, previous_line = table_check(
+                file_object, COUNT, current_line
+            )
             TABLE_REQUIRED = False
 
-        if DESCRIPTION in line:
+        if DESCRIPTION in current_line:
             TABLE_REQUIRED = True
         # Update previous/next lines and count
-        prvline = line
-        line = fp.readline()
+        previous_line = current_line
+        current_line = file_object.readline()
         COUNT += 1
     if TABLE_REQUIRED:
         format_error(
             "## Description header used without table following: ",
-            line[: len(line) - 1],
+            current_line[: len(current_line) - 1],
             COUNT,
             "\nMust follow Description " "header with a table",
         )
