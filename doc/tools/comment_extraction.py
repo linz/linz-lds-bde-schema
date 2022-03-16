@@ -115,20 +115,20 @@ mappings = {
     "NZ_Parcel_Statutory_Actions_List": "lds.parcel_stat_actions",
 }
 
-table_name = "bde.crs"
-newline = "<br>"
-table_section = "---|"
-description = "## Description"
-subheading = "## "
-heading = "# "
-col_name_col_two = False
+TABLE_NAME = "bde.crs"
+NEWLINE = "<br>"
+TABLE_SECTION = "---|"
+DESCRIPTION = "## Description"
+SUBHEADING = "## "
+HEADING = "# "
+COL_NAME_COL_TWO = False
 
-bold1 = "__"
-bold2 = "**"
-italic = "*"
-nextline_seen = False
+BOLD1 = "__"
+BOLD2 = "**"
+ITALIC = "*"
+NEXTLINE_SEEN = False
 
-notes_column = 3
+NOTES_COLUMN = 3
 
 if len(sys.argv) != 2:
     sys.stderr.write("Syntax comment_extraction.py <input_file>\n")
@@ -140,22 +140,22 @@ with open(sys.argv[1]) as fp:
     while line:
         # Remove bold and italic markdown
         line = (
-            line.replace(bold1, "")
-            .replace(bold2, "")
-            .replace(italic, "")
-            .replace(newline, "\n")
+            line.replace(BOLD1, "")
+            .replace(BOLD2, "")
+            .replace(ITALIC, "")
+            .replace(NEWLINE, "\n")
         )
         # If Description in line, means that next lines are table description.
-        if description in line:
-            sys.stdout.write("COMMENT ON TABLE " + table_name + " IS $comment$\n")
-            col_name_col_two = False
+        if DESCRIPTION in line:
+            sys.stdout.write("COMMENT ON TABLE " + TABLE_NAME + " IS $comment$\n")
+            COL_NAME_COL_TWO = False
             line = fp.readline()
             while "|" not in line:
                 line = (
-                    line.replace(bold1, "")
-                    .replace(bold2, "")
-                    .replace(italic, "")
-                    .replace(newline, "\n")
+                    line.replace(BOLD1, "")
+                    .replace(BOLD2, "")
+                    .replace(ITALIC, "")
+                    .replace(NEWLINE, "\n")
                 )
                 ## Wrap lines to 80 characters
                 if len(line) < 80:
@@ -185,45 +185,45 @@ with open(sys.argv[1]) as fp:
 
             # Use count of '|' to find the last column in table,
             # which will contain notes/description about row.
-            notes_column = line.count("|")
+            NOTES_COLUMN = line.count("|")
             line = fp.readline()
             # While there are still table rows
             while line and line != "\n":
                 line = (
-                    line.replace(bold1, "")
-                    .replace(bold2, "")
-                    .replace(italic, "")
-                    .replace(newline, "\n")
+                    line.replace(BOLD1, "")
+                    .replace(BOLD2, "")
+                    .replace(ITALIC, "")
+                    .replace(NEWLINE, "\n")
                 )
                 row = line.split("|")
-                if len(row) > notes_column:
+                if len(row) > NOTES_COLUMN:
                     if "||" in line.replace(" ", ""):
-                        col_name_col_two = True
-                        note = row[notes_column + 1][: len(row[notes_column + 1]) - 1]
+                        COL_NAME_COL_TWO = True
+                        note = row[NOTES_COLUMN + 1][: len(row[NOTES_COLUMN + 1]) - 1]
                         note = note.lstrip()
                         sys.stdout.write(
                             "COMMENT ON COLUMN "
-                            + table_name
+                            + TABLE_NAME
                             + "."
                             + row[2].strip().lower()
                             + " IS $comment$\n"
                         )
-                    elif col_name_col_two:
-                        note = row[notes_column][: len(row[notes_column]) - 1]
+                    elif COL_NAME_COL_TWO:
+                        note = row[NOTES_COLUMN][: len(row[NOTES_COLUMN]) - 1]
                         note = note.lstrip()
                         sys.stdout.write(
                             "COMMENT ON COLUMN "
-                            + table_name
+                            + TABLE_NAME
                             + "."
                             + row[1].strip().lower()
                             + " IS $comment$\n"
                         )
                     else:
-                        note = row[notes_column][: len(row[notes_column]) - 1]
+                        note = row[NOTES_COLUMN][: len(row[NOTES_COLUMN]) - 1]
                         note = note.lstrip()
                         sys.stdout.write(
                             "COMMENT ON COLUMN "
-                            + table_name
+                            + TABLE_NAME
                             + "."
                             + row[0].strip().lower()
                             + " IS $comment$\n"
@@ -251,28 +251,28 @@ with open(sys.argv[1]) as fp:
                 line = fp.readline()
 
         # If is a subheading then update table name
-        elif subheading in line:
+        elif SUBHEADING in line:
             nextline = fp.readline()
-            nextline_seen = True
-            if description in nextline:
+            NEXTLINE_SEEN = True
+            if DESCRIPTION in nextline:
                 templine = line.split(" ")
-                name = ""
+                NAME = ""
                 for i in templine[1:]:
                     if i.replace("\n", "").isalpha():
-                        name += i
-                        name += "_"
+                        NAME += i
+                        NAME += "_"
                     else:
                         break
-                name = name[: len(name) - 1].replace("\n", "")
-                if name in mappings:
-                    table_name = mappings[name]
+                NAME = NAME[: len(NAME) - 1].replace("\n", "")
+                if NAME in mappings:
+                    TABLE_NAME = mappings[NAME]
                 else:
-                    table_name = name.lower()
-                    sys.stderr.write("Unkown Mappings for " + table_name + "\n")
+                    TABLE_NAME = NAME.lower()
+                    sys.stderr.write("Unkown Mappings for " + TABLE_NAME + "\n")
                     sys.exit(1)
             line = nextline
 
-        if not nextline_seen:
+        if not NEXTLINE_SEEN:
             line = fp.readline()
         else:
-            nextline_seen = False
+            NEXTLINE_SEEN = False

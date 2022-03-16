@@ -24,16 +24,16 @@ if len(sys.argv) != 2:
 
 file = sys.argv[1]
 
-invalid_heading = "####"
-subsubheading = "###"
-subheading = "##"
-heading = "#"
-count = 1
+INVALID_HEADING = "####"
+SUBSUBHEADING = "###"
+SUBHEADING = "##"
+HEADING = "#"
+COUNT = 1
 bullet = ("-", "+")
-description = "## Description"
+DESCRIPTION = "## Description"
 
-nextline_checked = False
-table_required = False
+NEXTLINE_CHECKED = False
+TABLE_REQUIRED = False
 
 # Output error details
 def format_error(heading, line, count, details):
@@ -74,16 +74,16 @@ def hyperlink_check(line, count):
 # header previous to it.
 def empty_line_check():
     if (
-        count != 1
+        COUNT != 1
         and prvline != "\n"
-        and heading not in prvline
-        and subheading not in prvline
-        and subsubheading not in prvline
+        and HEADING not in prvline
+        and SUBHEADING not in prvline
+        and SUBSUBHEADING not in prvline
     ):
         format_error(
             "Incorrect Heading: ",
             line[: len(line) - 1],
-            count,
+            COUNT,
             "\nMust have an empty line or another heading in previous" " line",
         )
 
@@ -142,7 +142,7 @@ def image_check(line, count):
 
 # Check that only #, ##, and ### level headings are used.
 def header_check(line, count, prvline, fp, nextline_checked):
-    if invalid_heading in line:
+    if INVALID_HEADING in line:
         format_error(
             "Incorrect Heading: ",
             line[: len(line) - 1],
@@ -154,7 +154,7 @@ def header_check(line, count, prvline, fp, nextline_checked):
     count += 1
 
     # If current heading is a table heading and next line is description
-    if description in line and subheading not in prvline:
+    if DESCRIPTION in line and SUBHEADING not in prvline:
         format_error(
             "Incorrect Heading: ",
             line[: len(line) - 1],
@@ -171,7 +171,7 @@ def header_check(line, count, prvline, fp, nextline_checked):
             line = fp.readline()
             count += 1
         # There cannot be spaces between table and description headings
-        if description in line:
+        if DESCRIPTION in line:
             format_error(
                 "Incorrect Heading: ",
                 line[: len(line) - 1],
@@ -340,32 +340,32 @@ def yaml_header_check(fp, count, line, prvline):
 with open(file) as fp:
     line = fp.readline()
     prvline = ""
-    fp, count, line, prvline = yaml_header_check(fp, count, line, prvline)
+    fp, COUNT, line, prvline = yaml_header_check(fp, COUNT, line, prvline)
     while line:
         # Check each line
-        hyperlink_check(line, count)
-        image_check(line, count)
-        emphasis_check(line, count)
-        newline_check(line, count)
-        list_check(line, count, prvline)
+        hyperlink_check(line, COUNT)
+        image_check(line, COUNT)
+        emphasis_check(line, COUNT)
+        newline_check(line, COUNT)
+        list_check(line, COUNT, prvline)
 
         # If line is a header line, do header and empty line check
         if "#" in line[0]:
-            line, count, prvline, fp, nextline_checked = header_check(
-                line, count, prvline, fp, nextline_checked
+            line, COUNT, prvline, fp, NEXTLINE_CHECKED = header_check(
+                line, COUNT, prvline, fp, NEXTLINE_CHECKED
             )
             empty_line_check()
-            if nextline_checked:
+            if NEXTLINE_CHECKED:
                 if prvline != "\n":
                     format_error(
                         "Incorrect spacing no new line before table header: ",
                         line[: len(line) - 1],
-                        count,
+                        COUNT,
                         "",
                     )
-                fp, count, line, prvline = table_check(fp, count, line, prvline)
-                table_required = False
-                nextline_checked = False
+                fp, COUNT, line, prvline = table_check(fp, COUNT, line, prvline)
+                TABLE_REQUIRED = False
+                NEXTLINE_CHECKED = False
         # Else if line is a table line, check there is an empty line before and
         # call table check.
         elif line.count("|") > 0:
@@ -373,22 +373,22 @@ with open(file) as fp:
                 format_error(
                     "Incorrect spacing no new line before table header: ",
                     line[: len(line) - 1],
-                    count,
+                    COUNT,
                     "",
                 )
-            fp, count, line, prvline = table_check(fp, count, line, prvline)
-            table_required = False
+            fp, COUNT, line, prvline = table_check(fp, COUNT, line, prvline)
+            TABLE_REQUIRED = False
 
-        if description in line:
-            table_required = True
+        if DESCRIPTION in line:
+            TABLE_REQUIRED = True
         # Update previous/next lines and count
         prvline = line
         line = fp.readline()
-        count += 1
-    if table_required:
+        COUNT += 1
+    if TABLE_REQUIRED:
         format_error(
             "## Description header used without table following: ",
             line[: len(line) - 1],
-            count,
+            COUNT,
             "\nMust follow Description " "header with a table",
         )
