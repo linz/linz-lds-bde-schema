@@ -2,6 +2,16 @@
 
 All notable changes for the LINZ LDS BDE schema are documented in this file.
 
+## 1.15.0 - 2022-03-18
+
+### Added
+
+-   Support for Ubuntu 20.04/LTS and Python3
+
+### Enhanced
+
+-   Quality improvements
+
 ## 1.14.0 - 2022-01-13
 
 ### Fixed
