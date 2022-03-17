@@ -338,7 +338,7 @@ def yaml_header_check(file_pointer, count, line):
     return file_pointer, count, line, prvline
 
 
-with open(file, encoding="UTF-8") as file_object:
+with open(file, encoding="utf-8") as file_object:
     current_line = file_object.readline()
     file_object, COUNT, current_line, previous_line = yaml_header_check(
         file_object, COUNT, current_line

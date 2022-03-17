@@ -131,7 +131,7 @@ NEXTLINE_SEEN = False
 NOTES_COLUMN = 3
 
 
-def wrap_to_character_limit_and_print(limit: int, line_in):
+def wrap_to_character_limit_and_print(limit, line_in):
     excess_line = line_in[:limit][: line_in[:limit].rfind(" ")]
     if "\n" in excess_line:
         excess_line = excess_line[: excess_line.rfind("\n")]
@@ -151,7 +151,7 @@ if len(sys.argv) != 2:
     sys.stderr.write("Syntax comment_extraction.py <input_file>\n")
     sys.exit(1)
 
-with open(sys.argv[1], encoding="UTF-8") as fp:
+with open(sys.argv[1], encoding="utf-8") as fp:
     line = fp.readline()
 
     while line:
