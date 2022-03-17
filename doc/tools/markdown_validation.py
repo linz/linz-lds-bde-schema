@@ -19,7 +19,7 @@ Checks for errors in:
 import sys
 
 if len(sys.argv) != 2:
-    sys.stderr.write("Syntax markdown_check.py <input_file>\n")
+    print("Syntax markdown_check.py <input_file>", file=sys.stderr)
     sys.exit(1)
 
 file = sys.argv[1]
@@ -38,7 +38,7 @@ TABLE_REQUIRED = False
 
 # Output error details
 def format_error(heading, line, count, details):
-    sys.stderr.write(heading + "'" + line + "' on line " + str(count) + details + "\n")
+    print(heading + "'" + line + "' on line " + str(count) + details, file=sys.stderr)
     sys.exit(1)
 
 

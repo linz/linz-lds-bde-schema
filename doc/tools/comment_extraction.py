@@ -9,7 +9,6 @@ the mappings provided below.
 
 """
 import sys
-
 mappings = {
     "Action": "bde.crs_action",
     "Action_Type": "bde.crs_action_type",
@@ -136,19 +135,19 @@ def wrap_to_character_limit_and_print(limit, line_in):
     if "\n" in excess_line:
         excess_line = excess_line[: excess_line.rfind("\n")]
     start = len(excess_line) + 1
-    sys.stdout.write(excess_line.strip() + "\n")
+    print(excess_line.strip())
     while len(line_in[start:]) > limit:
         excess_line = line_in[start : start + limit]
         excess_line = excess_line[: excess_line.rfind(" ")]
         if "\n" in excess_line:
             excess_line = excess_line[: excess_line.rfind("\n")]
         start += len(excess_line) + 1
-        sys.stdout.write(excess_line.strip() + "\n")
-    sys.stdout.write(line_in[start:].strip() + "\n")
+        print(excess_line.strip())
+    print(line_in[start:].strip())
 
 
 if len(sys.argv) != 2:
-    sys.stderr.write("Syntax comment_extraction.py <input_file>\n")
+    print("Syntax comment_extraction.py <input_file>", file=sys.stderr)
     sys.exit(1)
 
 with open(sys.argv[1], encoding="utf-8") as fp:
@@ -164,7 +163,7 @@ with open(sys.argv[1], encoding="utf-8") as fp:
         )
         # If Description in line, means that next lines are table description.
         if DESCRIPTION in line:
-            sys.stdout.write("COMMENT ON TABLE " + TABLE_NAME + " IS $comment$\n")
+            print("COMMENT ON TABLE " + TABLE_NAME + " IS $comment$")
             COL_NAME_COL_TWO = False
             line = fp.readline()
             while "|" not in line:
@@ -176,13 +175,13 @@ with open(sys.argv[1], encoding="utf-8") as fp:
                 )
                 # Wrap lines to 80 characters
                 if len(line) < 80:
-                    sys.stdout.write(line.strip() + "\n")
+                    print(line.strip())
                 else:
                     wrap_to_character_limit_and_print(80, line)
 
                 ##
                 line = fp.readline()
-            sys.stdout.write("$comment$;\n\n")
+            print("$comment$;\n")
             line = fp.readline()
 
             # Following description is table to retrieve column comments.
@@ -207,40 +206,40 @@ with open(sys.argv[1], encoding="utf-8") as fp:
                         COL_NAME_COL_TWO = True
                         note = row[NOTES_COLUMN + 1][: len(row[NOTES_COLUMN + 1]) - 1]
                         note = note.lstrip()
-                        sys.stdout.write(
+                        print(
                             "COMMENT ON COLUMN "
                             + TABLE_NAME
                             + "."
                             + row[2].strip().lower()
-                            + " IS $comment$\n"
+                            + " IS $comment$"
                         )
                     elif COL_NAME_COL_TWO:
                         note = row[NOTES_COLUMN][: len(row[NOTES_COLUMN]) - 1]
                         note = note.lstrip()
-                        sys.stdout.write(
+                        print(
                             "COMMENT ON COLUMN "
                             + TABLE_NAME
                             + "."
                             + row[1].strip().lower()
-                            + " IS $comment$\n"
+                            + " IS $comment$"
                         )
                     else:
                         note = row[NOTES_COLUMN][: len(row[NOTES_COLUMN]) - 1]
                         note = note.lstrip()
-                        sys.stdout.write(
+                        print(
                             "COMMENT ON COLUMN "
                             + TABLE_NAME
                             + "."
                             + row[0].strip().lower()
-                            + " IS $comment$\n"
+                            + " IS $comment$"
                         )
                 # Wrap lines to 80 characters
                 if len(note) < 80:
-                    sys.stdout.write(note.strip() + "\n")
+                    print(note.strip())
                 else:
                     wrap_to_character_limit_and_print(80, note)
                 ##
-                sys.stdout.write("\n$comment$;\n\n")
+                print("\n$comment$;\n")
 
                 line = fp.readline()
 
@@ -262,7 +261,7 @@ with open(sys.argv[1], encoding="utf-8") as fp:
                     TABLE_NAME = mappings[NAME]
                 else:
                     TABLE_NAME = NAME.lower()
-                    sys.stderr.write("Unkown Mappings for " + TABLE_NAME + "\n")
+                    print("Unkown Mappings for " + TABLE_NAME, file=sys.stderr)
                     sys.exit(1)
             line = nextline
 
