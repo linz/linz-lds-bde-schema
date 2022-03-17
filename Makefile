@@ -77,8 +77,8 @@ sql/95-lds_comments.sql: doc/tools/comment_extraction.py \
 		      doc/lds-full-landonline-data-dictionary-and-models.md \
 		      doc/property-and-ownership-simplified-tables-data-dictionary.md
 	rm -f sql/95-lds_comments.sql
-	python $< doc/lds-full-landonline-data-dictionary-and-models.md > $@
-	python $< doc/property-and-ownership-simplified-tables-data-dictionary.md >> $@
+	python3 $< doc/lds-full-landonline-data-dictionary-and-models.md > $@
+	python3 $< doc/property-and-ownership-simplified-tables-data-dictionary.md >> $@
 
 install: $(SQLSCRIPTS) $(SCRIPTS_built)
 	mkdir -p ${datadir}/sql
@@ -223,8 +223,8 @@ installcheck:
 docs: $(DOCS_built)
 
 check-docs: doc/tools/markdown_validation.py
-	python $< doc/lds-full-landonline-data-dictionary-and-models.md
-	python $< doc/property-and-ownership-simplified-tables-data-dictionary.md
+	python3 $< doc/lds-full-landonline-data-dictionary-and-models.md
+	python3 $< doc/property-and-ownership-simplified-tables-data-dictionary.md
 
 install-docs: $(DOCS_built)
 	mkdir -p ${datadir}/docs
