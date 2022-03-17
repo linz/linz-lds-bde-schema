@@ -9,6 +9,7 @@ the mappings provided below.
 
 """
 import sys
+
 mappings = {
     "Action": "bde.crs_action",
     "Action_Type": "bde.crs_action_type",
