@@ -1,7 +1,7 @@
 Source: linz-lds-bde-schema
 Section: database
 Priority: extra
-Build-Depends: debhelper, python
+Build-Depends: debhelper, python3
 Standards-Version: 3.9.5
 Maintainer: Jeremy Palmer (LINZ) <jpalmer@linz.govt.nz>
 Homepage: http://www.linz.govt.nz
