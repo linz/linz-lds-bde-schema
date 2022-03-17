@@ -73,7 +73,7 @@ scripts/linz-lds-bde-schema-publish: scripts/linz-lds-bde-schema-publish.bash Ma
            $< > $@
 	chmod +x $@
 
-sql/95-lds_comments.sql: doc/tools/comment-extraction.py \
+sql/95-lds_comments.sql: doc/tools/comment_extraction.py \
 		      doc/lds-full-landonline-data-dictionary-and-models.md \
 		      doc/property-and-ownership-simplified-tables-data-dictionary.md
 	rm -f sql/95-lds_comments.sql
@@ -222,7 +222,7 @@ installcheck:
 
 docs: $(DOCS_built)
 
-check-docs: doc/tools/markdown-validation.py
+check-docs: doc/tools/markdown_validation.py
 	python $< doc/lds-full-landonline-data-dictionary-and-models.md
 	python $< doc/property-and-ownership-simplified-tables-data-dictionary.md
 
