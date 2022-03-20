@@ -6,8 +6,7 @@ on:
             - master
             - packagecloud
     pull_request:
-        branches:
-            - '*'
+        types: [opened, synchronize]
     schedule:
         - cron: '0 12 * * 0'
 
