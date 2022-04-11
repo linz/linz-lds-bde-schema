@@ -166,7 +166,7 @@ jobs:
               run: xvfb-run make docs
 
             - name: Archive docs
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v3
               with:
                   name:
                       docs for PostgreSQL ${{ matrix.pg }}, PostGIS ${{ matrix.pgis }} on ${{
