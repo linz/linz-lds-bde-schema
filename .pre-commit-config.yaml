@@ -22,7 +22,7 @@ repos:
             stages: [commit]
 
     - repo: https://github.com/ambv/black
-      rev: d038a24ca200da9dacc1dcb05090c9e5b45b7869 # v22.1.0
+      rev: ae2c0758c9e61a385df9700dc9c231bf54887041 # v22.3.0
       hooks:
           - id: black
             language_version: python3
