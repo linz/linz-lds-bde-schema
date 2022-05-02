@@ -2,9 +2,9 @@
 
 All notable changes for the LINZ LDS BDE schema are documented in this file.
 
-# 1.15.1 (2022-05-02)
+## 1.15.1 (2022-05-02)
 
-## Fixed
+### Fixed
 
 -   Force pushing changes to origin remote
 
