@@ -8,6 +8,7 @@ upgradeable_versions=(
     '1.13.0'
     '1.14.0'
     '1.15.0'
+    '1.15.1'
 )
 
 project_root="$(dirname "$0")/.."
