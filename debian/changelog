@@ -1,3 +1,9 @@
+linz-lds-bde-schema (1.15.1-linz~bionic) bionic; urgency=medium
+
+  * New version
+
+ -- Victor Engmark <vengmark@linz.govt.nz>  Mon, 02 May 2022 04:06:18 +0000
+
 linz-lds-bde-schema (1.15.0-linz~focal) focal; urgency=medium
 
   * New version
