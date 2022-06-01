@@ -1,3 +1,39 @@
+linz-lds-bde-schema (1.15.2-linz~bionic) bionic; urgency=medium
+
+  * New version
+
+ -- Victor Engmark <vengmark@linz.govt.nz>  Tue, 03 May 2022 02:00:10 +0000
+
+linz-lds-bde-schema (1.15.1-linz~bionic) bionic; urgency=medium
+
+  * New version
+
+ -- Victor Engmark <vengmark@linz.govt.nz>  Mon, 02 May 2022 04:06:18 +0000
+
+linz-lds-bde-schema (1.15.0-linz~focal) focal; urgency=medium
+
+  * New version
+
+ -- Mitchell Paff <mpaff@linz.govt.nz>  Thu, 17 Mar 2022 22:13:56 +0000
+
+linz-lds-bde-schema (1.15.0-linz~bionic) bionic; urgency=medium
+
+  * New version
+
+ -- Mitchell Paff <mpaff@linz.govt.nz>  Thu, 17 Mar 2022 22:12:11 +0000
+
+linz-lds-bde-schema (1.13.0-linz~bionic) bionic; urgency=medium
+
+  * New version
+
+ -- Ivan Mincik <imincik@linz.govt.nz>  Thu, 18 Feb 2021 09:11:12 +0000
+
+linz-lds-bde-schema (1.12.0-linz~bionic) bionic; urgency=medium
+
+  * New version
+
+ -- Ivan Mincik <imincik@linz.govt.nz>  Tue, 05 Jan 2021 10:12:30 +0000
+
 linz-lds-bde-schema (1.11.1-linz~bionic) bionic; urgency=medium
 
   * New version

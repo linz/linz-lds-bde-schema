@@ -1,155 +1,248 @@
-name: test
+name: Test
 
 on:
-  push:
-    branches:
-      - master
-      - packagecloud
-      - 'release-*'
-    tags-ignore:
-      - 'debian/*'
-      - '*-start'
-  pull_request:
-    branches:
-      - '*'
+    push:
+        branches:
+            - master
+            - packagecloud
+        tags-ignore:
+            - 'debian/*'
+    pull_request:
+        types: [opened, synchronize]
+    schedule:
+        - cron: '0 12 * * 0'
 
 jobs:
+    lint:
+        name: Lint
+        runs-on: ubuntu-20.04
 
-  test:
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v3
 
-    name: PostgreSQL ${{ matrix.pg }}, PostGIS ${{ matrix.pgis }} on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-        fail-fast: false
-        matrix:
-            # Combines <https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS> and
-            # `curl https://apt.postgresql.org/pub/repos/apt/dists/bionic-pgdg/main/binary-amd64/Packages | grep --only-matching '^Package: postgresql-[0-9.]\+-postgis-[0-9.]\+$' | sort --version-sort`.
-            include:
-                -   os: ubuntu-18.04
-                    pg: '10'
-                    pgis: '2.4'
-                -   os: ubuntu-18.04
-                    pg: '10'
-                    pgis: '2.5'
-                -   os: ubuntu-18.04
-                    pg: '10'
-                    pgis: '3'
-                -   os: ubuntu-18.04
-                    pg: '12'
-                    pgis: '2.5'
-                -   os: ubuntu-18.04
-                    pg: '12'
-                    pgis: '3'
-    env:
-      # Set PATH as postgresql-server-dev-all pretends version is 11
-      PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
-      APT: "apt-get -o Dpkg::Progress=0 -o Dpkg::Use-Pty=0"
-    steps:
-    - uses: actions/checkout@v1
-    - name: Install dependencies
-      run: |
-        sudo ${APT} -qq purge \
-            libpq* \
-            *php* \
-            postgresql*
-        sudo rm -rf /var/lib/postgresql
-        sudo ${APT} -qq install curl ca-certificates gnupg
-        distro=`lsb_release -cs`
-        # Enable fetching packages from apt.postgresql repository
-        curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
-        echo "deb http://apt.postgresql.org/pub/repos/apt/ ${distro}-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
-        # Enable fetching packages from packagecloud test repository
-        curl -Ls https://packagecloud.io/linz/test/gpgkey | sudo apt-key add -
-        echo "deb https://packagecloud.io/linz/test/ubuntu ${distro} main" | sudo tee /etc/apt/sources.list.d/linz-test.list
-        # Enable fetching packages from packagecloud prod repository
-        curl -Ls https://packagecloud.io/linz/prod/gpgkey | sudo apt-key add -
-        echo "deb https://packagecloud.io/linz/prod/ubuntu ${distro} main" | sudo tee /etc/apt/sources.list.d/linz-prod.list
-        # Update apt cache
-        sudo ${APT} -qq update
-        # Install dependencies
-        sudo ${APT} -qq install --no-install-recommends \
-            postgresql-client-${{ matrix.pg }} \
-            postgresql-contrib-${{ matrix.pg }} \
-            postgresql-${{ matrix.pg }} \
-            postgresql-${{ matrix.pg }}-dbpatch \
-            postgresql-${{ matrix.pg }}-pgtap \
-            postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }} \
-            postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }}-scripts \
-            postgresql-${{ matrix.pg }}-tableversion \
-            postgresql-server-dev-${{ matrix.pg }} \
-            libtap-parser-sourcehandler-pgtap-perl \
-            debhelper \
-            fakeroot \
-            linz-bde-schema \
-            linz-bde-uploader
-    - name: Setup PostgreSQL user
-      run: |
-        sudo -u postgres createuser -s "$USER"
-        sudo -u postgres createuser -s root
-    - name: Build
-      run: |
-        # Build
-        make
-    - name: Test build
-      run: |
-        # Pre-install tests
-        make check || { cat regression.diffs; false; }
-    - name: Install
-      run: |
-        sudo -E make install
-    - name: Test installation
-      run: |
-        # Post-install tests
-        make installcheck
-        make installcheck-stdout
-    - name: Test uninstall
-      run: |
-        make uninstall
-    - name: Test docs building
-      run: |
-        xvfb-run make docs
-    - name: Test packaging
-      run: |
-        make deb
-        sudo dpkg -i ../linz-lds-bde-schema*.deb
-    - name: Test upgrades
-      run: |
-        test/test-upgrades.sh
-    - name: Test publication
-      run: |
-        make check-publisher
-      if: matrix.pg >= 10
+            - name: Install Nix
+              uses: cachix/install-nix-action@v17
 
-  package:
-    needs: test
-    name: Package for Debian
-    runs-on: ubuntu-18.04
-    strategy:
-        matrix:
-            distro: [ 'bionic' ]
-    steps:
-    - uses: actions/checkout@v1
+            - name: Run pre-commit hooks
+              run: nix-shell --pure --run 'pre-commit run --all-files'
 
-    - name: Determine packagecloud publication target
-      run: |
-        # TODO: it would be nice to turn this into a single-liner in
-        #       github-action syntax
-        echo "GitHub ref: ${{ github.ref }}"
-        echo "GitHub event_name: ${{ github.event_name }}"
-        PACKAGECLOUD_REPOSITORY=
-        if test "${{ github.event_name }}" = 'push'; then
-          if expr "${{ github.ref }}" : "refs/tags/" > /dev/null; then
-            PACKAGECLOUD_REPOSITORY=test
-            git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
-          elif test "${{ github.ref }}" = 'refs/heads/packagecloud' \
-                 -o "${{ github.ref }}" = 'refs/heads/master'
-          then
-            PACKAGECLOUD_REPOSITORY=dev
-          fi
-        fi
-        echo "PACKAGECLOUD_REPOSITORY=$PACKAGECLOUD_REPOSITORY" | tee -a $GITHUB_ENV
+    test:
+        name: PostgreSQL ${{ matrix.pg }}, PostGIS ${{ matrix.pgis }} on ${{ matrix.os }}
+        runs-on: ${{ matrix.os }}
+        strategy:
+            fail-fast: false
+            matrix:
+                # Combines <https://trac.osgeo.org/postgis/wiki/UsersWikiPostgreSQLPostGIS> and
+                # `curl https://apt.postgresql.org/pub/repos/apt/dists/bionic-pgdg/main/binary-amd64/Packages | grep --only-matching '^Package: postgresql-[0-9.]\+-postgis-[0-9.]\+$' | sort --version-sort`.
+                include:
+                    - os: ubuntu-18.04
+                      pg: '10'
+                      pgis: '2.4'
+                    - os: ubuntu-18.04
+                      pg: '10'
+                      pgis: '2.5'
+                    - os: ubuntu-18.04
+                      pg: '10'
+                      pgis: '3'
+                    - os: ubuntu-18.04
+                      pg: '12'
+                      pgis: '2.5'
+                    - os: ubuntu-18.04
+                      pg: '12'
+                      pgis: '3'
+                    - os: ubuntu-18.04
+                      pg: '14'
+                      pgis: '3'
+                    - os: ubuntu-20.04
+                      pg: '10'
+                      pgis: '2.5'
+                    - os: ubuntu-20.04
+                      pg: '10'
+                      pgis: '3'
+                    - os: ubuntu-20.04
+                      pg: '12'
+                      pgis: '2.5'
+                    - os: ubuntu-20.04
+                      pg: '12'
+                      pgis: '3'
+                    - os: ubuntu-20.04
+                      pg: '14'
+                      pgis: '3'
+                    - os: ubuntu-latest
+                      pg: '14'
+                      pgis: '3'
+        env:
+            # Set PATH as postgresql-server-dev-all pretends version is 11
+            PATH: /usr/lib/postgresql/${{ matrix.pg }}/bin:/bin:/usr/bin:/usr/local/bin
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
 
-    - uses: linz/linz-software-repository@v4
-      with:
-        packagecloud_token: ${{ secrets.LINZCI_PACKAGECLOUD_TOKEN }}
-        packagecloud_repository: ${{ env.PACKAGECLOUD_REPOSITORY }}
+            - name: Remove conflicting packages
+              run: |
+                  sudo apt-get --assume-yes --purge remove \
+                    libpq* \
+                    *php* \
+                    postgresql*
+
+            - name: Remove PostgreSQL install files
+              run: sudo rm --force --recursive /var/lib/postgresql
+
+            - name: Update package database
+              run: sudo apt-get update
+
+            - name: Install setup dependencies
+              run: sudo apt-get --assume-yes install curl ca-certificates gnupg
+
+            - name: Get release codename
+              id: distro
+              run: echo "::set-output name=codename::$(lsb_release --codename --short)"
+
+            - name: Enable fetching packages from apt.postgresql repository
+              run: |
+                  curl -s https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+                  echo "deb http://apt.postgresql.org/pub/repos/apt/ ${{ steps.distro.outputs.codename }}-pgdg main" | sudo tee /etc/apt/sources.list.d/pgdg.list
+
+            - name: Enable fetching packages from packagecloud test repository
+              run: |
+                  curl -Ls https://packagecloud.io/linz/test/gpgkey | sudo apt-key add -
+                  echo "deb https://packagecloud.io/linz/test/ubuntu ${{ steps.distro.outputs.codename }} main" | sudo tee /etc/apt/sources.list.d/linz-test.list
+
+            - name: Enable fetching packages from packagecloud prod repository
+              run: |
+                  curl -Ls https://packagecloud.io/linz/prod/gpgkey | sudo apt-key add -
+                  echo "deb https://packagecloud.io/linz/prod/ubuntu ${{ steps.distro.outputs.codename }} main" | sudo tee /etc/apt/sources.list.d/linz-prod.list
+
+            - name: Update package database with PostgreSQL repo
+              run: sudo apt-get update
+
+            - name: Install test dependencies
+              run: |
+                  # Install dependencies
+                  sudo apt-get --assume-yes -qq install --no-install-recommends \
+                      debhelper \
+                      fakeroot \
+                      libtap-parser-sourcehandler-pgtap-perl \
+                      linz-bde-schema \
+                      linz-bde-uploader \
+                      pandoc \
+                      postgresql-${{ matrix.pg }} \
+                      postgresql-${{ matrix.pg }}-dbpatch \
+                      postgresql-${{ matrix.pg }}-pgtap \
+                      postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }} \
+                      postgresql-${{ matrix.pg }}-postgis-${{ matrix.pgis }}-scripts \
+                      postgresql-${{ matrix.pg }}-tableversion \
+                      postgresql-client-${{ matrix.pg }} \
+                      postgresql-contrib-${{ matrix.pg }} \
+                      postgresql-server-dev-${{ matrix.pg }} \
+                      wkhtmltopdf
+
+            - name: Setup current user as PostgreSQL superuser
+              run: sudo --user=postgres createuser --superuser "$USER"
+
+            - name: Setup PostgreSQL root user
+              run: sudo --user=postgres createuser --superuser root
+
+            - name: Build
+              run: make
+
+            - name: Test build
+              run: make check || { cat regression.diffs; false; }
+
+            - name: Install
+              run: sudo -E make install
+
+            - name: Test installation
+              run: make installcheck
+
+            - name: Test installation stdout
+              run: make installcheck-stdout
+
+            - name: Test uninstall
+              run: make uninstall
+
+            - name: Test docs building
+              run: xvfb-run make docs
+
+            - name: Archive docs
+              uses: actions/upload-artifact@v3
+              with:
+                  name:
+                      docs for PostgreSQL ${{ matrix.pg }}, PostGIS ${{ matrix.pgis }} on ${{
+                      matrix.os }}
+                  path: doc/*.pdf
+                  if-no-files-found: error
+
+            - name: Build local debian package
+              uses: linz/linz-software-repository@v12
+              with:
+                  release: ${{ steps.distro.outputs.codename }}
+              env:
+                  PG_SUPPORTED_VERSIONS: ${{ matrix.pg }}
+
+            - name: Test packaging
+              run: sudo dpkg -i build-area/linz-lds-bde-schema*.deb
+
+            - name: Test upgrades
+              run: test/test-upgrades.bash
+
+            - name: Test publication
+              run: make check-publisher
+              if: matrix.pg >= 10
+
+    package:
+        needs: test
+        name: Package for Debian
+        runs-on: ubuntu-20.04
+        strategy:
+            matrix:
+                distro: ['bionic', 'focal']
+            max-parallel: 1
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
+
+            - name: Determine packagecloud publication target
+              run: |
+                  # TODO: it would be nice to turn this into a single-liner in
+                  #       github-action syntax
+                  echo "GitHub ref: ${{ github.ref }}"
+                  echo "GitHub event_name: ${{ github.event_name }}"
+                  PACKAGECLOUD_REPOSITORY=
+                  if test "${{ github.event_name }}" = 'push'; then
+                    if expr "${{ github.ref }}" : "refs/tags/" > /dev/null; then
+                      PACKAGECLOUD_REPOSITORY=test
+                      git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY
+                    elif test "${{ github.ref }}" = 'refs/heads/packagecloud' \
+                           -o "${{ github.ref }}" = 'refs/heads/master'
+                    then
+                      PACKAGECLOUD_REPOSITORY=dev
+                    fi
+                  fi
+                  echo "PACKAGECLOUD_REPOSITORY=$PACKAGECLOUD_REPOSITORY" | tee -a $GITHUB_ENV
+
+            - name: Build and upload to packagecloud
+              uses: linz/linz-software-repository@v12
+              with:
+                  release: ${{ matrix.distro }}
+                  packagecloud_token: ${{ secrets.LINZCI_PACKAGECLOUD_TOKEN }}
+                  packagecloud_repository: ${{ env.PACKAGECLOUD_REPOSITORY }}
+                  push_to_git_remote: origin
+
+    finalise:
+        if: always()
+        needs:
+            - lint
+            - test
+            - package
+        runs-on: ubuntu-latest
+        steps:
+            - name: Decide whether the needed jobs succeeded or failed
+              uses: re-actors/alls-green@release/v1
+              with:
+                  jobs: ${{ toJSON(needs) }}

@@ -1,7 +1,7 @@
 Source: linz-lds-bde-schema
 Section: database
 Priority: extra
-Build-Depends: debhelper (>= 7), python
+Build-Depends: debhelper, python3
 Standards-Version: 3.9.5
 Maintainer: Jeremy Palmer (LINZ) <jpalmer@linz.govt.nz>
 Homepage: http://www.linz.govt.nz
@@ -13,7 +13,7 @@ Architecture: all
 Depends: ${misc:Depends},
          tableversion,
          dbpatch,
-         linz-bde-uploader (>= 2.4.0),
-         linz-bde-schema (>= 1.11.0)
+         linz-bde-uploader,
+         linz-bde-schema
 Description: Provides the schemas and functions to generate the Landonline
  layers and tables that are available on the LDS.
