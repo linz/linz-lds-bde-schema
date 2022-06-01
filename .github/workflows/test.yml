@@ -177,7 +177,7 @@ jobs:
                   if-no-files-found: error
 
             - name: Build local debian package
-              uses: linz/linz-software-repository@v12
+              uses: linz/linz-software-repository@v14
               with:
                   release: ${{ steps.distro.outputs.codename }}
               env:
@@ -227,7 +227,7 @@ jobs:
                   echo "PACKAGECLOUD_REPOSITORY=$PACKAGECLOUD_REPOSITORY" | tee -a $GITHUB_ENV
 
             - name: Build and upload to packagecloud
-              uses: linz/linz-software-repository@v12
+              uses: linz/linz-software-repository@v14
               with:
                   release: ${{ matrix.distro }}
                   packagecloud_token: ${{ secrets.LINZCI_PACKAGECLOUD_TOKEN }}
