@@ -2561,7 +2561,7 @@ BEGIN
         PRPT.char_value::VARCHAR(10) AS owner_type,
         PRP.prime_surname,
         PRP.prime_other_names,
-        PRP.corporate_name,
+        PRP.corporate_name::TEXT,
         NMSF.char_value::VARCHAR(6) AS name_suffix
     FROM
         tmp_title_estates TTS
